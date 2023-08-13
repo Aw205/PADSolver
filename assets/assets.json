@@ -1,0 +1,19 @@
+{
+    "image": {
+        "fire": "images/orbs/Fire.png",
+        "water": "images/orbs/Water.png",
+        "wood": "images/orbs/Wood.png",
+        "light": "images/orbs/Light.png",
+        "dark": "images/orbs/Dark.png",
+        "heart": "images/orbs/Heart.png",
+        "darkTile": "images/darkTile.png",
+        "lightTile": "images/lightTile.png"
+    },
+    "svg": {},
+    "audio": {},
+    "aseprite": {},
+    "spritesheet": {},
+    "json": {},
+    "bitmapFont": {},
+    "tilemapTiledJSON": {}
+}
