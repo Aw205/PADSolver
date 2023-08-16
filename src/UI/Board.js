@@ -1,10 +1,25 @@
 
+const typeTextureMap = new Map(
+    [[0,"fire"],[1,"water"], [2,"wood"],
+    [3,"light"],[4,"dark"],[5,"heart"]]
+);
+
+const letterTypeMap = new Map(
+    [["F",0],["W",1], ["G",2],
+    ["L",3],["D",4],["H",5]]
+);
+
+
+
+
 class Board extends Phaser.GameObjects.GameObject {
 
     constructor(scene, x, y) {
         super(scene);
 
         this.orbImages = ["fire", "water", "wood", "dark", "light","heart"];
+
+        this.solveInProgress = false;
 
         this.x = x;
         this.y = y;
@@ -24,13 +39,6 @@ class Board extends Phaser.GameObjects.GameObject {
         this.scene.events.on("swapOrbs",(row,col,targetR,targetC)=>{
             [this.orbArray[row][col], this.orbArray[targetR][targetC]] = [this.orbArray[targetR][targetC], this.orbArray[row][col]];
         })
-
-        // let moveTimeHTML = `<p id = "time" style= "padding: 5px; border-style: solid; border-radius: 5px; background-color: rgb(20, 20, 20, 0.8); font: 8px kreon; color: white" >Move Time: 10s</p>`;
-        // Board.timeLabel = this.scene.add.dom(100, 140).createFromHTML(moveTimeHTML).setVisible(false);
-        // let timerHTML = `<div id ="timer"class="round-time-bar" data-style="smooth" style="--duration: 6;"> </div>`
-        // Board.timer = this.scene.add.dom(100, 100).createFromHTML(timerHTML);
-
-        console.log("num display: " + this.scene.sys.displayList.length);
     }
 
     generateBoard() {
@@ -45,7 +53,7 @@ class Board extends Phaser.GameObjects.GameObject {
             for (let col = 0; col < this.BOARD_WIDTH; col++) {
 
                 let rand = Phaser.Math.Between(0, 5);
-                let x = this.x + col * Orb.WIDTH;
+                let x = this.x + col * Orb.WIDTH; 
                 let y = this.y + row * Orb.HEIGHT;
 
                 this.orbArray[row][col] = new Orb(this.scene, x, y, row, col, this.orbImages[rand]);
@@ -66,6 +74,8 @@ class Board extends Phaser.GameObjects.GameObject {
     }
 
     solveBoard() {
+
+        this.solveInProgress = true;
 
         for (let arr of this.orbArray) {
             for (let o of arr) {
@@ -90,6 +100,7 @@ class Board extends Phaser.GameObjects.GameObject {
                    
                 }
             }
+            this.solveInProgress = false;
             console.log("all combos have finished");
         }
     }
@@ -294,6 +305,24 @@ class Board extends Phaser.GameObjects.GameObject {
 
     isInBounds(row, col) {
         return (row > -1 && row < this.BOARD_HEIGHT && col > -1 && col < this.BOARD_WIDTH);
+    }
+
+
+    setBoard(arr){
+
+        for (let row = 0; row < this.BOARD_HEIGHT; row++) {
+            for (let col = 0; col < this.BOARD_WIDTH; col++) {
+                let o = this.orbArray[row][col];
+                if(o !=null){
+                    let type = letterTypeMap.get(arr[row][col]);
+                    o.changeType(type);
+                }
+                
+            }
+        }
+
+
+
     }
 
     destoryBoard(){

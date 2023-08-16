@@ -6,7 +6,7 @@ let config = {
   width: 1280,
   height: 960,
   resolution: window.devicePixelRatio,
-  scene: [LoadingScreen,BoardScene,SettingsScene],
+  scene: [LoadingScreen,BoardScene],
   scale: {
     mode: Phaser.Scale.FIT
   },

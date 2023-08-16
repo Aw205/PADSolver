@@ -14,6 +14,8 @@ class BoardScene extends Phaser.Scene {
             .setOrigin(0, 0)
             .setOutlineStyle();
 
+        // let b = new BoardModel();
+
         this.board = new Board(this, 400, 100);
 
         this.createBoardSelectMenu();
@@ -40,24 +42,25 @@ class BoardScene extends Phaser.Scene {
         this.add.dom(100, 250).createFromHTML(html);
 
         document.getElementById("load-button").addEventListener("pointerup", () => {
-            let filename = document.getElementById("select1").value
-            this.loadBoard(filename);
 
+            if (!this.board.solveInProgress) {
+                let filename = document.getElementById("select1").value;
+                this.loadBoard(filename);
+
+            }
         });
     }
 
     loadBoard(filename) {
-        fetch(`assets/boards/${filename}.txt`)
-        .then(response => response.text())
-        .then(text => {
-            for(let char of text){
-                // todo
 
-            }
-        })
-        .catch(error => {
-          console.error('Error fetching the file:', error);
-        });
+        fetch(`assets/example_boards/${filename}.txt`)
+            .then(response => response.text())
+            .then(text => {
+                this.board.setBoard(eval(text));
+            })
+            .catch(error => {
+                console.error('Error fetching the file:', error);
+            });
     }
 
 
@@ -80,16 +83,62 @@ class BoardScene extends Phaser.Scene {
         this.add.dom(570, 600).createFromHTML(html);
 
         document.getElementById("randomize-button").addEventListener("pointerup", () => {
-            this.time.removeAllEvents();
-            this.board.destoryBoard();
-            this.board = new Board(this, 400, 100);
+
+            if (!this.board.solveInProgress) {
+                for (let row = 0; row < 5; row++) {
+                    for (let col = 0; col < 6; col++) {
+                        let o = this.board.orbArray[row][col];
+                        let rand = Phaser.Math.Between(0, 5)
+                        if (o != null) {
+                            o.changeType(rand);
+                            continue;
+                        }
+                        let s = this.board.orbSlotArray[row][col];
+                        this.board.orbArray[row][col] = new Orb(this, s.x, s.y, row, col, this.board.orbImages[rand]);
+                        this.board.orbArray[row][col].type = Object.values(OrbType)[rand];
+                        this.board.orbArray[row][col].currentSlot = s;
+                        s.orb = this.board.orbArray[row][col];
+
+                    }
+                }
+            }
 
         });
         document.getElementById("reset-button").addEventListener("pointerup", () => {
             console.log("pressing reset");
 
         });
+
+        document.getElementById("solve-button").addEventListener("pointerup", () => {
+            let path = [[0, 0], [0, 1], [0, 2], [0, 3], [0, 4], [0, 5],
+            [1, 5], [2, 5], [3, 5], [4, 5]];
+
+            if (!this.board.solveInProgress) {
+
+                this.board.orbArray[path[0][0]][path[0][1]].setAlpha(0.5);
+                this.time.addEvent({
+                    delay: 500,
+                    callback: this.followPath,
+                    args: [path],
+                    callbackScope: this,
+                    repeat: path.length - 2,
+                });
+
+            }
+
+        });
     }
+
+
+    followPath(path) {
+
+        let curr = this.board.orbArray[path[0][0]][path[0][1]];
+        let target = this.board.orbSlotArray[path[1][0]][path[1][1]];
+        curr.swapLocations2(target);
+        path.shift();
+
+    }
+
 
 
     createOrbPalette() {
@@ -116,7 +165,7 @@ class BoardScene extends Phaser.Scene {
                 this.input.setDefaultCursor(`url(assets/images/cursorOrbs/${lc}Cursor.png), auto`);
                 this.input.on("pointermove", (pointer, currentlyOver) => {
                     if (pointer.isDown && currentlyOver.length > 0) {
-                        currentlyOver[0].orb.changeType(`${lc}`, ids.indexOf(id));
+                        currentlyOver[0].orb.changeType(ids.indexOf(id));
                     }
                 });
                 for (let arr of this.board.orbArray) {
@@ -131,6 +180,7 @@ class BoardScene extends Phaser.Scene {
 
             this.input.setDefaultCursor("default");
             this.input.removeAllListeners("pointermove");
+
             document.getElementById("orb-palette").removeAttribute('open');
             for (let arr of this.board.orbArray) {
                 for (let o of arr) {
