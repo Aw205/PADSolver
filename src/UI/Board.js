@@ -320,8 +320,22 @@ class Board extends Phaser.GameObjects.GameObject {
                 
             }
         }
+    }
 
 
+    getNumericModel(){
+
+        let model = new Array(this.BOARD_HEIGHT);
+
+        for (let row = 0; row < this.BOARD_HEIGHT; row++) {
+            model[row] = new Array(this.BOARD_WIDTH);
+            for (let col = 0; col < this.BOARD_WIDTH; col++) {
+                let o = this.orbArray[row][col];
+                model[row][col] = Number(o.type.description);
+            }
+        }
+
+        return model;
 
     }
 
@@ -340,9 +354,6 @@ class Board extends Phaser.GameObjects.GameObject {
                 this.orbSlotArray[row][col].destroy();  
             }
         }
-
-        // Board.timeLabel.destroy();
-        // Board.timer.destroy();
         this.scene.events.off("swapOrbs");
         this.scene.events.off("solveBoard");
         this.destroy();

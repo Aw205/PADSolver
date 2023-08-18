@@ -14,8 +14,6 @@ class BoardScene extends Phaser.Scene {
             .setOrigin(0, 0)
             .setOutlineStyle();
 
-        // let b = new BoardModel();
-
         this.board = new Board(this, 400, 100);
 
         this.createBoardSelectMenu();
@@ -110,12 +108,22 @@ class BoardScene extends Phaser.Scene {
         });
 
         document.getElementById("solve-button").addEventListener("pointerup", () => {
-            let path = [[0, 0], [0, 1], [0, 2], [0, 3], [0, 4], [0, 5],
-            [1, 5], [2, 5], [3, 5], [4, 5]];
+            // let path = [[0, 0], [0, 1], [0, 2], [0, 3], [0, 4], [0, 5],
+            // [1, 5], [2, 5], [3, 5], [4, 5]];
+
+            let model = this.board.getNumericModel();
+            //console.log(model);
+            
+            let solver = new Solve(model);
+            let path = solver.initialSearch();
+
+            
+
+
 
             if (!this.board.solveInProgress) {
 
-                this.board.orbArray[path[0][0]][path[0][1]].setAlpha(0.5);
+                this.board.orbArray[path[0].x][path[0].y].setAlpha(0.5);
                 this.time.addEvent({
                     delay: 500,
                     callback: this.followPath,
@@ -132,8 +140,8 @@ class BoardScene extends Phaser.Scene {
 
     followPath(path) {
 
-        let curr = this.board.orbArray[path[0][0]][path[0][1]];
-        let target = this.board.orbSlotArray[path[1][0]][path[1][1]];
+        let curr = this.board.orbArray[path[0].x][path[0].y];
+        let target = this.board.orbSlotArray[path[1].x][path[1].y];
         curr.swapLocations2(target);
         path.shift();
 
