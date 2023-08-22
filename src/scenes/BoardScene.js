@@ -37,7 +37,9 @@ class BoardScene extends Phaser.Scene {
         <button id= "load-button" style="background-color: gray; margin-left: 50px; margin-top: 20px;"> Load </button>
         <input type="file" accept="image/*">
         <canvas id="myCanvas"></canvas>
-        </details>`;
+        </details>
+        
+        `;
 
         this.add.dom(100, 250).createFromHTML(html);
 
@@ -46,13 +48,14 @@ class BoardScene extends Phaser.Scene {
             let file = input.files;
             let img_url = URL.createObjectURL(file[0]);
             const img = new Image();
-            img.src = img_url;
             const canvas = document.getElementById("myCanvas");
             const context = canvas.getContext('2d');
+            img.src = img_url;
             img.onload = () => {
-                context.drawImage(img, 0, 0);
+                canvas.width = img.width;
+                canvas.height = img.height;
+                context.drawImage(img, 0, 0, img.width, img.height);
                 var imgData = context.getImageData(0, 0, canvas.width, canvas.height);
-                
             };
             
         });
