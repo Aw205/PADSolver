@@ -36,7 +36,9 @@ class BoardScene extends Phaser.Scene {
         </select> <br>
         <button id= "load-button" style="background-color: gray; margin-left: 50px; margin-top: 20px;"> Load </button>
         <input type="file" accept="image/*">
-        <canvas id="myCanvas"></canvas>
+        <div class="scroll">
+            <canvas id="myCanvas"></canvas>
+        </div>
         </details>
         
         `;
@@ -56,6 +58,23 @@ class BoardScene extends Phaser.Scene {
                 canvas.height = img.height;
                 context.drawImage(img, 0, 0, img.width, img.height);
                 var imgData = context.getImageData(0, 0, canvas.width, canvas.height);
+                const data = imgData.data;
+                var board_start = img.width * Math.floor(img.height / 2) * 4;
+                const ROWS = 5;
+                const COL = 6;
+                const next_row = img.width * Math.floor(img.height / 10) * 4;
+
+                for (let i = 0; i < ROWS; i++) {
+                    board_start += next_row;
+                    for (let j = board_start; j < board_start + img.width * 4; j += 4) {
+                        data[j] = 0;
+                        data[j + 1] = 0;
+                        data[j + 2] = 0;
+                    }
+                }
+                context.putImageData(imgData, 0, 0);
+                
+                
             };
             
         });
