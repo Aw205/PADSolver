@@ -60,7 +60,7 @@ class BoardScene extends Phaser.Scene {
                 var imgData = context.getImageData(0, 0, canvas.width, canvas.height);
                 const data = imgData.data;
                 
-                const next_row = canvas.width * Math.floor(207 * canvas.height / 1104) * 4;
+                const next_row = canvas.width * Math.floor((206 / 1104) * canvas.height) * 4;
                 const next_col = (204 * canvas.width / 1242) * 4;
                 var board_start = canvas.width * Math.floor(canvas.height / 12) * 4;
                 let col_start = (109 * canvas.width / 1242) * 4;
@@ -69,29 +69,36 @@ class BoardScene extends Phaser.Scene {
 
                 for (let i = 0; i < 5; i++) {
                     let row = [];
-                    //console.log("row:", i);
+                    console.log("row:", i);
                     var j = board_start + col_start;
                     for (let k = 0; k < 6; k++) {
-                        //console.log("r:", data[j], " g:", data[j+1], " b:", data[j+2]);
-                        if (data[j] == 255) {
+                        const red = Math.round(data[j]/10)*10;
+                        const green = Math.round(data[j+1]/10)*10;
+                        const blue = Math.round(data[j+2]/10)*10;
+
+                        if (green >= 110 && blue == 70) {
                             row.push('F');
-                        } else if (data[j+2] == 255) {
+                        } else if (blue >= 260) {
                             row.push('W');
-                        } else if (data[j] <= 90 && data[j+1] >= 220 && data[j+2] >= 100) {
+                        } else if (red == 80 && green == 230 && blue == 100) {
                             row.push('G');
-                        } else if (data[j] == 249) {
+                        } else if (red == 250 && green == 250 && blue == 130) {
                             row.push('L');
-                        } else if (data[j] > 170 && data[j+1] <= 105 && data[j+2] > 180) {
+                        } else if (red == 200 && green == 100) {
                             row.push('D');
                         } else {
                             row.push('H');
                         }
+
+                        console.log("r:", red, " g:", green, " b:", blue);
                         j += next_col;
                     }
                     result.push(row);
                     board_start += next_row;
                 }
-                //console.log(result);
+                context.putImageData(imgData, 0, 0);
+                console.log(result);
+                
                 this.board.setBoard(eval(result));
             };
             
