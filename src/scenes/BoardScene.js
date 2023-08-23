@@ -55,26 +55,44 @@ class BoardScene extends Phaser.Scene {
             img.src = img_url;
             img.onload = () => {
                 canvas.width = img.width;
-                canvas.height = img.height;
-                context.drawImage(img, 0, 0, img.width, img.height);
+                canvas.height = img.height/2;
+                context.drawImage(img, 0, 14*img.height/26, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
                 var imgData = context.getImageData(0, 0, canvas.width, canvas.height);
                 const data = imgData.data;
-                var board_start = img.width * Math.floor(img.height / 2) * 4;
-                const ROWS = 5;
-                const COL = 6;
-                const next_row = img.width * Math.floor(img.height / 10) * 4;
+                
+                const next_row = canvas.width * Math.floor(207 * canvas.height / 1104) * 4;
+                const next_col = (204 * canvas.width / 1242) * 4;
+                var board_start = canvas.width * Math.floor(canvas.height / 12) * 4;
+                let col_start = (109 * canvas.width / 1242) * 4;
 
-                for (let i = 0; i < ROWS; i++) {
-                    board_start += next_row;
-                    for (let j = board_start; j < board_start + img.width * 4; j += 4) {
-                        data[j] = 0;
-                        data[j + 1] = 0;
-                        data[j + 2] = 0;
+                let result = [];
+
+                for (let i = 0; i < 5; i++) {
+                    let row = [];
+                    //console.log("row:", i);
+                    var j = board_start + col_start;
+                    for (let k = 0; k < 6; k++) {
+                        //console.log("r:", data[j], " g:", data[j+1], " b:", data[j+2]);
+                        if (data[j] == 255) {
+                            row.push('F');
+                        } else if (data[j+2] == 255) {
+                            row.push('W');
+                        } else if (data[j] <= 90 && data[j+1] >= 220 && data[j+2] >= 100) {
+                            row.push('G');
+                        } else if (data[j] == 249) {
+                            row.push('L');
+                        } else if (data[j] > 170 && data[j+1] <= 105 && data[j+2] > 180) {
+                            row.push('D');
+                        } else {
+                            row.push('H');
+                        }
+                        j += next_col;
                     }
+                    result.push(row);
+                    board_start += next_row;
                 }
-                context.putImageData(imgData, 0, 0);
-                
-                
+                //console.log(result);
+                this.board.setBoard(eval(result));
             };
             
         });
