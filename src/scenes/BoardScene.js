@@ -26,6 +26,7 @@ class BoardScene extends Phaser.Scene {
     createBoardSelectMenu() {
 
         let html = `
+        
         <details>
         <summary style= "color: DarkGray; user-select:none; font: 32px kreon;" >Load Board</summary>
         <select id="select1" style= "margin-left: 50px; margin-top: 20px;">
@@ -36,9 +37,6 @@ class BoardScene extends Phaser.Scene {
         </select> <br>
         <button id= "load-button" style="background-color: gray; margin-left: 50px; margin-top: 20px;"> Load </button>
         <input type="file" accept="image/*">
-        <div class="scroll">
-            <canvas id="myCanvas"></canvas>
-        </div>
         </details>
         
         `;
@@ -55,51 +53,27 @@ class BoardScene extends Phaser.Scene {
             img.src = img_url;
             img.onload = () => {
                 canvas.width = img.width;
-                canvas.height = img.height/2;
-                context.drawImage(img, 0, 14*img.height/26, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
+                canvas.height = img.height / 2;
+                context.drawImage(img, 0, canvas.height, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
                 var imgData = context.getImageData(0, 0, canvas.width, canvas.height);
                 const data = imgData.data;
-                
-                const next_row = canvas.width * Math.floor((206 / 1104) * canvas.height) * 4;
-                const next_col = (204 * canvas.width / 1242) * 4;
-                var board_start = canvas.width * Math.floor(canvas.height / 12) * 4;
-                let col_start = (109 * canvas.width / 1242) * 4;
-
-                let result = [];
+                var row_start = 0;
+                var next_row = canvas.width * Math.floor(canvas.height * 0.18) * 4;
+                let row_iter = Math.floor(0.165 * canvas.width) * 4;
 
                 for (let i = 0; i < 5; i++) {
-                    let row = [];
-                    console.log("row:", i);
-                    var j = board_start + col_start;
+                    row_start += next_row;
+                    let start_offset = row_start + Math.floor(0.09 * canvas.width) * 4;
+                    console.log("row:", i+1);
+                    let j = start_offset;
                     for (let k = 0; k < 6; k++) {
-                        const red = Math.round(data[j]/10)*10;
-                        const green = Math.round(data[j+1]/10)*10;
-                        const blue = Math.round(data[j+2]/10)*10;
-
-                        if (green >= 110 && blue == 70) {
-                            row.push('F');
-                        } else if (blue >= 260) {
-                            row.push('W');
-                        } else if (red == 80 && green == 230 && blue == 100) {
-                            row.push('G');
-                        } else if (red == 250 && green == 250 && blue == 130) {
-                            row.push('L');
-                        } else if (red == 200 && green == 100) {
-                            row.push('D');
-                        } else {
-                            row.push('H');
-                        }
-
-                        console.log("r:", red, " g:", green, " b:", blue);
-                        j += next_col;
+                        const red = data[j];
+                        const green = data[j+1];
+                        const blue = data[j+2];
+                        console.log(red, green, blue);
+                        j += row_iter;
                     }
-                    result.push(row);
-                    board_start += next_row;
                 }
-                context.putImageData(imgData, 0, 0);
-                console.log(result);
-                
-                this.board.setBoard(eval(result));
             };
             
         });
