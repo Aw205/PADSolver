@@ -77,15 +77,16 @@ class BoardScene extends Phaser.Scene {
                 }
                 
                 let board_width = (board_end - board_start) / 4;
-                let tile_length = Math.ceil(board_width / 6);
+                // IMPORTANT IT CAUSES ISSUES DEPENDING ON FLOOR OR CEIL FIND WAY TO SOLVE
+                let tile_length = Math.round((board_width / 6) - 0.1);
 
                 // let k = board_start + 2 * tile_length * canvas.width;
                 // for (let i = 0; i < 5; i++) {
                     
                 //     for (let j = k; j < k + canvas.width * 4; j += 4) {
-                //         data[j] = 0;
-                //         data[j+1] = 0;
-                //         data[j+2] = 0;
+                //         data[j] = 255;
+                //         data[j+1] = 255;
+                //         data[j+2] = 255;
                 //     }
                 //     k += 4 * tile_length * canvas.width;
                 // }
@@ -94,9 +95,9 @@ class BoardScene extends Phaser.Scene {
                 // for (let i = 0; i < canvas.height; i++) {
                 //     k = start;
                 //     for (let j = 0; j < 6; j++) {
-                //         data[k] = 0;
-                //         data[k+1] = 0;
-                //         data[k+2] = 0;
+                //         data[k] = 255;
+                //         data[k+1] = 255;
+                //         data[k+2] = 255;
                 //         k += 4 * tile_length;
                 //     }
                 //     start += canvas.width * 4;
@@ -113,11 +114,8 @@ class BoardScene extends Phaser.Scene {
                         const r = data[k];
                         const g = data[k+1];
                         const b = data[k+2];
-                        data[k] = 255;
-                        data[k+1] = 255;
-                        data[k+2] = 255;
-                        console.log( r, g, b);
-                        if (r == 255) {
+                        console.log(r,g,b);
+                        if (r >= 254) {
                             row.push('F');
                         } else if (b >= 254) {
                             row.push('W');
