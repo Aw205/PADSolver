@@ -55,25 +55,46 @@ class BoardScene extends Phaser.Scene {
                 canvas.width = img.width;
                 canvas.height = img.height / 2;
                 context.drawImage(img, 0, canvas.height, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
-                var imgData = context.getImageData(0, 0, canvas.width, canvas.height);
-                const data = imgData.data;
-                var row_start = 0;
-                var next_row = canvas.width * Math.floor(canvas.height * 0.18) * 4;
-                let row_iter = Math.floor(0.165 * canvas.width) * 4;
+                let imgData = context.getImageData(0, 0, canvas.width, canvas.height);
+                let data = imgData.data;
+                let i = 0;
 
-                for (let i = 0; i < 5; i++) {
-                    row_start += next_row;
-                    let start_offset = row_start + Math.floor(0.09 * canvas.width) * 4;
-                    console.log("row:", i+1);
-                    let j = start_offset;
-                    for (let k = 0; k < 6; k++) {
-                        const red = data[j];
-                        const green = data[j+1];
-                        const blue = data[j+2];
-                        console.log(red, green, blue);
-                        j += row_iter;
+                let board_start = 0;
+                let board_end = 0;
+
+                while (i < data.length && board_end == 0) {
+                    const r = data[i];
+                    const g = data[i+1];
+                    const b = data[i+2];
+                    if (r == 51 && g == 33 && b == 34 && board_start == 0) {
+                        board_start = i;
                     }
+                    if (r == 0 && g == 0 && b == 0 && board_start != 0) {
+                        board_end = i;
+                    }
+                    i += 4;
                 }
+
+                let board_width = board_end - board_start;
+                let tile_length = Math.floor(board_width / 6);
+
+                let start = board_start;
+                for (let i = 0; i < 5; i++) {
+                    let k = start;
+                    for (let j = 0; j < 6; j++) {
+                        const r = data[k];
+                        const g = data[k+1];
+                        const b = data[k+2];
+                        console.log(r,g,b);
+                        data[k] = 255;
+                        data[k+1] = 255;
+                        data[k+2] = 255;
+                        k += tile_length;
+                    }
+                    start += canvas.width * tile_length;
+                }
+
+                context.putImageData(imgData, 0, 0);
             };
             
         });
