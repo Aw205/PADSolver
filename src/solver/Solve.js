@@ -1,11 +1,10 @@
 class Solve {
 
-    constructor(board) {
+    constructor(board, depth) {
 
         this.boardModel = new BoardModel(board);
         this.boardMap = new Map();
-        this.DEPTH_LIMIT = 10;
-
+        this.DEPTH_LIMIT = depth
     }
 
     initialSearch() {
@@ -82,7 +81,25 @@ class Solve {
             }
         }
 
-        return moves;
+        // Pick the top 5 moves based on a heuristic
+        // Heuristic: Leads to immediate combo
+        let movesWithScores = [];
+
+        for (let move of moves) {
+            this.boardModel.swapOrbs(currentPos, move);
+            let score = this.boardModel.calcCombos();
+            this.boardModel.swapOrbs(currentPos, move);
+
+            movesWithScores.push({move, score});
+        }
+
+        movesWithScores.sort((a, b) => b.score - a.score);
+
+        const n = 5;
+        let topNMoves = movesWithScores.slice(0, n).map(m => m.move);
+        let filteredMoves = topNMoves.filter(move => !move.equals(prevPos));
+
+        return filteredMoves;
     }
 
     isInBounds(row, col) {

@@ -15,10 +15,11 @@ class BoardScene extends Phaser.Scene {
             .setOutlineStyle();
 
         this.board = new Board(this, 400, 100);
-
+        this.createDepthSlider();
         this.createBoardSelectMenu();
         this.createBoardButtons();
         this.createOrbPalette();
+        
 
     }
 
@@ -214,15 +215,21 @@ class BoardScene extends Phaser.Scene {
             // [1, 5], [2, 5], [3, 5], [4, 5]];
 
             let model = this.board.getNumericModel();
+
+            const depth = parseInt(document.getElementById("depthSlider").value);
             //console.log(model);
             
-            let solver = new Solve(model);
-            let path = solver.initialSearch();
-
+            let d = depth;
+            let solver;
+            let path;
+            if (d < 1 || d > 12) {
+                solver = new Solve(model,10);
+                path = solver.initialSearch();
+            } else {
+                solver = new Solve(model,d);
+                path = solver.initialSearch();
+            }
             
-
-
-
             if (!this.board.solveInProgress) {
 
                 this.board.orbArray[path[0].x][path[0].y].setAlpha(0.5);
@@ -298,6 +305,22 @@ class BoardScene extends Phaser.Scene {
                 }
             }
         });
+    }
+
+    createDepthSlider() {
+        let html = `
+            <label for="depthSlider" style="font: 32px kreon; color: DarkGrey; user-select: none; display: inline-block; padding: 50px;">Depth:</label>
+            <input type="range" id="depthSlider" name="depthSlider" min="1" max="12" value="8" step="1">
+            <span id="sliderValue" style="color: DarkGrey;">8</span>
+        `;
+
+        this.add.dom(600, 680).createFromHTML(html);
+
+        const slider = document.getElementById("depthSlider");
+        const sliderValueDisplay = document.getElementById("sliderValue");
+        slider.oninput = function() {
+            sliderValueDisplay.textContent = this.value;
+        }
     }
 
 }
