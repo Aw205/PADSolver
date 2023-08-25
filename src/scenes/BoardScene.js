@@ -66,6 +66,7 @@ class BoardScene extends Phaser.Scene {
                     const r = data[i];
                     const g = data[i+1];
                     const b = data[i+2];
+                    //51 33 34
                     if (r == 51 && g == 33 && b == 34 && board_start == 0) {
                         board_start = i;
                     }
@@ -74,26 +75,69 @@ class BoardScene extends Phaser.Scene {
                     }
                     i += 4;
                 }
+                
+                let board_width = (board_end - board_start) / 4;
+                let tile_length = Math.ceil(board_width / 6);
 
-                let board_width = board_end - board_start;
-                let tile_length = Math.floor(board_width / 6);
+                // let k = board_start + 2 * tile_length * canvas.width;
+                // for (let i = 0; i < 5; i++) {
+                    
+                //     for (let j = k; j < k + canvas.width * 4; j += 4) {
+                //         data[j] = 0;
+                //         data[j+1] = 0;
+                //         data[j+2] = 0;
+                //     }
+                //     k += 4 * tile_length * canvas.width;
+                // }
+                    
+                // let start = board_start + 2 * tile_length;
+                // for (let i = 0; i < canvas.height; i++) {
+                //     k = start;
+                //     for (let j = 0; j < 6; j++) {
+                //         data[k] = 0;
+                //         data[k+1] = 0;
+                //         data[k+2] = 0;
+                //         k += 4 * tile_length;
+                //     }
+                //     start += canvas.width * 4;
+                // }
 
-                let start = board_start;
+                let results = [];
+                let start = board_start + 2 * tile_length * canvas.width;
                 for (let i = 0; i < 5; i++) {
-                    let k = start;
+                    let row = [];
+                    let k = start + 2 * tile_length;
+                    console.log(i+1);
                     for (let j = 0; j < 6; j++) {
+                        
                         const r = data[k];
                         const g = data[k+1];
                         const b = data[k+2];
-                        console.log(r,g,b);
                         data[k] = 255;
                         data[k+1] = 255;
                         data[k+2] = 255;
-                        k += tile_length;
-                    }
-                    start += canvas.width * tile_length;
-                }
+                        console.log( r, g, b);
+                        if (r == 255) {
+                            row.push('F');
+                        } else if (b >= 254) {
+                            row.push('W');
+                        } else if (r < 100 && g > 200 && b < 250) {
+                            row.push('G');
+                        } else if (r > 100 && g > 200 && b < 250) {
+                            row.push('L');
+                        } else if (r < 210 && g < 210 && b < 210) {
+                            row.push('D');
+                        } else {
+                            row.push('H');
+                        }
 
+                        k += 4 * tile_length;
+                    }
+                    results.push(row);
+                    start += 4 * tile_length * canvas.width;
+                }   
+
+                this.board.setBoard(eval(results));
                 context.putImageData(imgData, 0, 0);
             };
             
