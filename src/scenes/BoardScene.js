@@ -37,15 +37,16 @@ class BoardScene extends Phaser.Scene {
             <option value="Tricolor">Tricolor</option>
         </select> <br>
         <button id= "load-button" style="background-color: gray; margin-left: 50px; margin-top: 20px;"> Load </button>
-        <input type="file" accept="image/*">
+        <input id = "upload" type="file" accept="image/*">
         </details>
         
         `;
 
         this.add.dom(100, 250).createFromHTML(html);
 
-        const input = document.querySelector("input");
+        const input = document.getElementById("upload");
         input.addEventListener("change", () => {
+            console.log("working");
             let file = input.files;
             let img_url = URL.createObjectURL(file[0]);
             const img = new Image();
@@ -67,7 +68,6 @@ class BoardScene extends Phaser.Scene {
                     const r = data[i];
                     const g = data[i+1];
                     const b = data[i+2];
-                    //51 33 34
                     if (r == 51 && g == 33 && b == 34 && board_start == 0) {
                         board_start = i;
                     }
@@ -78,7 +78,6 @@ class BoardScene extends Phaser.Scene {
                 }
                 
                 let board_width = (board_end - board_start) / 4;
-                // IMPORTANT IT CAUSES ISSUES DEPENDING ON FLOOR OR CEIL FIND WAY TO SOLVE
                 let tile_length = Math.round((board_width / 6) - 0.1);
 
                 // let k = board_start + 2 * tile_length * canvas.width;
