@@ -1,6 +1,6 @@
 class Solve {
 
-    constructor(board) {
+    constructor(board, depth) {
 
         this.boardModel = new BoardModel(board);
         this.transpositionTable = new Map();

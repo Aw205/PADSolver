@@ -73,6 +73,103 @@ class BoardScene extends Phaser.Scene {
 
         this.add.dom(100, 250).createFromHTML(html);
 
+        const input = document.getElementById("upload");
+        input.addEventListener("change", () => {
+            console.log("working");
+            let file = input.files;
+            let img_url = URL.createObjectURL(file[0]);
+            const img = new Image();
+            const canvas = document.getElementById("myCanvas");
+            const context = canvas.getContext('2d');
+            img.src = img_url;
+            img.onload = () => {
+                canvas.width = img.width;
+                canvas.height = img.height / 2;
+                context.drawImage(img, 0, canvas.height, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
+                let imgData = context.getImageData(0, 0, canvas.width, canvas.height);
+                let data = imgData.data;
+                let i = 0;
+
+                let board_start = 0;
+                let board_end = 0;
+
+                while (i < data.length && board_end == 0) {
+                    const r = data[i];
+                    const g = data[i+1];
+                    const b = data[i+2];
+                    if (r == 51 && g == 33 && b == 34 && board_start == 0) {
+                        board_start = i;
+                    }
+                    if (r == 0 && g == 0 && b == 0 && board_start != 0) {
+                        board_end = i;
+                    }
+                    i += 4;
+                }
+                
+                let board_width = (board_end - board_start) / 4;
+                let tile_length = Math.round((board_width / 6) - 0.1);
+
+                // let k = board_start + 2 * tile_length * canvas.width;
+                // for (let i = 0; i < 5; i++) {
+                    
+                //     for (let j = k; j < k + canvas.width * 4; j += 4) {
+                //         data[j] = 255;
+                //         data[j+1] = 255;
+                //         data[j+2] = 255;
+                //     }
+                //     k += 4 * tile_length * canvas.width;
+                // }
+                    
+                // let start = board_start + 2 * tile_length;
+                // for (let i = 0; i < canvas.height; i++) {
+                //     k = start;
+                //     for (let j = 0; j < 6; j++) {
+                //         data[k] = 255;
+                //         data[k+1] = 255;
+                //         data[k+2] = 255;
+                //         k += 4 * tile_length;
+                //     }
+                //     start += canvas.width * 4;
+                // }
+
+                let results = [];
+                let start = board_start + 2 * tile_length * canvas.width;
+                for (let i = 0; i < 5; i++) {
+                    let row = [];
+                    let k = start + 2 * tile_length;
+                    console.log(i+1);
+                    for (let j = 0; j < 6; j++) {
+                        
+                        const r = data[k];
+                        const g = data[k+1];
+                        const b = data[k+2];
+                        console.log(r,g,b);
+                        if (r >= 254) {
+                            row.push('F');
+                        } else if (b >= 254) {
+                            row.push('W');
+                        } else if (r < 100 && g > 200 && b < 250) {
+                            row.push('G');
+                        } else if (r > 100 && g > 200 && b < 250) {
+                            row.push('L');
+                        } else if (r < 210 && g < 210 && b < 210) {
+                            row.push('D');
+                        } else {
+                            row.push('H');
+                        }
+
+                        k += 4 * tile_length;
+                    }
+                    results.push(row);
+                    start += 4 * tile_length * canvas.width;
+                }   
+
+                this.board.setBoard(eval(results));
+                context.putImageData(imgData, 0, 0);
+            };
+            
+        });
+
         document.getElementById("load-button").addEventListener("pointerup", () => {
 
             if (!this.board.solveInProgress) {
