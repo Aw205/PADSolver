@@ -61,7 +61,6 @@ class Orb extends Phaser.GameObjects.Image {
         [this.row, target.orb.row] = [target.orb.row, this.row];
         [this.col, target.orb.col] = [target.orb.col, this.col];
 
-
         this.scene.events.emit("swapOrbs", this.row, this.col, target.orb.row, target.orb.col);
 
         [this.startPos, target.orb.startPos] = [target.orb.startPos, this.startPos];
@@ -110,6 +109,7 @@ class Orb extends Phaser.GameObjects.Image {
 
     addFirstSwapListener() {
         this.once("dragleave", (pointer, target) => {
+            this.scene.board.prevBoard = this.scene.board.cloneOrbArray();
             this.hasSwapped = true;
         });
     }
@@ -129,6 +129,7 @@ class Orb extends Phaser.GameObjects.Image {
 
     changeType(type){
         this.setTexture(typeTextureMap.get(type));
+        this.shadow.setTexture(typeTextureMap.get(type));
         this.type = Object.values(OrbType)[type];
     }
 

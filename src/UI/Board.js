@@ -1,15 +1,8 @@
 
 const typeTextureMap = new Map(
-    [[0,"fire"],[1,"water"], [2,"wood"],
-    [3,"light"],[4,"dark"],[5,"heart"]]
+    [[0, "fire"], [1, "water"], [2, "wood"],
+    [3, "light"], [4, "dark"], [5, "heart"]]
 );
-
-const letterTypeMap = new Map(
-    [["F",0],["W",1], ["G",2],
-    ["L",3],["D",4],["H",5]]
-);
-
-
 
 
 class Board extends Phaser.GameObjects.GameObject {
@@ -17,7 +10,7 @@ class Board extends Phaser.GameObjects.GameObject {
     constructor(scene, x, y) {
         super(scene);
 
-        this.orbImages = ["fire", "water", "wood", "dark", "light","heart"];
+        this.orbImages = ["fire", "water", "wood", "light", "dark", "heart"];
 
         this.solveInProgress = false;
 
@@ -25,6 +18,8 @@ class Board extends Phaser.GameObjects.GameObject {
         this.y = y;
         this.BOARD_HEIGHT = 5;
         this.BOARD_WIDTH = 6;
+
+        this.prevBoard = null;
 
         this.orbArray = new Array(this.BOARD_HEIGHT);
         this.skyfallArray = new Array(this.BOARD_HEIGHT);
@@ -36,7 +31,7 @@ class Board extends Phaser.GameObjects.GameObject {
         this.scene.events.on("solveBoard", () => {
             this.solveBoard();
         });
-        this.scene.events.on("swapOrbs",(row,col,targetR,targetC)=>{
+        this.scene.events.on("swapOrbs", (row, col, targetR, targetC) => {
             [this.orbArray[row][col], this.orbArray[targetR][targetC]] = [this.orbArray[targetR][targetC], this.orbArray[row][col]];
         })
     }
@@ -53,7 +48,7 @@ class Board extends Phaser.GameObjects.GameObject {
             for (let col = 0; col < this.BOARD_WIDTH; col++) {
 
                 let rand = Phaser.Math.Between(0, 5);
-                let x = this.x + col * Orb.WIDTH; 
+                let x = this.x + col * Orb.WIDTH;
                 let y = this.y + row * Orb.HEIGHT;
 
                 this.orbArray[row][col] = new Orb(this.scene, x, y, row, col, this.orbImages[rand]);
@@ -79,7 +74,7 @@ class Board extends Phaser.GameObjects.GameObject {
 
         for (let arr of this.orbArray) {
             for (let o of arr) {
-                if(o != null){
+                if (o != null) {
                     o.disableInteractive();
                 }
             }
@@ -94,10 +89,10 @@ class Board extends Phaser.GameObjects.GameObject {
             //this.scene.scene.get("BoardScene").events.emit("solveComplete");
             for (let arr of this.orbArray) {
                 for (let o of arr) {
-                    if(o != null){
+                    if (o != null) {
                         o.setInteractive();
                     }
-                   
+
                 }
             }
             this.solveInProgress = false;
@@ -112,10 +107,9 @@ class Board extends Phaser.GameObjects.GameObject {
 
                 let x = this.x + col * Orb.WIDTH;
                 let y = this.y + row * Orb.HEIGHT;
-                if(this.orbArray[row][col]!= null){
+                if (this.orbArray[row][col] != null) {
                     this.orbArray[row][col].isVisited = false;
                 }
-               
 
                 if (this.skyfallArray[row][col] == null) {
                     let rand = Phaser.Math.Between(0, 5);
@@ -152,7 +146,7 @@ class Board extends Phaser.GameObjects.GameObject {
             duration: 450,
             onComplete: () => {
                 //this.scene.events.emit("comboMatched", arr[1].type, set.size, { x: arr[1].startPos.x, y: arr[1].startPos.y });
-                for (let orb of set) {  
+                for (let orb of set) {
                     this.orbArray[orb.row][orb.col] = null;
                     this.orbSlotArray[orb.row][orb.col].orb = null;
                     orb.destroyOrb();
@@ -167,7 +161,7 @@ class Board extends Phaser.GameObjects.GameObject {
         for (let arr of this.orbArray) {
             for (let orb of arr) {
                 let comboSet = new Set();
-                if (orb!= null && !orb.isVisited) {
+                if (orb != null && !orb.isVisited) {
                     orb.isVisited = true;
                     this.floodfill(orb.row, orb.col, orb.type, comboSet);
                 }
@@ -187,7 +181,7 @@ class Board extends Phaser.GameObjects.GameObject {
         for (let i = 0; i < 4; i++) {
             let x = (i - 1) % 2;     // -1 0 1 0
             let y = (3 - i - 1) % 2; // 0 1 0 -1
-            if (this.isInBounds(row + x, col + y) && this.orbArray[row + x][col + y]!=null) {
+            if (this.isInBounds(row + x, col + y) && this.orbArray[row + x][col + y] != null) {
                 let adj = this.orbArray[row + x][col + y];
                 if (adj.type == type) {
                     (x == 0) ? matches[0].push(adj) : matches[1].push(adj);
@@ -212,8 +206,8 @@ class Board extends Phaser.GameObjects.GameObject {
     }
 
 
-    simulateGravity(){
-   
+    simulateGravity() {
+
         let dropDist = 0;
         for (let col = 0; col < this.BOARD_WIDTH; col++) {
             for (let row = this.BOARD_HEIGHT - 1; row > -1; row--) {
@@ -239,14 +233,14 @@ class Board extends Phaser.GameObjects.GameObject {
                 this.orbSlotArray[current.row][col].orb = current; // point slot to new orb
                 current.currentSlot = this.orbSlotArray[current.row][col]; //point orb to correct orb slot
                 [current, this.orbArray[row + dropDist][col]] = [this.orbArray[row + dropDist][col], current]; // setting new array location of orb
-                
+
             }
             dropDist = 0;
         }
         this.solveBoard();
     }
 
-    
+
 
     skyfall() {
 
@@ -307,23 +301,28 @@ class Board extends Phaser.GameObjects.GameObject {
         return (row > -1 && row < this.BOARD_HEIGHT && col > -1 && col < this.BOARD_WIDTH);
     }
 
-
-    setBoard(arr){
+    setBoard(arr) {
 
         for (let row = 0; row < this.BOARD_HEIGHT; row++) {
             for (let col = 0; col < this.BOARD_WIDTH; col++) {
                 let o = this.orbArray[row][col];
-                if(o !=null){
-                    let type = letterTypeMap.get(arr[row][col]);
-                    o.changeType(type);
+                if (o != null) {
+                    o.changeType(arr[row][col]);
+                    continue;
                 }
-                
+                let s = this.orbSlotArray[row][col];
+                this.orbArray[row][col] = new Orb(this.scene, s.x, s.y, row, col, this.orbImages[arr[row][col]]);
+                this.orbArray[row][col].type = Object.values(OrbType)[arr[row][col]];
+                this.orbArray[row][col].currentSlot = s;
+                s.orb = this.orbArray[row][col];
+
+
             }
         }
     }
 
 
-    getNumericModel(){
+    getNumericModel() {
 
         let model = new Array(this.BOARD_HEIGHT);
 
@@ -339,25 +338,36 @@ class Board extends Phaser.GameObjects.GameObject {
 
     }
 
-    destoryBoard(){
+    destoryBoard() {
 
         for (let row = 0; row < this.BOARD_HEIGHT; row++) {
             for (let col = 0; col < this.BOARD_WIDTH; col++) {
                 let o = this.orbArray[row][col];
                 let o2 = this.skyfallArray[row][col];
-                if(o2 != null){
+                if (o2 != null) {
                     o2.destroyOrb();
                 }
-                if(o != null){
+                if (o != null) {
                     o.destroyOrb();
                 }
-                this.orbSlotArray[row][col].destroy();  
+                this.orbSlotArray[row][col].destroy();
             }
         }
         this.scene.events.off("swapOrbs");
         this.scene.events.off("solveBoard");
         this.destroy();
 
+    }
+
+
+    cloneOrbArray() {
+
+        const clone = [];
+        let arr = this.getNumericModel();
+        for (let i = 0; i < arr.length; i++) {
+            clone[i] = arr[i].slice();
+        }
+        return clone;
     }
 
 }
