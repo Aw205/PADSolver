@@ -22,6 +22,7 @@ class BoardScene extends Phaser.Scene {
         this.createOrbPalette();
         this.createStatMenu();
         this.createPathButtons();
+        this.createBoardImageProcessor();
 
     }
 
@@ -66,116 +67,20 @@ class BoardScene extends Phaser.Scene {
             <option value="Bicolor">Bicolor</option>
             <option value="Tricolor">Tricolor</option>
         </select> <br>
-        <button id= "load-button" style="background-color: gray; margin-top: 20px; font: 20px kreon;"> Load </button>
+        <button id= "load-button" style="background-color: gray; margin-top: 20px; font: 20px kreon;"> Load </button> <br>
+        <label class="custom-file-upload">
+            <input id="upload-button" type="file" accept="image/*" /> Upload Screenshot
+        </label>
         </div>
         </details>
         </div>`;
 
         this.add.dom(100, 250).createFromHTML(html);
 
-        const input = document.getElementById("upload");
-        input.addEventListener("change", () => {
-            console.log("working");
-            let file = input.files;
-            let img_url = URL.createObjectURL(file[0]);
-            const img = new Image();
-            const canvas = document.getElementById("myCanvas");
-            const context = canvas.getContext('2d');
-            img.src = img_url;
-            img.onload = () => {
-                canvas.width = img.width;
-                canvas.height = img.height / 2;
-                context.drawImage(img, 0, canvas.height, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
-                let imgData = context.getImageData(0, 0, canvas.width, canvas.height);
-                let data = imgData.data;
-                let i = 0;
-
-                let board_start = 0;
-                let board_end = 0;
-
-                while (i < data.length && board_end == 0) {
-                    const r = data[i];
-                    const g = data[i+1];
-                    const b = data[i+2];
-                    if (r == 51 && g == 33 && b == 34 && board_start == 0) {
-                        board_start = i;
-                    }
-                    if (r == 0 && g == 0 && b == 0 && board_start != 0) {
-                        board_end = i;
-                    }
-                    i += 4;
-                }
-                
-                let board_width = (board_end - board_start) / 4;
-                let tile_length = Math.round((board_width / 6) - 0.1);
-
-                // let k = board_start + 2 * tile_length * canvas.width;
-                // for (let i = 0; i < 5; i++) {
-                    
-                //     for (let j = k; j < k + canvas.width * 4; j += 4) {
-                //         data[j] = 255;
-                //         data[j+1] = 255;
-                //         data[j+2] = 255;
-                //     }
-                //     k += 4 * tile_length * canvas.width;
-                // }
-                    
-                // let start = board_start + 2 * tile_length;
-                // for (let i = 0; i < canvas.height; i++) {
-                //     k = start;
-                //     for (let j = 0; j < 6; j++) {
-                //         data[k] = 255;
-                //         data[k+1] = 255;
-                //         data[k+2] = 255;
-                //         k += 4 * tile_length;
-                //     }
-                //     start += canvas.width * 4;
-                // }
-
-                let results = [];
-                let start = board_start + 2 * tile_length * canvas.width;
-                for (let i = 0; i < 5; i++) {
-                    let row = [];
-                    let k = start + 2 * tile_length;
-                    console.log(i+1);
-                    for (let j = 0; j < 6; j++) {
-                        
-                        const r = data[k];
-                        const g = data[k+1];
-                        const b = data[k+2];
-                        console.log(r,g,b);
-                        if (r >= 254) {
-                            row.push('F');
-                        } else if (b >= 254) {
-                            row.push('W');
-                        } else if (r < 100 && g > 200 && b < 250) {
-                            row.push('G');
-                        } else if (r > 100 && g > 200 && b < 250) {
-                            row.push('L');
-                        } else if (r < 210 && g < 210 && b < 210) {
-                            row.push('D');
-                        } else {
-                            row.push('H');
-                        }
-
-                        k += 4 * tile_length;
-                    }
-                    results.push(row);
-                    start += 4 * tile_length * canvas.width;
-                }   
-
-                this.board.setBoard(eval(results));
-                context.putImageData(imgData, 0, 0);
-            };
-            
-        });
-
         document.getElementById("load-button").addEventListener("pointerup", () => {
-
             if (!this.board.solveInProgress) {
                 let filename = document.getElementById("select1").value;
                 this.loadBoard(filename);
-
             }
         });
     }
@@ -222,7 +127,7 @@ class BoardScene extends Phaser.Scene {
         });
         document.getElementById("reset-button").addEventListener("pointerup", () => {
 
-            this.currPath.clear(true,true);
+            this.currPath.clear(true, true);
 
             if (this.board.prevBoard != null && !this.board.solveInProgress) {
                 this.board.setBoard(this.board.prevBoard);
@@ -232,7 +137,7 @@ class BoardScene extends Phaser.Scene {
 
         document.getElementById("solve-button").addEventListener("pointerup", () => {
 
-            
+
 
             function followPath(path) {
                 let curr = this.board.orbArray[path[0].x][path[0].y];
@@ -244,24 +149,24 @@ class BoardScene extends Phaser.Scene {
             if (!this.board.solveInProgress) {
 
                 document.getElementById("solve-button").classList.add("button--loading");
-                
+
                 setTimeout(() => {
-                   
+
                     this.board.solveInProgress = true;
 
                     this.board.prevBoard = this.board.cloneOrbArray();
                     let model = this.board.getNumericModel();
-    
+
                     let solver = new Solve(model);
-    
+
                     let res = solver.beamSearch();
                     document.getElementById("solve-button").classList.remove("button--loading");
 
-                    let path = res[1]; 
+                    let path = res[1];
                     this.updateStats(res);
-                  
+
                     this.createLinePath(path);
-    
+
                     if (path.length > 1) {
                         this.board.orbArray[path[0].x][path[0].y].setAlpha(0.5);
                         this.time.addEvent({
@@ -271,18 +176,18 @@ class BoardScene extends Phaser.Scene {
                             callbackScope: this,
                             repeat: path.length - 2,
                         });
-    
+
                         this.time.delayedCall(500 * (path.length + 1), this.board.solveBoard, null, this.board);
                     }
-                  }, 10);
-                
+                }, 10);
+
             }
         });
     }
 
 
     createLinePath(path) {
-       
+
         for (let i = 0; i < path.length - 1; i++) {
 
             let curr = this.board.orbArray[path[i].x][path[i].y];
@@ -372,7 +277,7 @@ class BoardScene extends Phaser.Scene {
     }
 
 
-    updateStats(result){
+    updateStats(result) {
 
         let cc = result[0];
         let path = result[1];
@@ -380,7 +285,7 @@ class BoardScene extends Phaser.Scene {
         let ne = result[3];
 
         document.getElementById("combo-count").getElementsByTagName("span")[0].textContent = cc;
-        document.getElementById("swap-count").getElementsByTagName("span")[0].textContent = path.length-1;
+        document.getElementById("swap-count").getElementsByTagName("span")[0].textContent = path.length - 1;
         document.getElementById("time-count").getElementsByTagName("span")[0].textContent = time + " ms";
         document.getElementById("explored-count").getElementsByTagName("span")[0].textContent = ne;
 
@@ -417,6 +322,107 @@ class BoardScene extends Phaser.Scene {
         document.getElementById("next-button").addEventListener("pointerup", () => {
         });
         document.getElementById("last-button").addEventListener("pointerup", () => {
+        });
+    }
+
+
+    createBoardImageProcessor() {
+
+        const input = document.getElementById("upload-button");
+        input.addEventListener("change", () => {
+            console.log("working");
+            let file = input.files;
+            let img_url = URL.createObjectURL(file[0]);
+            const img = new Image();
+            const canvas = document.getElementById("myCanvas");
+            const context = canvas.getContext('2d');
+            img.src = img_url;
+            img.onload = () => {
+                canvas.width = img.width;
+                canvas.height = img.height / 2;
+                context.drawImage(img, 0, canvas.height, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
+                let imgData = context.getImageData(0, 0, canvas.width, canvas.height);
+                let data = imgData.data;
+                let i = 0;
+
+                let board_start = 0;
+                let board_end = 0;
+
+                while (i < data.length && board_end == 0) {
+                    const r = data[i];
+                    const g = data[i + 1];
+                    const b = data[i + 2];
+                    if (r == 51 && g == 33 && b == 34 && board_start == 0) {
+                        board_start = i;
+                    }
+                    if (r == 0 && g == 0 && b == 0 && board_start != 0) {
+                        board_end = i;
+                    }
+                    i += 4;
+                }
+
+                let board_width = (board_end - board_start) / 4;
+                let tile_length = Math.round((board_width / 6) - 0.1);
+
+                // let k = board_start + 2 * tile_length * canvas.width;
+                // for (let i = 0; i < 5; i++) {
+
+                //     for (let j = k; j < k + canvas.width * 4; j += 4) {
+                //         data[j] = 255;
+                //         data[j+1] = 255;
+                //         data[j+2] = 255;
+                //     }
+                //     k += 4 * tile_length * canvas.width;
+                // }
+
+                // let start = board_start + 2 * tile_length;
+                // for (let i = 0; i < canvas.height; i++) {
+                //     k = start;
+                //     for (let j = 0; j < 6; j++) {
+                //         data[k] = 255;
+                //         data[k+1] = 255;
+                //         data[k+2] = 255;
+                //         k += 4 * tile_length;
+                //     }
+                //     start += canvas.width * 4;
+                // }
+
+                let results = [];
+                let start = board_start + 2 * tile_length * canvas.width;
+                for (let i = 0; i < 5; i++) {
+                    let row = [];
+                    let k = start + 2 * tile_length;
+                    console.log(i + 1);
+                    for (let j = 0; j < 6; j++) {
+
+                        const r = data[k];
+                        const g = data[k + 1];
+                        const b = data[k + 2];
+                        console.log(r, g, b);
+                        if (r >= 254) {
+                            row.push(0);
+                        } else if (b >= 254) {
+                            row.push(1);
+                        } else if (r < 100 && g > 200 && b < 250) {
+                            row.push(2);
+                        } else if (r > 100 && g > 200 && b < 250) {
+                            row.push(3);
+                        } else if (r < 210 && g < 210 && b < 210) {
+                            row.push(4);
+                        } else {
+                            row.push(5);
+                        }
+
+                        k += 4 * tile_length;
+                    }
+                    results.push(row);
+                    start += 4 * tile_length * canvas.width;
+                }
+
+                this.board.setBoard(eval(results));
+                context.putImageData(imgData, 0, 0);
+            };
+
         });
     }
 }
