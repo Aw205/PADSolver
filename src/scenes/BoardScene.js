@@ -24,7 +24,8 @@ class BoardScene extends Phaser.Scene {
         this.createPathButtons();
         this.createBoardImageProcessor();
         this.createDepthSlider();
-
+        this.createBeamWidthSlider();
+        this.createIterationSlider();
     }
 
     createBoardSelectMenu() {
@@ -159,8 +160,9 @@ class BoardScene extends Phaser.Scene {
                     let model = this.board.getNumericModel();
 
                     const depth = parseInt(document.getElementById("depthSlider").value);
-
-                    let solver = new Solve(model, depth);
+                    const beamWidth = parseInt(document.getElementById("beamWidthSlider").value);
+                    const numIterations = parseInt(document.getElementById("iterationSlider").value);
+                    let solver = new Solve(model, depth,beamWidth,numIterations);
 
                     let res = solver.beamSearch();
                     document.getElementById("solve-button").classList.remove("button--loading");
@@ -431,17 +433,62 @@ class BoardScene extends Phaser.Scene {
 
     createDepthSlider() {
         let html = `
-            <label for="depthSlider" style="font: 32px kreon; color: DarkGrey; user-select: none; display: inline-block; padding: 50px;">Depth:</label>
-            <input type="range" id="depthSlider" name="depthSlider" min="1" max="12" value="8" step="1">
-            <span id="sliderValue" style="color: DarkGrey; font-size: 25px;">8</span>
+            <div style="padding: 50px; display: inline-block;">
+                <label for="depthSlider" style="font: 32px kreon; color: DarkGrey; user-select: none;">Depth:</label>
+            </div>
+            <div style="display: inline-block;">
+                <input type="range" id="depthSlider" name="depthSlider" min="6" max="12" value="8" step="1">
+                <span id="depthValue" style="color: DarkGrey; font-size: 25px;">8</span>
+            </div>
         `;
 
-        this.add.dom(120, 500).createFromHTML(html);
+        this.add.dom(620, 730).createFromHTML(html);
 
-        const slider = document.getElementById("depthSlider");
-        const sliderValueDisplay = document.getElementById("sliderValue");
-        slider.oninput = function() {
-            sliderValueDisplay.textContent = this.value;
+        const depthSlider = document.getElementById("depthSlider");
+        const depthValueDisplay = document.getElementById("depthValue");
+        depthSlider.oninput = function() {
+            depthValueDisplay.textContent = this.value;
+        }
+    }
+
+    createBeamWidthSlider() {
+        let html = `
+            <div style="padding: 50px; display: inline-block;">
+                <label for="beamWidthSlider" style="font: 32px kreon; color: DarkGrey; user-select: none;">Beam Width:</label>
+            </div>
+            <div style="display: inline-block;">
+                <input type="range" id="beamWidthSlider" name="beamWidthSlider" min="2" max="10" value="5" step="1">
+                <span id="beamValue" style="color: DarkGrey; font-size: 25px;">5</span>
+            </div>
+        `;
+
+        this.add.dom(620, 800).createFromHTML(html);
+
+        const beamSlider = document.getElementById("beamWidthSlider");
+        const beamValueDisplay = document.getElementById("beamValue");
+        beamSlider.oninput = function() {
+            beamValueDisplay.textContent = this.value;
+        }
+    }
+
+    createIterationSlider() {
+        let html = `
+            <div style="padding: 50px; display: inline-block;">
+                <label for="iterationSlider" style="font: 32px kreon; color: DarkGrey; user-select: none;">Num Iterations:</label>
+            </div>
+            <div style="display: inline-block;">
+                <input type="range" id="iterationSlider" name="iterationSlider" min="6" max="12" value="8" step="1">
+                <span id="iterationValue" style="color: DarkGrey; font-size: 25px;">8</span>
+            </div>
+        `;
+
+        this.add.dom(620, 870).createFromHTML(html);
+
+        const iterationSlider = document.getElementById("iterationSlider");
+        const iterationValueDisplay = document.getElementById("iterationValue");
+        iterationSlider.oninput = function() {
+            console.log("")
+            iterationValueDisplay.textContent = this.value;
         }
     }
 }

@@ -22,8 +22,8 @@
   right: 6px;
   bottom: 0;
   background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 .slider:before {
@@ -34,19 +34,19 @@
   left: 1px;
   bottom: 0px;
   background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
-input:checked+.slider {
-  background-color: #2196F3;
+input:checked + .slider {
+  background-color: #2196f3;
 }
 
-input:focus+.slider {
-  box-shadow: 0 0 1px #2196F3;
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196f3;
 }
 
-input:checked+.slider:before {
+input:checked + .slider:before {
   -webkit-transform: translateX(26px);
   -ms-transform: translateX(26px);
   transform: translateX(26px);
@@ -75,7 +75,6 @@ input:checked+.slider:before {
 }
 
 .palette-button {
-
   background-color: transparent;
   border: none;
   outline: none;
@@ -83,15 +82,15 @@ input:checked+.slider:before {
   cursor: pointer;
 }
 
-.palette-button:hover{
+.palette-button:hover {
   scale: 1.3;
 }
 
-.palette-cursor{
+.palette-cursor {
   transform: scale(0.5);
 }
 
-select{
+select {
   background-color: gray;
   outline: none;
 }
@@ -105,7 +104,7 @@ select{
 }
 
 .path-button:hover {
-  background-color: rgb(30,30,30);
+  background-color: rgb(30, 30, 30);
 }
 
 #settings-detail[open] img {
@@ -135,10 +134,10 @@ select{
 
 @keyframes button-loading-spinner {
   from {
-      transform: rotate(0turn);
+    transform: rotate(0turn);
   }
   to {
-      transform: rotate(1turn);
+    transform: rotate(1turn);
   }
 }
 
@@ -149,10 +148,13 @@ input[type="file"] {
 .custom-file-upload {
   color: black;
   font: 20px kreon;
-  margin-top: 20px; 
+  margin-top: 20px;
   background-color: gray;
   display: inline-block;
   padding: 6px 12px;
   cursor: pointer;
+}
 
+input[type="range"] {
+  cursor: pointer;
 }

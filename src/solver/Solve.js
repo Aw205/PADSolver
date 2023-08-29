@@ -1,12 +1,12 @@
 class Solve {
 
-    constructor(board, depth) {
+    constructor(board, depth, beamWidth, numIterations) {
 
         this.boardModel = new BoardModel(board);
         this.transpositionTable = new Map();
-        this.DEPTH_LIMIT = depth;
-        this.BEAM_WIDTH = 5;
-        this.NUM_ITERATIONS = 8;
+        this.DEPTH_LIMIT = depth; // 8 by default
+        this.BEAM_WIDTH = beamWidth; // 5 by default
+        this.NUM_ITERATIONS = numIterations; // 8 by default
         this.count = 0;
         this.selectedType = -1;
 
