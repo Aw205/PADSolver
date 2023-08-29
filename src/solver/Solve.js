@@ -4,7 +4,7 @@ class Solve {
 
         this.boardModel = new BoardModel(board);
         this.transpositionTable = new Map();
-        this.DEPTH_LIMIT = 10;
+        this.DEPTH_LIMIT = depth;
         this.BEAM_WIDTH = 5;
         this.NUM_ITERATIONS = 8;
         this.count = 0;

@@ -23,6 +23,7 @@ class BoardScene extends Phaser.Scene {
         this.createStatMenu();
         this.createPathButtons();
         this.createBoardImageProcessor();
+        this.createDepthSlider();
 
     }
 
@@ -157,7 +158,9 @@ class BoardScene extends Phaser.Scene {
                     this.board.prevBoard = this.board.cloneOrbArray();
                     let model = this.board.getNumericModel();
 
-                    let solver = new Solve(model);
+                    const depth = parseInt(document.getElementById("depthSlider").value);
+
+                    let solver = new Solve(model, depth);
 
                     let res = solver.beamSearch();
                     document.getElementById("solve-button").classList.remove("button--loading");
@@ -424,6 +427,22 @@ class BoardScene extends Phaser.Scene {
             };
 
         });
+    }
+
+    createDepthSlider() {
+        let html = `
+            <label for="depthSlider" style="font: 32px kreon; color: DarkGrey; user-select: none; display: inline-block; padding: 50px;">Depth:</label>
+            <input type="range" id="depthSlider" name="depthSlider" min="1" max="12" value="8" step="1">
+            <span id="sliderValue" style="color: DarkGrey; font-size: 25px;">8</span>
+        `;
+
+        this.add.dom(120, 500).createFromHTML(html);
+
+        const slider = document.getElementById("depthSlider");
+        const sliderValueDisplay = document.getElementById("sliderValue");
+        slider.oninput = function() {
+            sliderValueDisplay.textContent = this.value;
+        }
     }
 }
 
