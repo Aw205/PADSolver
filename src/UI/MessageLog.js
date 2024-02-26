@@ -15,12 +15,7 @@ class MessageLog {
     }
 
     create() {
-
-
-
-
-        let map
-
+        
         let chat = document.getElementById("chat-box");
         this.scene.events.on("message log", (type,message) => {
             let ts = this.getTimestamp();

@@ -33,15 +33,9 @@ body{
 }
 
 .palette-button:hover {
-.palette-button:hover {
   scale: 1.3;
 }
 
-/* .palette-cursor {
-  transform: scale(0.5);
-} */
-
-select {
 select {
   background-color: gray;
   outline: none;
