@@ -1,7 +1,7 @@
 
 class Solve {
 
-    constructor(board, depth) {
+    constructor(board, depth, beamWidth, numIterations) {
 
         this.boardModel = new BoardModel(board);
         this.transpositionTable = new Map();
