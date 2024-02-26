@@ -7,6 +7,7 @@ class BoardModel {
         this.WIDTH = 6;
 
         this.orbs = board;
+        this.comboColors = null;
 
         this.visited = new Array(this.HEIGHT);
         for (let i = 0; i < this.HEIGHT; i++) {
@@ -18,22 +19,27 @@ class BoardModel {
 
         let clone = this.orbs.map(row => [...row]);
 
-        let totalCombos = 0;
-        let currentCombos = 1;
+        let comboList = [];
+        let currentCombos = -1;
 
         while (currentCombos != 0) {
             this.resetVisited();
-            currentCombos = this.findCombos(clone);
-            totalCombos += currentCombos;
-            this.simulateGravity(clone,currentCombos);
+            let newCombos = this.findCombos(clone);
+            currentCombos = newCombos.length;
+            comboList = comboList.concat(newCombos);
+            this.simulateGravity(clone, currentCombos);
         }
-        return totalCombos;
+        return comboList;
     }
 
-
+    /**
+     * 
+     * @param {*} arr array of integers representing board
+     * @returns list of combos
+     */
     findCombos(arr) {
 
-        let comboList = [];
+        let returnList = [];
 
         for (let row = 0; row < this.HEIGHT; row++) {
             for (let col = 0; col < this.WIDTH; col++) {
@@ -43,24 +49,25 @@ class BoardModel {
 
                 if (type != -1 && !this.visited[row][col]) {
                     this.visited[row][col] = true;
-                    this.floodfill(arr,row, col, type, comboSet);
+                    this.floodfill(arr, row, col, type, comboSet);
                 }
 
                 for (let pos of comboSet) {
                     arr[pos[0]][pos[1]] = -1;
                 }
                 if (comboSet.size > 2) {
-                    comboList.push(comboSet);
+                    let comboInfo = { color: type, number: comboSet.size };
+                    returnList.push(comboInfo);
                 }
 
             }
         }
 
-        return comboList.length;
+        return returnList;
     }
 
 
-    floodfill(arr,row, col, type, comboSet) {
+    floodfill(arr, row, col, type, comboSet) {
 
         let adj_arr = [];
         let matches = [[], []]; //horizontal and vertical matches
@@ -80,7 +87,7 @@ class BoardModel {
         }
         for (let pos of adj_arr) {
             this.visited[pos[0]][pos[1]] = true;
-            this.floodfill(arr,pos[0], pos[1], type, comboSet);
+            this.floodfill(arr, pos[0], pos[1], type, comboSet);
         }
         for (let m of matches) {
             if (m.length == 2) {
@@ -93,9 +100,9 @@ class BoardModel {
     }
 
 
-    simulateGravity(arr,currentCombos) {
+    simulateGravity(arr, currentCombos) {
 
-        if(currentCombos == 0){
+        if (currentCombos == 0) {
             return;
         }
 
@@ -149,19 +156,16 @@ class BoardModel {
     }
 
 
-    getStaticEvaluation(){
+    getStaticEvaluation() {
 
         comboList = [];
+        //orb proximity
 
         for (let i = 0; i < this.HEIGHT; i++) {
             for (let j = 0; j < this.WIDTH; j++) {
-                
 
             }
         }
-
-
-
     }
 
 }

@@ -1,3 +1,4 @@
+
 class Solve {
 
     constructor(board, depth) {
@@ -5,69 +6,102 @@ class Solve {
         this.boardModel = new BoardModel(board);
         this.transpositionTable = new Map();
         this.DEPTH_LIMIT = 10;
-        this.BEAM_WIDTH = 5;
+        this.BEAM_WIDTH = 15;
         this.NUM_ITERATIONS = 8;
         this.count = 0;
         this.selectedType = -1;
-
     }
 
+    /**
+     * Where the solve starts. 
+     * 
+     * @returns {Solution} solution -- combo List, path list
+     */
     beamSearch() {
 
         const timeStart = performance.now();
 
-        let successorSolutions =  this.initialSearch();
+        let searchedSolutions = [];
+
+        let successorSolutions = this.initialSearch();
+        //console.log("successor solutions length: " + successorSolutions.length);
 
         for (let i = 0; i < this.NUM_ITERATIONS; i++) {
+
             successorSolutions.sort((a, b) => {
-                if (a[0] == b[0]) {
-                    return b[1].length - a[0].length;
+                if (a.comboList.length == b.comboList.length) {
+                    return a.path.length - b.path.length;
                 }
-                return b[0] - a[0];
+                return b.comboList.length - a.comboList.length;
             });
 
-            successorSolutions = successorSolutions.slice(0, this.BEAM_WIDTH);
+            // successorSolutions.forEach((e) =>{
+            //     console.log("combos: " + e.comboList.length + " path length: " + e.path.length);
+            // });
+            // console.log("------------------------------------");
+
+            //successorSolutions = successorSolutions.slice(0, this.BEAM_WIDTH);
+
+            //need to remove solutions that we searched through already
 
             for (let j = 0; j < this.BEAM_WIDTH; j++) {
 
-                let path = successorSolutions[j][1];
+                let sol = successorSolutions.shift();
+                let path = sol.path;
+                searchedSolutions.push(sol);
 
-                if(path.length < 2){
+                if (path.length < 2) {
                     continue;
                 }
                 this.updateBoard(path);
 
                 let currentPos = new Phaser.Math.Vector2(path[path.length - 1].x, path[path.length - 1].y);
                 let prevPos = new Phaser.Math.Vector2(path[path.length - 2].x, path[path.length - 2].y);
-                let cc = this.boardModel.calcCombos();
+                let comboList = this.boardModel.calcCombos();
 
                 this.selectedType = this.boardModel.orbs[currentPos.x][currentPos.y];
 
-                let solutions = this.search(this.boardModel, prevPos, currentPos, cc, 0); 
+                let solutions = this.search(this.boardModel, prevPos, currentPos, comboList, 0);
 
                 this.updateBoard(path.toReversed());
 
                 for (let s of solutions) {
-                    s[1] = [...path, ...s[1]];
+                    s.path = [...path, ...s.path];
                 }
 
                 successorSolutions.push(...solutions);
             }
         }
 
-        let bestSolution = successorSolutions.reduce((max, current) => {
-            if (current[0] == max[0]) {
-                return current[1].length < max[1].length ? current : max;
+        searchedSolutions.push(...successorSolutions);
+        searchedSolutions.sort((a, b) => {
+            if (a.comboList.length == b.comboList.length) {
+                return a.path.length - b.path.length;
             }
-            return current[0] > max[0] ? current : max;
+            return b.comboList.length - a.comboList.length;
         });
+
+        let bestSolution = searchedSolutions[0];
+
+        console.log("searched solutions best: combos: " + bestSolution.comboList.length + "path: " + bestSolution.path.length );
+
+         //bestSolution = successorSolutions[0];
+
+        // let bestSolution = successorSolutions.reduce((max, current) => {
+        //     if (current[0] == max[0]) {
+        //         return current[1].length < max[1].length ? current : max;
+        //     }
+        //     return current[0] > max[0] ? current : max;
+        // });
 
         const timeEnd = performance.now();
         const timeElapsed = timeEnd - timeStart;
-        return [bestSolution[0], bestSolution[1], timeElapsed, this.count]; 
+
+        console.log("Total search time: " + timeElapsed);
+
+        return { solution: bestSolution, solutionList: searchedSolutions };
 
     }
-
 
     /**
      * Starts a search from every position on the board.
@@ -77,7 +111,7 @@ class Solve {
     initialSearch() {
 
         let results = [];
-        let numCombos = this.boardModel.calcCombos();
+        let comboList = this.boardModel.calcCombos();
 
         for (let row = 0; row < 5; row++) {
             for (let col = 0; col < 6; col++) {
@@ -85,9 +119,9 @@ class Solve {
                 let currentPos = new Phaser.Math.Vector2(row, col);
                 let prevPos = new Phaser.Math.Vector2(row, col);
                 this.selectedType = this.boardModel.orbs[row][col];
-                let res = this.search(this.boardModel, prevPos, currentPos, numCombos, 0);
-                for(let r of res){
-                    r[1].unshift(currentPos);
+                let res = this.search(this.boardModel, prevPos, currentPos, comboList, 0);
+                for (let r of res) {
+                    r.path.unshift(currentPos);
                 }
                 results.push(...res);
             }
@@ -96,7 +130,9 @@ class Solve {
         return results;
     }
 
-    search(board, prevPos, currentPos, currentCombos, depth) {
+
+    // return value is solution in the form [combo count, [path]]
+    search(board, prevPos, currentPos, comboList, depth) {
 
         this.count++;
 
@@ -107,26 +143,26 @@ class Solve {
             this.transpositionTable.set(hash, depth);
         }
         else if (hashRes != undefined) {
-            if(depth == 0){
-                console.log("depth is zero");
-                return [[0,[]]];
+            if (depth == 0) {
+                return [new Solution([], [])];
             }
-            return [0, []];
+            return new Solution([], []);
         }
         if (this.selectedType != board.orbs[prevPos.x][prevPos.y]) {
-            let newCombos = board.calcCombos();
-            if (newCombos < currentCombos - 2) {
-                return [newCombos, [currentPos]];
+
+            let newComboList = board.calcCombos();  
+            if (newComboList.length < comboList.length - 2) {
+                return new Solution(newComboList, [currentPos]);
             }
-            currentCombos = newCombos;
+            comboList = newComboList;
         }
 
-        if (currentCombos == 0 && depth > 2) {
-            return [0, [currentPos]];
+        if (comboList.length == 0 && depth > 2) {
+            return new Solution([], [currentPos]);
         }
 
         if (depth == this.DEPTH_LIMIT) {
-            return [currentCombos, [currentPos]];
+            return new Solution(comboList, [currentPos]);
         }
 
         let moves = [];
@@ -134,36 +170,39 @@ class Solve {
         for (let m of this.getValidMoves(prevPos, currentPos)) {
 
             board.swapOrbs(currentPos, m);
-            moves.push(this.search(board, currentPos, m, currentCombos, depth + 1));
+            moves.push(this.search(board, currentPos, m, comboList, depth + 1));
             board.swapOrbs(currentPos, m);
         }
 
         if (depth == 0) {
+            
+            // if none of the moves are better than current solution then return nothing
             return moves; //successors for beam
         }
 
         let bestMove = moves.reduce((max, current) => {
-            if (current[0] == max[0]) {
-                return current[1].length < max[1].length ? current : max;
+            if (current.comboList.length == max.comboList.length) {
+                return current.path.length < max.path.length ? current : max;
             }
-            return current[0] > max[0] ? current : max;
+            return current.comboList.length > max.comboList.length ? current : max;
         });
 
-        if (bestMove[0] <= currentCombos) {
+        if (bestMove.comboList.length <= comboList.length) {
             this.transpositionTable.set(hash, depth);
-            return [currentCombos, [currentPos]];
+            return new Solution(comboList, [currentPos]);
         }
 
-        let path = [currentPos, ...bestMove[1]];
+        let path = [currentPos, ...bestMove.path];
         this.transpositionTable.set(hash, depth);
-        return [bestMove[0], path];
 
+        return new Solution(bestMove.comboList, path);
     }
 
     getValidMoves(prevPos, currentPos) {
 
+
         let moves = [];
-        let x = [-1, 0, 1, 0];
+        let x = [-1, 0, 1, 0]; // -1,0 0,1 1,0 0,-1
         let y = [0, 1, 0, -1];
 
         for (let i = 0; i < 4; i++) {
@@ -189,4 +228,52 @@ class Solve {
         }
     }
 
+
+    test() {
+        //generate random boards
+        // solve and collect stats on random boards
+
+        let combos = 0;
+        let iters= 1;
+
+
+        for (let i = 0; i < iters; i++) {
+
+            const arr = [];
+            for (let i = 0; i < 5; i++) {
+                arr[i] = [];
+                for (let j = 0; j < 6; j++) {
+                    arr[i][j] = Phaser.Math.Between(0, 5);
+                }
+            }
+
+            this.boardModel.orbs = arr;
+            let res = this.beamSearch();
+            let num = res.solution.comboList.length
+            combos+= num;
+
+            console.log("combos: " + num +" path length: " + res.solution.path.length);
+        }
+
+        console.log("Average combos: " + combos/iters);
+
+    }
+
 }
+
+class Solution {
+
+    /**
+     * @param {*} comboList 
+     * @param {*} path 
+     */
+
+    constructor(comboList, path) {
+
+        this.comboList = comboList;
+        this.path = path;
+    }
+
+}
+
+

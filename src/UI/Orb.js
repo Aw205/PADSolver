@@ -17,7 +17,7 @@ class Orb extends Phaser.GameObjects.Image {
     constructor(scene, x, y, row, col, texture) {
         super(scene, x, y, texture);
 
-        this.type = null;
+        this.type = null; //number
 
         this.row = row;
         this.col = col;
@@ -109,8 +109,8 @@ class Orb extends Phaser.GameObjects.Image {
 
     addFirstSwapListener() {
         this.once("dragleave", (pointer, target) => {
-            this.scene.board.prevBoard = this.scene.board.cloneOrbArray();
             this.hasSwapped = true;
+            this.scene.board.prevBoard = this.scene.board.getNumericModel();
         });
     }
 

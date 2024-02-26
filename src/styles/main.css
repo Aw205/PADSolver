@@ -1,97 +1,46 @@
-/* The switch - the box around the slider */
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  /* height: 34px; */
-}
-
-/* Hide default HTML checkbox */
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-/* The slider */
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 6px;
-  bottom: 0;
-  background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 1px;
-  bottom: 0px;
-  background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
-}
-
-input:checked+.slider {
-  background-color: #2196F3;
-}
-
-input:focus+.slider {
-  box-shadow: 0 0 1px #2196F3;
-}
-
-input:checked+.slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
-}
-
-/* Rounded sliders */
-.slider.round {
-  border-radius: 34px;
-}
-
-.slider.round:before {
-  border-radius: 50%;
-}
+body{
+  overflow: hidden;
+ }
 
 .default-button {
+
   font: 32px kreon;
-  color: black;
-  border-radius: 2px;
-  background-color: Gray;
+  color: darkgray;
+  border-radius: 10px;
+  background-color: rgb(30, 30, 30);
   cursor: pointer;
   position: relative;
+
 }
 
 .default-button:active {
-  background-color: darkgray;
+  border-color: goldenrod;
 }
 
 .palette-button {
 
-  background-color: transparent;
-  border: none;
-  outline: none;
-  padding: 1px;
+  user-select: none;
+  opacity: 0.5;
   cursor: pointer;
+  transition: scale 0.2s;
 }
 
-.palette-button:hover{
+.palette-active {
+
+  scale: 1.3;
+  opacity: 1;
+
+}
+
+.palette-button:hover {
   scale: 1.3;
 }
 
-.palette-cursor{
+/* .palette-cursor {
   transform: scale(0.5);
-}
+} */
 
-select{
+select {
   background-color: gray;
   outline: none;
 }
@@ -102,14 +51,12 @@ select{
   border-radius: 10px;
   padding: 2px 20px 2px 20px;
   background-color: transparent;
+  color: gray;
+  font-size: 2rem;
 }
 
 .path-button:hover {
-  background-color: rgb(30,30,30);
-}
-
-#settings-detail[open] img {
-  transform: rotate(90deg);
+  background-color: rgb(35, 35, 35);
 }
 
 .button--loading::after {
@@ -123,22 +70,23 @@ select{
   bottom: 0;
   margin: auto;
   border: 4px solid transparent;
-  border-top-color: black;
+  border-top-color: darkgray;
   border-radius: 50%;
   animation: button-loading-spinner 1s ease infinite;
 }
 
-.button--loading > span {
+.button--loading>span {
   visibility: hidden;
   opacity: 0;
 }
 
 @keyframes button-loading-spinner {
   from {
-      transform: rotate(0turn);
+    transform: rotate(0turn);
   }
+
   to {
-      transform: rotate(1turn);
+    transform: rotate(1turn);
   }
 }
 
@@ -149,10 +97,628 @@ input[type="file"] {
 .custom-file-upload {
   color: black;
   font: 20px kreon;
-  margin-top: 20px; 
+  margin-top: 20px;
   background-color: gray;
   display: inline-block;
   padding: 6px 12px;
   cursor: pointer;
 
 }
+
+#github-link .git-img {
+
+  position: fixed;
+  bottom: 0;
+  cursor: pointer;
+}
+
+.orbs-matched {
+  display: flex;
+  align-items: center;
+  padding: 0.8rem 0.8rem 0.8rem 0px;
+  font: 1rem kreon;
+  color: lightsteelblue;
+  border-radius: 10px;
+  user-select: none;
+  cursor: pointer;
+  overflow: auto;
+
+}
+
+.orbs-matched::-webkit-scrollbar-thumb {
+  background: rgb(60, 60, 60);
+  border-radius: 10px;
+
+}
+
+.orbs-matched::-webkit-scrollbar {
+  background: rgb(30, 30, 30);
+  height: 0.7rem;
+}
+
+.orbs-matched:hover {
+  background-color: rgb(40, 40, 40);
+}
+
+.path-select {
+
+  border-left: solid 5px darkgoldenrod;
+  background-color: rgb(40, 40, 40);
+}
+
+@keyframes wiggle {
+  0% {
+    transform: rotate(10deg);
+  }
+
+  25% {
+    transform: rotate(-10deg);
+  }
+
+  50% {
+    transform: rotate(20deg);
+  }
+
+  75% {
+    transform: rotate(-5deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+#bastet-logo:hover {
+  animation-name: wiggle;
+  animation-duration: 1000ms;
+  animation-iteration-count: 1;
+  animation-timing-function: ease-in-out;
+}
+
+#logo-container {
+
+  position: relative;
+  height: 100%;
+  border-radius: 10px;
+  color: rgb(160, 170, 160);
+  font: 24px kreon;
+  width: 100%;
+  border-top: solid green;
+  border-left: solid green;
+  display: flex;
+  align-items: center;
+  user-select: none;
+}
+
+.settings-dialog {
+
+  background-color: rgb(30, 30, 30);
+  color: darkgray;
+  border-radius: 10px;
+  border: 2px solid rgb(40, 40, 40);
+  font: 32px kreon;
+  width: 50%;
+  height: 85%;
+
+}
+
+.settings-dialog button {
+
+  background-color: rgb(20, 20, 20);
+  color: darkgray;
+  font: 32px kreon;
+  border: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  margin-right: -1%;
+  transition: 0.3s;
+}
+
+.edit-board-button {
+  background-color: rgb(30, 30, 30);
+  color: darkgray;
+  border-top: none;
+  border-bottom: none;
+  border-right: none;
+  border-left: 2px solid gray;
+  cursor: pointer;
+
+  font: 1rem kreon;
+}
+
+.active {
+
+  border-left-color: goldenrod;
+  filter: brightness(0.8);
+
+}
+
+.tab-content {
+  display: none;
+  outline: none;
+  width: 100%;
+  height: 100%;
+  /* padding-top: 5%;
+  border: 2px solid red;
+  font: 24px kreon; */
+}
+
+
+.settings-dialog button.active {
+  background-color: rgb(40, 40, 40);
+}
+
+.make-transparent {
+  opacity: 0.3;
+}
+
+.close {
+  font-size: 3rem;
+  font-weight: 600;
+}
+
+.settings-dialog::backdrop {
+  background-image: linear-gradient(45deg,
+      rgb(20, 20, 20),
+      rgb(40, 40, 40));
+  opacity: 0.55;
+}
+
+.slid {
+  appearance: none;
+  border-radius: 10px;
+  width: 500px;
+  height: 10px;
+  opacity: 0.5;
+  transition: opacity .2s;
+
+}
+
+.slid:hover {
+  opacity: 1;
+}
+
+.slid::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  zoom: 0.4;
+}
+
+.fire-slider {
+  background: lightcoral;
+}
+
+.water-slider {
+  background: lightblue;
+}
+
+.wood-slider {
+  background: lightgreen;
+}
+
+.dark-slider {
+  background: plum;
+}
+
+.light-slider {
+  background: palegoldenrod;
+}
+
+.heart-slider {
+  background: lightpink;
+}
+
+.fire-slider::-webkit-slider-thumb {
+  background: url('../../assets/UI/Fire.svg');
+}
+
+.water-slider::-webkit-slider-thumb {
+  background: url('../../assets/UI/Water.svg');
+}
+
+.wood-slider::-webkit-slider-thumb {
+  background: url('../../assets/UI/Wood.svg');
+}
+
+.dark-slider::-webkit-slider-thumb {
+  background: url('../../assets/UI/Dark.svg');
+}
+
+.light-slider::-webkit-slider-thumb {
+  background: url('../../assets/UI/Light.svg');
+}
+
+.heart-slider::-webkit-slider-thumb {
+  background: url('../../assets/UI/Heart.svg');
+}
+
+.sidebar-button {
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 5%;
+  padding: 5%;
+  font: 1.5rem kreon;
+  color: gray;
+  user-select: none;
+  cursor: pointer;
+}
+
+.sidebar-button:hover {
+
+  background-color: rgb(47, 46, 46);
+}
+
+#show-dialog-button:hover img {
+  transform: rotate(90deg);
+}
+
+#loadBoardCanvas {
+  image-rendering: pixelated;
+}
+
+*:focus {
+  outline: none;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  font: 1rem kreon;
+  background-color: rgb(20, 20, 20);
+  color: darkgray;
+  text-align: center;
+  padding: 5px 0;
+  width: 6rem;
+  border-radius: 6px;
+  border: 1px solid gray;
+  right: 110%;
+  top: 20%;
+
+  user-select: none;
+  position: absolute;
+  opacity: 0;
+}
+
+.tooltip .right-tooltiptext {
+  left: 110%;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+  transition: opacity 0.2s ease-in 0.2s;
+  opacity: 1;
+}
+
+.tooltip .tooltiptext::after {
+  content: " ";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent gray;
+
+}
+
+.icon-button {
+
+  cursor: pointer;
+  color: gray;
+  font-size: 2rem;
+  padding: 0.5rem;
+  border-radius: 10px;
+
+}
+
+.icon-button:hover {
+  background-color: rgb(35, 35, 35);
+
+
+}
+
+.button-activate {
+  color: darkgoldenrod;
+
+}
+
+.close-button {
+  position: absolute;
+  right: 5%;
+  background-color: transparent;
+}
+
+.save-modal {
+
+  background-color: rgb(30, 30, 30);
+  color: darkgray;
+  border-radius: 10px;
+  border: 2px solid rgb(40, 40, 40);
+
+}
+
+.save-modal::backdrop {
+  background-image: linear-gradient(45deg,
+      rgb(20, 20, 20),
+      rgb(40, 40, 40));
+  opacity: 0.55;
+}
+
+.save-modal button {
+
+  cursor: pointer;
+  color: beige;
+  border: none;
+  font: 2rem kreon;
+  border-radius: 10px;
+
+}
+
+.save-modal button:hover {
+
+  filter: brightness(1.2);
+
+}
+
+.search-bar {
+
+  background-color: black;
+  font: 1rem kreon;
+  color: beige;
+  border-radius: 10px 0 0 10px;
+  border: 1px solid darkGray;
+}
+
+.search-button {
+
+  cursor: pointer;
+  color: darkGray;
+  background-color: black;
+  font-size: 1rem;
+  border-radius: 0 10px 10px 0;
+  border: 1px solid darkgray;
+  border-left: none;
+  padding: 1%;
+
+}
+
+.search-button:hover {
+
+  filter: brightness(1.2);
+}
+
+.load-modal {
+
+  background-color: rgb(30, 30, 30);
+  color: darkgray;
+  border-radius: 10px;
+  border: 2px solid rgb(40, 40, 40);
+  font: 3rem kreon;
+  width: 60%;
+  height: 85%;
+
+}
+
+.load-modal button {
+
+  color: darkgray;
+  font: 3rem kreon;
+  border: none;
+  cursor: pointer;
+}
+
+#thumbnail-grid {
+
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 5%;
+  padding-top: 5%;
+  padding-bottom: 5%;
+  height: 50%;
+  border-radius: 15px;
+  background-color: rgb(40, 40, 40);
+  overflow-y: auto;
+  justify-items: center;
+  border: 0.4rem outset rgba(61, 61, 53, 0.54);
+}
+
+#thumbnail-grid::-webkit-scrollbar-thumb {
+  background: rgb(60, 60, 60);
+  border-radius: 10px;
+
+}
+
+#thumbnail-grid::-webkit-scrollbar {
+  background: rgb(30, 30, 30);
+  width: 0.5rem;
+}
+
+.test {
+  border-radius: 20px;
+  background-color: rgb(35, 35, 35);
+  border: 0.5rem ridge;
+  aspect-ratio: 6/5;
+  width: 60%;
+  padding: 5%;
+  padding-bottom: 0px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.test-select {
+
+  background-color: black;
+}
+
+.test:hover {
+
+  transform: translateY(5%);
+}
+
+.thumbnail {
+  image-rendering: pixelated;
+  width: 100%;
+  height: auto;
+  display: block;
+  user-select: none;
+}
+
+.thumbnail-title {
+
+  text-align: center;
+  background-color: rgb(30, 30, 30);
+  border-radius: 10px;
+  font: 1rem kreon;
+  width: 90%;
+  position: relative;
+  top: -8%;
+  color: beige
+}
+
+#chat-header {
+
+  display: flex;
+  background-color: rgb(45, 45, 45);
+  height: 15%;
+  /* border: 1px solid dimgray; */
+  font: 1rem kreon;
+  color: gray;
+  align-items: center;
+  user-select: none;
+
+}
+
+#chat-box {
+
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(24, 24, 24);
+  border: 1px solid dimgray;
+  padding-top: 2%;
+  padding-left: 1%;
+  height: 85%;
+  font: 1rem kreon;
+  color: gray;
+  overflow-y: scroll;
+
+
+}
+
+.orb-change-button {
+
+
+  display: flex;
+  height: 30%;
+  align-items: center;
+  color: darkGray;
+  font-size: 4rem;
+  border-radius: 10px;
+  padding-bottom: 0.5rem;
+  background-color: rgb(30, 30, 30);
+  cursor: pointer;
+
+}
+
+.orb-change-button:active {
+
+  border-color: darkgoldenrod;
+}
+
+#exit-button:hover {
+
+  scale: 1.3;
+  color: indianred !important;
+
+}
+
+
+#path-button-container {
+  display: inline-block;
+  padding: 1px;
+  border-radius: 10px;
+  border-bottom: 2px ridge gray;
+  border-top: 2px ridge gray;
+  user-select: none;
+}
+
+#edit-background {
+
+  background-color: gray;
+  width: 800px;
+  height: 150px;
+  background-color: rgb(25, 25, 25);
+  border-top-right-radius: 90px;
+  border-bottom-right-radius: 90px;
+  border: 1rem solid rgb(40, 40, 40);
+
+}
+
+#load-button {
+
+  font-size: 1.5rem;
+  color: darkgray;
+  border-radius: 10px;
+  background-color: rgb(30, 30, 30);
+  border: 2px outset gray;
+  height: 40%;
+  width: 20%;
+  user-select: none;
+
+}
+
+#load-button:active {
+  border-color: darkgoldenrod;
+
+}
+
+#timer-input {
+  background-color:darkred;
+  font: 1rem kreon;
+  color: beige;
+  border-radius: 10px 0 0 10px;
+  width: 45%;
+  text-align: center;
+  margin: 0;
+}
+
+#timer-input:valid {
+  background-color: black;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+#chat-box::-webkit-scrollbar-thumb {
+  background: rgb(60, 60, 60);
+  border-radius: 10px;
+
+}
+
+#chat-box::-webkit-scrollbar {
+  background: rgb(30, 30, 30);
+  width: 0.5rem;
+}
+
+#combo-paths::-webkit-scrollbar-thumb {
+  background: rgb(60, 60, 60);
+  border-radius: 10px;
+
+}
+#combo-paths::-webkit-scrollbar {
+  background: rgb(20, 20, 20);
+  width: 0.5rem;
+}
+

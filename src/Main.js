@@ -1,5 +1,7 @@
 'use strict';
 
+console.log(window.screen.height)
+
 let config = {
   type: Phaser.WEBGL,
   parent: window,
@@ -13,7 +15,7 @@ let config = {
   dom: {
     createContainer: true
   },
-  autoCenter: true,
+  autoCenter: Phaser.Scale.CENTER_BOTH,
   plugins: {
   }
 };

@@ -14,12 +14,12 @@ class Board extends Phaser.GameObjects.GameObject {
 
         this.solveInProgress = false;
 
+        this.prevBoard = null;
+
         this.x = x;
         this.y = y;
         this.BOARD_HEIGHT = 5;
         this.BOARD_WIDTH = 6;
-
-        this.prevBoard = null;
 
         this.orbArray = new Array(this.BOARD_HEIGHT);
         this.skyfallArray = new Array(this.BOARD_HEIGHT);
@@ -33,7 +33,8 @@ class Board extends Phaser.GameObjects.GameObject {
         });
         this.scene.events.on("swapOrbs", (row, col, targetR, targetC) => {
             [this.orbArray[row][col], this.orbArray[targetR][targetC]] = [this.orbArray[targetR][targetC], this.orbArray[row][col]];
-        })
+        });
+
     }
 
     generateBoard() {
@@ -54,6 +55,8 @@ class Board extends Phaser.GameObjects.GameObject {
                 this.orbArray[row][col] = new Orb(this.scene, x, y, row, col, this.orbImages[rand]);
                 this.orbArray[row][col].type = Object.values(OrbType)[rand];
 
+                //console.log(this.orbArray[row][col].type.description);
+
                 rand = Phaser.Math.Between(0, 5);
 
                 this.skyfallArray[row][col] = new Orb(this.scene, x, y - this.BOARD_HEIGHT * Orb.HEIGHT, row, col, this.orbImages[rand]).setVisible(false);
@@ -71,14 +74,7 @@ class Board extends Phaser.GameObjects.GameObject {
     solveBoard() {
 
         this.solveInProgress = true;
-
-        for (let arr of this.orbArray) {
-            for (let o of arr) {
-                if (o != null) {
-                    o.disableInteractive();
-                }
-            }
-        }
+        this.setOrbInteractive(false);
 
         this.resetBoardState();
         let numCombos = this.findCombos();
@@ -87,16 +83,13 @@ class Board extends Phaser.GameObjects.GameObject {
         }
         else {
             //this.scene.scene.get("BoardScene").events.emit("solveComplete");
-            for (let arr of this.orbArray) {
-                for (let o of arr) {
-                    if (o != null) {
-                        o.setInteractive();
-                    }
 
-                }
+            if(!this.orbArray.flat().some(item => item === null)){
+                this.setOrbInteractive(true);
             }
+
             this.solveInProgress = false;
-            console.log("all combos have finished");
+            //this.scene.events.emit("message log", "Solve finished");
         }
     }
 
@@ -134,9 +127,8 @@ class Board extends Phaser.GameObjects.GameObject {
     fadeCombosEvent() {
 
         if (this.comboList.length == 0) {
-            return (document.getElementById("skyfall").checked) ? this.skyfall() : this.simulateGravity();
+            return (document.getElementById("skyfall-toggle").classList.contains("button-activate")) ? this.skyfall() : this.simulateGravity();
         }
-        //this.scene.sound.play("orbCombo");
         let set = this.comboList.pop();
         let arr = Array.from(set);
         this.scene.tweens.add({
@@ -145,7 +137,6 @@ class Board extends Phaser.GameObjects.GameObject {
             ease: 'Sine.InOut',
             duration: 450,
             onComplete: () => {
-                //this.scene.events.emit("comboMatched", arr[1].type, set.size, { x: arr[1].startPos.x, y: arr[1].startPos.y });
                 for (let orb of set) {
                     this.orbArray[orb.row][orb.col] = null;
                     this.orbSlotArray[orb.row][orb.col].orb = null;
@@ -301,6 +292,7 @@ class Board extends Phaser.GameObjects.GameObject {
         return (row > -1 && row < this.BOARD_HEIGHT && col > -1 && col < this.BOARD_WIDTH);
     }
 
+
     setBoard(arr) {
 
         for (let row = 0; row < this.BOARD_HEIGHT; row++) {
@@ -321,53 +313,38 @@ class Board extends Phaser.GameObjects.GameObject {
         }
     }
 
-
     getNumericModel() {
 
-        let model = new Array(this.BOARD_HEIGHT);
-
+        const model = Array.from({ length: 5 }, () => Array(6));
         for (let row = 0; row < this.BOARD_HEIGHT; row++) {
-            model[row] = new Array(this.BOARD_WIDTH);
             for (let col = 0; col < this.BOARD_WIDTH; col++) {
                 let o = this.orbArray[row][col];
                 model[row][col] = Number(o.type.description);
             }
         }
-
         return model;
-
     }
 
-    destoryBoard() {
+    changeOrbs(from, to) {
 
         for (let row = 0; row < this.BOARD_HEIGHT; row++) {
             for (let col = 0; col < this.BOARD_WIDTH; col++) {
                 let o = this.orbArray[row][col];
-                let o2 = this.skyfallArray[row][col];
-                if (o2 != null) {
-                    o2.destroyOrb();
+                if (from.includes(o.type)) {
+                    o.changeType(to);
                 }
-                if (o != null) {
-                    o.destroyOrb();
-                }
-                this.orbSlotArray[row][col].destroy();
             }
         }
-        this.scene.events.off("swapOrbs");
-        this.scene.events.off("solveBoard");
-        this.destroy();
-
     }
 
 
-    cloneOrbArray() {
+    setOrbInteractive(isInteractive) {
 
-        const clone = [];
-        let arr = this.getNumericModel();
-        for (let i = 0; i < arr.length; i++) {
-            clone[i] = arr[i].slice();
+        let func = (isInteractive) ? (o) => { o.setInteractive() } : (o) => { o.disableInteractive() };
+        for (let arr of this.orbArray) {
+            for (let o of arr) {
+                if (o) func(o);
+            }
         }
-        return clone;
     }
-
 }

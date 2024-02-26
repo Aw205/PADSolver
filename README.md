@@ -1,3 +1,3 @@
 # PAD Solver
 
-A Puzzles and Dragons simulator and solver.
+This is a <strong> Puzzles & Dragons </strong> simulator and solver. 
