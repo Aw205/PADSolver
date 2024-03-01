@@ -15,7 +15,7 @@ class Solve {
     /**
      * Where the solve starts. 
      * 
-     * @returns {Solution} solution -- combo List, path list
+     * @returns {Solution} bestSolution: {combo List ,path} solutionList
      */
     beamSearch() {
 
@@ -24,7 +24,7 @@ class Solve {
         let searchedSolutions = [];
 
         let successorSolutions = this.initialSearch();
-        //console.log("successor solutions length: " + successorSolutions.length);
+      
 
         for (let i = 0; i < this.NUM_ITERATIONS; i++) {
 
@@ -34,15 +34,6 @@ class Solve {
                 }
                 return b.comboList.length - a.comboList.length;
             });
-
-            // successorSolutions.forEach((e) =>{
-            //     console.log("combos: " + e.comboList.length + " path length: " + e.path.length);
-            // });
-            // console.log("------------------------------------");
-
-            //successorSolutions = successorSolutions.slice(0, this.BEAM_WIDTH);
-
-            //need to remove solutions that we searched through already
 
             for (let j = 0; j < this.BEAM_WIDTH; j++) {
 
@@ -83,23 +74,12 @@ class Solve {
 
         let bestSolution = searchedSolutions[0];
 
-        console.log("searched solutions best: combos: " + bestSolution.comboList.length + "path: " + bestSolution.path.length );
+        // console.log("searched solutions best: combos: " + bestSolution.comboList.length + "path: " + bestSolution.path.length );
+        // const timeEnd = performance.now();
+        // const timeElapsed = timeEnd - timeStart;
+        //console.log("Total search time: " + timeElapsed);
 
-         //bestSolution = successorSolutions[0];
-
-        // let bestSolution = successorSolutions.reduce((max, current) => {
-        //     if (current[0] == max[0]) {
-        //         return current[1].length < max[1].length ? current : max;
-        //     }
-        //     return current[0] > max[0] ? current : max;
-        // });
-
-        const timeEnd = performance.now();
-        const timeElapsed = timeEnd - timeStart;
-
-        console.log("Total search time: " + timeElapsed);
-
-        return { solution: bestSolution, solutionList: searchedSolutions };
+        return {solution: bestSolution, solutionList: searchedSolutions };
 
     }
 

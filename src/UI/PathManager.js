@@ -13,13 +13,9 @@ class PathManager {
         this.createPathButtons();
 
         this.pathList = [];
-
         this.initialBoard = null;
-
         this.g = this.scene.add.graphics({ lineStyle: { width: 5, color: 0, alpha: 0.8 } });
     }
-
-
 
     createPathButtons() {
 
@@ -32,9 +28,7 @@ class PathManager {
                 <button id= "last-button"  class="path-button"> <i class= "fa fa-step-forward"></i> </button>
             </div>
             <i id="eye-button" class="fa fa-eye-slash fa-eye fa-fw tooltip icon-button" style="position:absolute;"> <span class="tooltiptext right-tooltiptext">Show Path</span> </i>`;
-        //this.scene.add.dom(650, 580).createFromHTML(html);
         this.scene.add.dom(600, 610).createFromHTML(html);
-
 
         document.getElementById("first-button").addEventListener("pointerup", () => {
 
@@ -42,17 +36,14 @@ class PathManager {
                 this.scene.board.setBoard(this.initialBoard);
                 this.pathIndex = 0;
             }
-
         });
         document.getElementById("prev-button").addEventListener("pointerup", () => {
             this.step(-1);
         });
         document.getElementById("play-button").addEventListener("click", () => {
 
-            let ele = document.getElementById("play-image");
-            let toggle = this.play();
-            if (toggle) {
-                ele.classList.toggle("fa-play");
+            if (this.play()) {
+                document.getElementById("play-image").classList.toggle("fa-play");
             }
         });
 
@@ -77,13 +68,10 @@ class PathManager {
             this.pathIndex = this.path.length - 1;
         });
 
-
-        //arrow functions do not have their own this context
         document.getElementById("eye-button").addEventListener("click", (event) => {
             event.target.classList.toggle("fa-eye");
             this.togglePathVisibility();
         });
-
     }
 
     step(direction) {
@@ -98,7 +86,6 @@ class PathManager {
             this.pathIndex += direction;
             return;
         }
-
         if (this.pathIndex == this.path.length - 1) {
             document.getElementById("play-button").click();
         }
@@ -143,8 +130,6 @@ class PathManager {
         this.pathIndex = 0; // also need to reset the state of the board to beginning
         this.createLinePath(this.pathList[index]);
     }
-
-
 
     createLinePath(path) {
 
@@ -212,7 +197,6 @@ class PathManager {
         for (let i = currentIndex; i < path.length - 1; i++) {
             let found = visited.find(p => p.position.equals(path[i]));
             if (found != null && currDir == found.direction) {
-                //console.log("currDir: " + currDir + " foundDir: " + found.direction);
                 return 20;
             }
             if (this.isCorner(path, i)) {

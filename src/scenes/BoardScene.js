@@ -9,14 +9,6 @@ class BoardScene extends Phaser.Scene {
 
         this.cameras.main.setBackgroundColor('rgba(25,25,25,1)');
 
-        // let grid = this.add.grid(350, 50, 600, 500, 100, 100, 0x272829);
-        // grid.setAltFillStyle(0x3b3d3e)
-        //     .setOrigin(0, 0)
-        //     .setOutlineStyle();
-
-        // this.board = new Board(this, 400, 100);
-
-        
         let grid = this.add.grid(300, 80, 600, 500, 100, 100, 0x272829);
         grid.setAltFillStyle(0x3b3d3e)
             .setOrigin(0, 0)
@@ -27,7 +19,7 @@ class BoardScene extends Phaser.Scene {
         this.pathManager = new PathManager(this, null, this.board);
 
         this.createBoardButtons();
-        let editToolbar = new EditToolbar(this);
+        new EditToolbar(this);
         this.statWindow = new StatWindow(this);
         this.createSideBarToggles();
 
@@ -48,7 +40,6 @@ class BoardScene extends Phaser.Scene {
                 dialog.close();
             });
         });
-
     }
 
     createSideBarToggles() {
@@ -97,18 +88,16 @@ class BoardScene extends Phaser.Scene {
     createBoardButtons() {
         let html = `
         <div>
-            <button id = "randomize-button" class="default-button"> Randomize</button>
-            <button id = "reset-button" class="default-button"> Reset </button>
-            <button id = "solve-button" class="default-button"> <span> Solve</span> </button>
+            <button id = "randomize-button" class="board-button"> Randomize</button>
+            <button id = "reset-button" class="board-button"> Reset </button>
+            <button id = "solve-button" class="board-button"> <span> Solve</span> </button>
         </div>`;
-        //this.add.dom(650, 650).createFromHTML(html);
         this.add.dom(600, 680).createFromHTML(html);
 
         document.getElementById("randomize-button").addEventListener("pointerup", () => {
 
             if (!this.board.solveInProgress) {
                
-    
                 if(document.getElementById("shuffle-toggle").classList.contains("button-activate")){
                     if(this.board.orbArray.flat().some(item => item === null)){
                         this.events.emit("message log",MessageLog.ERROR,"Can't shuffle incomplete board");
@@ -139,31 +128,30 @@ class BoardScene extends Phaser.Scene {
             if (!this.board.solveInProgress) {
 
                 this.events.emit("message log", MessageLog.IN_PROGRESS,"Solving board...");
+                this.board.solveInProgress = true;
                 document.getElementById("combo-paths").innerHTML = "";
+                this.pathManager.g.clear();
                 document.getElementById("solve-button").classList.add("button--loading");
 
                 setTimeout(() => {
 
-                    this.board.solveInProgress = true;
                     let model = this.board.getNumericModel();
-
-                    this.pathManager.initialBoard = model;
-
                     let solver = new Solve(model);
-                    //solver.test();
                     let res = solver.beamSearch();
                     document.getElementById("solve-button").classList.remove("button--loading");
 
-                    let path = res.solution.path;
+                 
                     this.statWindow.updateStats(res);
 
+                    let path = res.solution.path;
+                    this.pathManager.initialBoard = model;
                     this.pathManager.path = path;
                     this.pathManager.createLinePath(path);
 
+                    document.getElementById("combo-paths").firstChild.classList.add("path-select");
+
                     this.events.emit("message log", MessageLog.COMPLETION,"Finished solve");
-
                     this.board.solveInProgress = false;
-
                 }, 10);
 
             }

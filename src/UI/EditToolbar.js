@@ -63,25 +63,16 @@ class EditToolbar {
         this.scene.add.dom(420, 830).createFromHTML(html);
     }
 
-
-
     createListeners() {
 
         let ids = ["Fire", "Water", "Wood", "Light", "Dark", "Heart"];
 
         for (let id of ids) {
 
-            let ele = document.getElementById(`${id}-palette`);
-            ele.addEventListener("pointerup", () => {
+            document.getElementById(`${id}-palette`).addEventListener("pointerup", (event) => {
 
-                let prev = document.querySelector("#orb-palette .palette-active");
-                if (prev != null && prev != ele) {
-                    prev.classList.toggle("palette-active");
-                    ele.classList.toggle("palette-active");
-                }
-                else if (prev == null) {
-                    ele.classList.toggle("palette-active");
-                }
+                document.querySelector("#orb-palette .palette-active")?.classList.remove("palette-active");
+                event.target.classList.add("palette-active");
 
                 this.scene.input.setDefaultCursor(`url(assets/UI/paintbrush.svg) 0 64, auto`);
                 this.scene.input.on("pointermove", (pointer, currentlyOver) => {
@@ -90,22 +81,14 @@ class EditToolbar {
                     }
                 });
                 this.scene.board.setOrbInteractive(false);
-                
             });
 
-            let changeFromEle = document.getElementById(`${id}-from`);
-            changeFromEle.addEventListener("pointerup", () => {
-                changeFromEle.classList.toggle("palette-active");
+            document.getElementById(`${id}-from`).addEventListener("pointerup", (event) => {
+                event.target.classList.toggle("palette-active");
             });
-
-            let changeToEle = document.getElementById(`${id}-to`);
-            changeToEle.addEventListener("pointerup", () => {
-
-                let prev = document.querySelector("[id$='to'].palette-active");
-                if (prev != null && prev != ele) {
-                    prev.classList.toggle("palette-active")
-                }
-                changeToEle.classList.toggle("palette-active");
+            document.getElementById(`${id}-to`).addEventListener("pointerup", (event) => {
+                document.querySelector("[id$='to'].palette-active")?.classList.remove("palette-active");
+                event.target.classList.add("palette-active");
             });
         }
 
@@ -121,22 +104,16 @@ class EditToolbar {
                 if (document.getElementById(`${id}-to`).classList.contains("palette-active")) {
                     to = ids.indexOf(id);
                 }
-
             }
             this.scene.board.changeOrbs(from, to);
         });
-
 
         document.getElementById("exit-button").addEventListener("pointerup", () => {
 
             this.scene.input.setDefaultCursor("default");
             this.scene.input.removeAllListeners("pointermove");
-            let sel = document.querySelector("#orb-palette .palette-active");
-            if (sel != null) {
-                sel.classList.remove("palette-active")
-            }
-
-            if(!this.scene.board.orbArray.flat().some(o => o === null)){
+            document.querySelector("#orb-palette .palette-active")?.classList.remove("palette-active");
+            if (!this.scene.board.orbArray.flat().some(o => o === null)) {
                 this.scene.board.setOrbInteractive(true);
             }
         });

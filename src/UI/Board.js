@@ -82,12 +82,9 @@ class Board extends Phaser.GameObjects.GameObject {
             return this.fadeCombos();
         }
         else {
-            //this.scene.scene.get("BoardScene").events.emit("solveComplete");
-
             if(!this.orbArray.flat().some(item => item === null)){
                 this.setOrbInteractive(true);
             }
-
             this.solveInProgress = false;
             //this.scene.events.emit("message log", "Solve finished");
         }
@@ -336,7 +333,6 @@ class Board extends Phaser.GameObjects.GameObject {
             }
         }
     }
-
 
     setOrbInteractive(isInteractive) {
 

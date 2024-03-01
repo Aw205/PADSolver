@@ -1,7 +1,5 @@
 class LoadBoardModal {
 
-
-
     constructor(scene) {
         this.scene = scene;
         this.create();
@@ -47,16 +45,20 @@ class LoadBoardModal {
         const dialog = document.getElementById("load-modal");
         const showButton = document.querySelector("#load-board-button");
 
+
+        showButton.addEventListener("click", () => {
+            this.readFromLocalStorage();
+        }, { once: true });
+
         showButton.addEventListener("click", () => {
             dialog.showModal();
         });
 
-        document.getElementById("imageSrc").onload = (ev)=> {
+        document.getElementById("imageSrc").onload = (ev) => {
 
             let mat = cv.imread(ev.target);
             cv.imshow('imageCanvas', mat);
             mat.delete();
-
             this.processImage();
         };
 
@@ -74,21 +76,17 @@ class LoadBoardModal {
             }
         });
 
-        //[this.thumbnailHTML,this.borderColors, boardName,this.currBoardModel]
-        this.scene.events.on("randomevent", (args) => {
+        //[this.thumbnailHTML, boardName,this.currBoardModel]
+        this.scene.events.on("saveBoard", (args) => {
 
-            let borderstyle = `border-top-color:rgb(${args[1][0]});border-bottom-color:rgb(${args[1][1]});border-left-color:rgb(${args[1][2]});border-right-color:rgb(${args[1][3]});`;
+            let borderstyle = this.getBorderStyleHTML(args[2]);
             let df = `<div id="board-${this.boardID}" class="test" style="${borderstyle}"> 
                             ${args[0]} 
-                            <input type="text" value= "${args[2]}" class="thumbnail-title"> 
+                            <input type="text" value= "${args[1]}" class="thumbnail-title"> 
                         </div>`;
 
-            this.boardList.push(args[3]);
-
-            //using += with innerHTML inadvertently seems to erase exisiting event listeners
+            this.boardList.push(args[2]);
             document.getElementById("thumbnail-grid").insertAdjacentHTML('beforeend', df);
-            //document.getElementById("thumbnail-grid").innerHTML += df;
-
             let bid = this.boardID;
 
             document.getElementById(`board-${this.boardID}`).addEventListener("click", (event) => {
@@ -104,6 +102,48 @@ class LoadBoardModal {
             this.boardID++;
         });
     }
+
+
+    readFromLocalStorage() {
+
+        for (let i = 0; i < localStorage.length; i++) {
+
+            let boardName = localStorage.key(i);
+            let boardModel = JSON.parse(localStorage.getItem(boardName));
+            let thumbnailHTML = SaveModal.getThumbnailHTML(boardModel);
+            this.scene.events.emit("saveBoard", [thumbnailHTML, boardName, boardModel]);
+        }
+    }
+
+
+    getBorderStyleHTML(board) {
+
+        let colors = [[255, 0, 0], [0, 153, 204], [0, 153, 51], [255, 255, 0], [153, 0, 204], [255, 102, 153]]; //fire, water, wood,light,dark,heart
+
+        let borderTop = [0, 0, 0];
+        let borderBottom = [0, 0, 0];
+        let borderLeft = [0, 0, 0];
+        let borderRight = [0, 0, 0];
+
+        for (let i = 0; i < 5; i++) {
+
+            let colorTop = colors[board[0][i]];
+            let colorBot = colors[board[4][i]]
+            borderTop = borderTop.map((x, index) => x + colorTop[index] / 6);
+            borderBottom = borderBottom.map((x, index) => x + colorBot[index] / 6);
+
+        }
+        for (let i = 0; i < 4; i++) {
+            let colorLeft = colors[board[i][0]];
+            let colorRight = colors[board[i][5]];
+            borderLeft = borderLeft.map((x, index) => x + colorLeft[index] / 5);
+            borderRight = borderRight.map((x, index) => x + colorRight[index] / 5);
+        }
+
+        let b = [borderTop, borderBottom, borderLeft, borderRight];
+        return `border-top-color:rgb(${b[0]});border-bottom-color:rgb(${b[1]});border-left-color:rgb(${b[2]});border-right-color:rgb(${b[3]});`;
+    }
+
 
     processImage() {
 
@@ -181,7 +221,6 @@ class LoadBoardModal {
         centerPoints.reverse();
         let sorted = Array.from({ length: 5 }, (_, rowIndex) => centerPoints.slice(rowIndex * 6, (rowIndex + 1) * 6).toSorted((a, b) => { return a.x - b.x }));
         this.currBoardModel = sorted.map((row) => row.map(p => p.orbVal));
-        console.log(this.currBoardModel);
 
         // for (let i = 0; i < contours.size(); ++i) {
         //     if (i < 30) {
