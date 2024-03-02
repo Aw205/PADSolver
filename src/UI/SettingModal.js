@@ -61,15 +61,6 @@ class SettingModal{
 
         this.scene.add.dom(100, 100).createFromHTML(html);
 
-
-        //let orbs = document.getElementsByClassName("palette-button");
-        // for (let i = 0; i < orbs.length; i++) {
-        //     orbs[i].addEventListener("click", (event) => {
-        //         orbs[i].classList.toggle("make-transparent");
-        //     });
-        // }
-
-
         let tablinks = document.getElementsByClassName("tablinks");
         for (let i = 0; i < tablinks.length; i++) {
             tablinks[i].addEventListener("click", (event) => {
@@ -97,9 +88,9 @@ class SettingModal{
 
         document.getElementById("default-open").click();
 
-        showButton.addEventListener("click", () => {
-            dialog.showModal();
-        });
+        // showButton.addEventListener("click", () => {
+        //     dialog.showModal();
+        // });
 
     }
 

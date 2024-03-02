@@ -59,7 +59,6 @@ class BoardModel {
                     let comboInfo = { color: type, number: comboSet.size };
                     returnList.push(comboInfo);
                 }
-
             }
         }
 
@@ -105,7 +104,6 @@ class BoardModel {
         if (currentCombos == 0) {
             return;
         }
-
         let dropDist = 0;
         for (let col = 0; col < this.WIDTH; col++) {
             for (let row = this.HEIGHT - 1; row > -1; row--) {
@@ -115,13 +113,10 @@ class BoardModel {
                     continue;
                 }
                 [arr[row][col], arr[row + dropDist][col]] = [arr[row + dropDist][col], arr[row][col]];
-
             }
             dropDist = 0;
         }
     }
-
-
 
     isInBounds(row, col) {
         return (row > -1 && row < this.HEIGHT && col > -1 && col < this.WIDTH);

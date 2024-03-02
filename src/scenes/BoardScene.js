@@ -73,8 +73,7 @@ class BoardScene extends Phaser.Scene {
                     <div id= "timer-container" style="display: none;">
                         <input id= "timer-input" type="number" placeholder="move time" min="1" step="0.1"/>
                         <span style="border:2px inset gray; color:gray; background-color:black; font: 1rem kreon; border-radius: 0 10px 10px 0; margin:0; border-left:none;padding: 5px;">(s)</span>
-                    </div>
-                    `;
+                    </div> `;
 
         this.add.dom(340,40).createFromHTML(h);
 
