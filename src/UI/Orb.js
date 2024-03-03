@@ -1,12 +1,5 @@
 
-const OrbType = Object.freeze({
-    Fire: Symbol("0"),
-    Water: Symbol("1"),
-    Grass: Symbol("2"),
-    Light: Symbol("3"),
-    Dark: Symbol("4"),
-    Heart: Symbol("5"),
-});
+const OrbType = Object.freeze({FIRE: 0, WATER: 1,WOOD: 2, LIGHT: 3, DARK: 4,HEART: 5});
 
 
 class Orb extends Phaser.GameObjects.Image {
@@ -106,7 +99,6 @@ class Orb extends Phaser.GameObjects.Image {
         this.shadow.setPosition(this.startPos.x, this.startPos.y);
     }
 
-
     addFirstSwapListener() {
         this.once("dragleave", (pointer, target) => {
             this.hasSwapped = true;
@@ -117,9 +109,7 @@ class Orb extends Phaser.GameObjects.Image {
     onOrbRelease() {
 
         this.shadow.setVisible(false);
-        this.setPosition(this.startPos.x, this.startPos.y);
-        this.setOrigin(0.5);
-        this.setAlpha(1);
+        this.setPosition(this.startPos.x, this.startPos.y).setOrigin(0.5).setAlpha(1);
         if (this.hasSwapped) {
             this.hasSwapped = false;
             this.addFirstSwapListener();
@@ -127,10 +117,11 @@ class Orb extends Phaser.GameObjects.Image {
         }
     }
 
+    // type is a number
     changeType(type){
         this.setTexture(typeTextureMap.get(type));
         this.shadow.setTexture(typeTextureMap.get(type));
-        this.type = Object.values(OrbType)[type];
+        this.type = type;
     }
 
     destroyOrb(){

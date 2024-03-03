@@ -53,14 +53,12 @@ class Board extends Phaser.GameObjects.GameObject {
                 let y = this.y + row * Orb.HEIGHT;
 
                 this.orbArray[row][col] = new Orb(this.scene, x, y, row, col, this.orbImages[rand]);
-                this.orbArray[row][col].type = Object.values(OrbType)[rand];
-
-                //console.log(this.orbArray[row][col].type.description);
+                this.orbArray[row][col].type = rand;
 
                 rand = Phaser.Math.Between(0, 5);
 
                 this.skyfallArray[row][col] = new Orb(this.scene, x, y - this.BOARD_HEIGHT * Orb.HEIGHT, row, col, this.orbImages[rand]).setVisible(false);
-                this.skyfallArray[row][col].type = Object.values(OrbType)[rand];
+                this.skyfallArray[row][col].type = rand;
 
                 let slot = new OrbSlot(this.scene, x, y);
                 slot.orb = this.orbArray[row][col];
@@ -82,7 +80,7 @@ class Board extends Phaser.GameObjects.GameObject {
             return this.fadeCombos();
         }
         else {
-            if(!this.orbArray.flat().some(item => item === null)){
+            if (!this.orbArray.flat().some(item => item === null)) {
                 this.setOrbInteractive(true);
             }
             this.solveInProgress = false;
@@ -104,7 +102,7 @@ class Board extends Phaser.GameObjects.GameObject {
                 if (this.skyfallArray[row][col] == null) {
                     let rand = Phaser.Math.Between(0, 5);
                     this.skyfallArray[row][col] = new Orb(this.scene, x, y - this.BOARD_HEIGHT * Orb.HEIGHT, row, col, this.orbImages[rand]).setVisible(false);
-                    this.skyfallArray[row][col].type = Object.values(OrbType)[rand];
+                    this.skyfallArray[row][col].type = rand;
                 }
             }
         }
@@ -172,6 +170,7 @@ class Board extends Phaser.GameObjects.GameObject {
             if (this.isInBounds(row + x, col + y) && this.orbArray[row + x][col + y] != null) {
                 let adj = this.orbArray[row + x][col + y];
                 if (adj.type == type) {
+
                     (x == 0) ? matches[0].push(adj) : matches[1].push(adj);
                     if (!adj.isVisited) {
                         adj_arr.push(adj);
@@ -301,37 +300,20 @@ class Board extends Phaser.GameObjects.GameObject {
                 }
                 let s = this.orbSlotArray[row][col];
                 this.orbArray[row][col] = new Orb(this.scene, s.x, s.y, row, col, this.orbImages[arr[row][col]]);
-                this.orbArray[row][col].type = Object.values(OrbType)[arr[row][col]];
+                this.orbArray[row][col].type = arr[row][col];
                 this.orbArray[row][col].currentSlot = s;
                 s.orb = this.orbArray[row][col];
-
 
             }
         }
     }
 
     getNumericModel() {
-
-        const model = Array.from({ length: 5 }, () => Array(6));
-        for (let row = 0; row < this.BOARD_HEIGHT; row++) {
-            for (let col = 0; col < this.BOARD_WIDTH; col++) {
-                let o = this.orbArray[row][col];
-                model[row][col] = Number(o.type.description);
-            }
-        }
-        return model;
+        return this.orbArray.map((arr) => arr.map((orb) => orb.type));
     }
 
     changeOrbs(from, to) {
-
-        for (let row = 0; row < this.BOARD_HEIGHT; row++) {
-            for (let col = 0; col < this.BOARD_WIDTH; col++) {
-                let o = this.orbArray[row][col];
-                if (from.includes(o.type)) {
-                    o.changeType(to);
-                }
-            }
-        }
+        this.orbArray.forEach((arr) => arr.forEach((orb) => { if (from.includes(orb.type)) orb.changeType(to) }));
     }
 
     setOrbInteractive(isInteractive) {

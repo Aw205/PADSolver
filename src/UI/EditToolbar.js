@@ -99,7 +99,7 @@ class EditToolbar {
 
             for (let id of ids) {
                 if (document.getElementById(`${id}-from`).classList.contains("palette-active")) {
-                    from.push(Object.values(OrbType)[ids.indexOf(id)]);
+                    from.push(ids.indexOf(id));
                 }
                 if (document.getElementById(`${id}-to`).classList.contains("palette-active")) {
                     to = ids.indexOf(id);

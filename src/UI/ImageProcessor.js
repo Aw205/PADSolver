@@ -1,11 +1,7 @@
 
 class ImageProcessor {
 
-    constructor(){
-
-    }
-
-    create(){
+    constructor() {
 
     }
 
@@ -66,12 +62,41 @@ class ImageProcessor {
         }
         centerPoints.reverse();
         let sorted = Array.from({ length: 5 }, (_, rowIndex) => centerPoints.slice(rowIndex * 6, (rowIndex + 1) * 6).toSorted((a, b) => { return a.x - b.x }));
-        this.currBoardModel = sorted.map((row) => row.map(p => p.orbVal));
 
         src.delete();
         org.delete();
         contours.delete();
         hierarchy.delete();
+
+        return sorted.map((row) => row.map(p => p.orbVal));
+    }
+
+
+    draw() {
+
+        //let dst = cv.Mat.zeros(src.cols + 300, src.rows, cv.CV_8UC3);
+
+        //console.log(averageColor);
+        // let point1 = new cv.Point(rect.x, rect.y);
+        // let point2 = new cv.Point(rect.x + rect.width, rect.y + rect.height);
+        // cv.rectangle(dst, point1, point2, new cv.Scalar(255, 0, 0), 0.3, cv.LINE_AA, 0);
+
+        // let rgbMat = new cv.Mat(1, 1, cv.CV_8UC3);
+        // rgbMat.data.set(averageColor);
+        // let hsvMat = new cv.Mat();
+        // cv.cvtColor(rgbMat, hsvMat, cv.COLOR_HSV2BGR_FULL);
+        // let hsvArray = hsvMat.data;
+        // colors.push(hsvArray);
+
+
+        // for (let i = 0; i < contours.size(); ++i) {
+        //     if (i < 30) {
+        //         let color = new cv.Scalar(colors[i][0], colors[i][1], colors[i][2]);
+        //         cv.drawContours(dst, contours, i, color, -1, cv.LINE_8, hierarchy, 10);
+        //     }
+        // }
+        //cv.imshow('imageCanvas', dst);
+        //dst.delete();
     }
 
 }
