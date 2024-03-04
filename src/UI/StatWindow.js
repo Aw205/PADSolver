@@ -33,9 +33,9 @@ class StatWindow {
 
     }
 
-     /**
-     * @param {*} result - {solution,solutionList}
-     */
+    /**
+    * @param {*} result - {solution,solutionList}
+    */
     updateStats(result) {
 
         let solution = result.solution;
@@ -54,12 +54,13 @@ class StatWindow {
 
             this.scene.pathManager.pathList.push(result.solutionList[i].path);
 
-            if(result.solutionList[i].comboList.length > 1){
+            if (result.solutionList[i].comboList.length > 1) {
 
                 let comboHtml = ``;
                 for (let combo of result.solutionList[i].comboList) {
                     let color = typeTextureMap.get(combo.color);
-                    comboHtml += ` <img src="../assets/UI/${color}.svg" style = "width: 10%; height: 10%; padding: 0px 5px;"> x${combo.number}`;
+                    let c = color.charAt(0).toUpperCase()+ color.slice(1);
+                    comboHtml += ` <img src="../assets/UI/${c}.svg" style = "width: 10%; height: 10%; padding: 0px 5px;"> x${combo.number}`;
                 }
                 document.getElementById("combo-paths").innerHTML += `<div class= "orbs-matched" data-path="${i}"> ${comboHtml} </div>`;
                 //pathStats.push({comboCount: result.solutionList[i].comboList.length, swapCount: result.solutionList[i].path.length});
