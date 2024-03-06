@@ -1,7 +1,7 @@
 # PAD Solver
 A Puzzles & Dragons simulator and solver. 
 
-<img src="assets/images/padsolver_example.png" alt="example" width="50%"/>
+<img src="assets/images/padsolver_example.png" alt="example"/>
 
 ## Features
 
