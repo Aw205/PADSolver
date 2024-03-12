@@ -31,10 +31,11 @@ class Board extends Phaser.GameObjects.GameObject {
         this.scene.events.on("solveBoard", () => {
             this.solveBoard();
         });
-        this.scene.events.on("swapOrbs", (row, col, targetR, targetC) => {
-            [this.orbArray[row][col], this.orbArray[targetR][targetC]] = [this.orbArray[targetR][targetC], this.orbArray[row][col]];
-        });
 
+    }
+
+    swapOrbs(r1, c1, r2, c2) {
+        [this.orbArray[r1][c1], this.orbArray[r2][c2]] = [this.orbArray[r2][c2], this.orbArray[r1][c1]];
     }
 
     generateBoard() {
@@ -52,19 +53,19 @@ class Board extends Phaser.GameObjects.GameObject {
                 let x = this.x + col * Orb.WIDTH;
                 let y = this.y + row * Orb.HEIGHT;
 
-                this.orbArray[row][col] = new Orb(this.scene, x, y, row, col, this.orbImages[rand]);
+                this.orbArray[row][col] = new Orb(this.scene, x, y, this.orbImages[rand]);
                 this.orbArray[row][col].type = rand;
 
                 rand = Phaser.Math.Between(0, 5);
 
-                this.skyfallArray[row][col] = new Orb(this.scene, x, y - this.BOARD_HEIGHT * Orb.HEIGHT, row, col, this.orbImages[rand]).setVisible(false);
+                this.skyfallArray[row][col] = new Orb(this.scene, x, y - this.BOARD_HEIGHT * Orb.HEIGHT, this.orbImages[rand]).setVisible(false);
                 this.skyfallArray[row][col].type = rand;
 
-                let slot = new OrbSlot(this.scene, x, y);
+                let slot = new OrbSlot(this.scene, x, y, row, col);
                 slot.orb = this.orbArray[row][col];
                 this.orbSlotArray[row][col] = slot;
 
-                this.orbArray[row][col].currentSlot = slot;
+                this.orbArray[row][col].slot = slot;
             }
         }
     }
@@ -72,7 +73,7 @@ class Board extends Phaser.GameObjects.GameObject {
     solveBoard() {
 
         this.solveInProgress = true;
-        this.setOrbInteractive(false);
+        //this.setOrbInteractive(false);
 
         this.resetBoardState();
         let numCombos = this.findCombos();
@@ -101,7 +102,7 @@ class Board extends Phaser.GameObjects.GameObject {
 
                 if (this.skyfallArray[row][col] == null) {
                     let rand = Phaser.Math.Between(0, 5);
-                    this.skyfallArray[row][col] = new Orb(this.scene, x, y - this.BOARD_HEIGHT * Orb.HEIGHT, row, col, this.orbImages[rand]).setVisible(false);
+                    this.skyfallArray[row][col] = new Orb(this.scene, x, y - this.BOARD_HEIGHT * Orb.HEIGHT, this.orbImages[rand]).setVisible(false);
                     this.skyfallArray[row][col].type = rand;
                 }
             }
@@ -125,7 +126,7 @@ class Board extends Phaser.GameObjects.GameObject {
             return (document.getElementById("skyfall-toggle").classList.contains("button-activate")) ? this.skyfall() : this.simulateGravity();
         }
         let set = this.comboList.pop();
-        let arr = Array.from(set);
+        let arr = Array.from(set, obj => obj.orb);
         this.scene.tweens.add({
             targets: arr,
             alpha: 0,
@@ -135,7 +136,7 @@ class Board extends Phaser.GameObjects.GameObject {
                 for (let orb of set) {
                     this.orbArray[orb.row][orb.col] = null;
                     this.orbSlotArray[orb.row][orb.col].orb = null;
-                    orb.destroyOrb();
+                    orb.orb.destroyOrb();
                 }
             }
         });
@@ -144,12 +145,13 @@ class Board extends Phaser.GameObjects.GameObject {
 
     findCombos() {
 
-        for (let arr of this.orbArray) {
-            for (let orb of arr) {
+        for (let row = 0; row < 5; row++) {
+            for (let col = 0; col < 6; col++) {
+                let o = this.orbArray[row][col];
                 let comboSet = new Set();
-                if (orb != null && !orb.isVisited) {
-                    orb.isVisited = true;
-                    this.floodfill(orb.row, orb.col, orb.type, comboSet);
+                if (o != null && !o.isVisited) {
+                    o.isVisited = true;
+                    this.floodfill(row, col, o.type, comboSet);
                 }
                 if (comboSet.size > 2) {
                     this.comboList.push(comboSet);
@@ -170,21 +172,20 @@ class Board extends Phaser.GameObjects.GameObject {
             if (this.isInBounds(row + x, col + y) && this.orbArray[row + x][col + y] != null) {
                 let adj = this.orbArray[row + x][col + y];
                 if (adj.type == type) {
-
-                    (x == 0) ? matches[0].push(adj) : matches[1].push(adj);
+                    (x == 0) ? matches[0].push({ orb: adj, row: row + x, col: col + y }) : matches[1].push({ orb: adj, row: row + x, col: col + y });
                     if (!adj.isVisited) {
-                        adj_arr.push(adj);
+                        adj_arr.push({ orb: adj, row: row + x, col: col + y });
                     }
                 }
             }
         }
-        for (let orb of adj_arr) {
-            orb.isVisited = true;
-            this.floodfill(orb.row, orb.col, type, comboSet);
+        for (let o of adj_arr) {
+            o.orb.isVisited = true;
+            this.floodfill(o.row, o.col, o.orb.type, comboSet);
         }
         for (let arr of matches) {
             if (arr.length == 2) {
-                comboSet.add(this.orbArray[row][col]);
+                comboSet.add({ orb: this.orbArray[row][col], row: row, col: col });
                 for (let orb of arr) {
                     comboSet.add(orb);
                 }
@@ -192,8 +193,40 @@ class Board extends Phaser.GameObjects.GameObject {
         }
     }
 
-
     simulateGravity() {
+
+        let dropDist = 0;
+        for (let col = 0; col < this.BOARD_WIDTH; col++) {
+            for (let row = this.BOARD_HEIGHT - 1; row > -1; row--) {
+
+                let current = this.orbArray[row][col];
+                if (current == null) {
+                    dropDist++;
+                    continue;
+                }
+
+                this.scene.tweens.add({
+                    targets: current,
+                    y: current.y + dropDist * Orb.HEIGHT,
+                    duration: 500,
+                    ease: Phaser.Math.Easing.Linear,
+                });
+
+                this.orbArray[row][col] = null;
+                this.orbSlotArray[row][col].orb = null;
+
+                this.orbSlotArray[row + dropDist][col].orb = current; // point slot to new orb
+                current.slot = this.orbSlotArray[row + dropDist][col]; //point orb to correct orb slot
+                [current, this.orbArray[row + dropDist][col]] = [this.orbArray[row + dropDist][col], current]; // setting new array location of orb
+
+            }
+            dropDist = 0;
+        }
+        this.solveBoard();
+    }
+
+
+    skyfall() {
 
         let dropDist = 0;
         for (let col = 0; col < this.BOARD_WIDTH; col++) {
@@ -214,46 +247,12 @@ class Board extends Phaser.GameObjects.GameObject {
                 this.orbArray[row][col] = null;
                 this.orbSlotArray[row][col].orb = null;
 
-                current.row += dropDist;
-                current.startPos.set(current.x, current.y + dropDist * Orb.HEIGHT);
-
-                this.orbSlotArray[current.row][col].orb = current; // point slot to new orb
-                current.currentSlot = this.orbSlotArray[current.row][col]; //point orb to correct orb slot
+                this.orbSlotArray[row + dropDist][col].orb = current; // point slot to new orb
+                current.slot = this.orbSlotArray[row + dropDist][col]; //point orb to correct orb slot
                 [current, this.orbArray[row + dropDist][col]] = [this.orbArray[row + dropDist][col], current]; // setting new array location of orb
 
             }
-            dropDist = 0;
-        }
-        this.solveBoard();
-    }
 
-
-
-    skyfall() {
-
-        let dropDist = 0;
-        for (let col = 0; col < this.BOARD_WIDTH; col++) {
-            for (let row = this.BOARD_HEIGHT - 1; row > -1; row--) {
-                let current = this.orbArray[row][col];
-                if (current == null) {
-                    dropDist++;
-                    continue;
-                }
-                this.scene.tweens.add({
-                    targets: current,
-                    y: current.y + dropDist * Orb.HEIGHT,
-                    duration: 500,
-                    ease: Phaser.Math.Easing.Linear,
-                });
-
-                current.row += dropDist;
-                current.startPos.set(current.x, current.y + dropDist * Orb.HEIGHT);
-
-                this.orbSlotArray[current.row][col].orb = current; // point slot to new orb
-                current.currentSlot = this.orbSlotArray[current.row][col]; //point orb to correct orb slot
-                [current, this.orbArray[row + dropDist][col]] = [this.orbArray[row + dropDist][col], current]; // setting new array location of orb
-
-            }
             //skyfalling new orbs 
 
             for (let r = this.BOARD_HEIGHT - 1; r > this.BOARD_HEIGHT - dropDist - 1; r--) {
@@ -269,13 +268,9 @@ class Board extends Phaser.GameObjects.GameObject {
                     ease: Phaser.Math.Easing.Linear
                 });
 
-                current.row = newRow;
-                current.startPos.set(current.x, this.y + newRow * Orb.HEIGHT);
-
                 this.orbSlotArray[newRow][col].orb = current;
-                current.currentSlot = this.orbSlotArray[newRow][col];
+                current.slot = this.orbSlotArray[newRow][col];
                 this.orbArray[newRow][col] = current;
-
                 this.skyfallArray[r][col] = null;
             }
             dropDist = 0;
@@ -299,9 +294,9 @@ class Board extends Phaser.GameObjects.GameObject {
                     continue;
                 }
                 let s = this.orbSlotArray[row][col];
-                this.orbArray[row][col] = new Orb(this.scene, s.x, s.y, row, col, this.orbImages[arr[row][col]]);
+                this.orbArray[row][col] = new Orb(this.scene, s.x, s.y, this.orbImages[arr[row][col]]);
                 this.orbArray[row][col].type = arr[row][col];
-                this.orbArray[row][col].currentSlot = s;
+                this.orbArray[row][col].slot = s;
                 s.orb = this.orbArray[row][col];
 
             }

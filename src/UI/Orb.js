@@ -1,22 +1,18 @@
 
-const OrbType = Object.freeze({FIRE: 0, WATER: 1,WOOD: 2, LIGHT: 3, DARK: 4,HEART: 5});
-
+const OrbType = Object.freeze({ FIRE: 0, WATER: 1, WOOD: 2, LIGHT: 3, DARK: 4, HEART: 5 });
 
 class Orb extends Phaser.GameObjects.Image {
 
     static HEIGHT = 100;
     static WIDTH = 100;
 
-    constructor(scene, x, y, row, col, texture) {
+    constructor(scene, x, y, texture) {
         super(scene, x, y, texture);
 
         this.type = null; //number
 
-        this.row = row;
-        this.col = col;
         this.isVisited = false;
-        this.startPos = new Phaser.Math.Vector2(x, y);
-        this.currentSlot = null;
+        this.slot = null;
         this.shadow = this.scene.add.image(x, y, texture).setAlpha(0.4).setVisible(false);
         this.hasSwapped = false;
 
@@ -51,52 +47,32 @@ class Orb extends Phaser.GameObjects.Image {
 
     swapLocations(target) {
 
-        [this.row, target.orb.row] = [target.orb.row, this.row];
-        [this.col, target.orb.col] = [target.orb.col, this.col];
-
-        this.scene.events.emit("swapOrbs", this.row, this.col, target.orb.row, target.orb.col);
-
-        [this.startPos, target.orb.startPos] = [target.orb.startPos, this.startPos];
-        target.orb.setPosition(target.orb.startPos.x, target.orb.startPos.y);
+        this.scene.board.swapOrbs(this.slot.row, this.slot.col, target.row, target.col);
+        target.orb.setPosition(this.slot.x, this.slot.y);
+        this.shadow.setPosition(target.x, target.y);
 
         let tempTargetOrb = target.orb;
-        [target.orb, this.currentSlot.orb] = [this.currentSlot.orb, target.orb];
-        [this.currentSlot, tempTargetOrb.currentSlot] = [tempTargetOrb.currentSlot, this.currentSlot];
+        [target.orb, this.slot.orb] = [this.slot.orb, target.orb];
+        [this.slot, tempTargetOrb.slot] = [tempTargetOrb.slot, this.slot];
 
-        this.shadow.setPosition(this.startPos.x, this.startPos.y);
     }
-
 
     swapLocations2(target) {
 
-        [this.row, target.orb.row] = [target.orb.row, this.row];
-        [this.col, target.orb.col] = [target.orb.col, this.col];
+        this.scene.board.swapOrbs(this.slot.row, this.slot.col, target.slot.row, target.slot.col);
+        this.shadow.setPosition(target.slot.x, target.slot.y);
 
-        this.scene.events.emit("swapOrbs", this.row, this.col, target.orb.row, target.orb.col);
-
-        [this.startPos, target.orb.startPos] = [target.orb.startPos, this.startPos];
+        [target.slot.orb, this.slot.orb] = [this.slot.orb, target.slot.orb];
+        [this.slot, target.slot] = [target.slot, this.slot];
 
         this.scene.tweens.add({
-            targets: this,
-            x: this.startPos.x,
-            y: this.startPos.y,
+            targets: [this, target],
+            x: target => { return target.slot.x; },
+            y: target => { return target.slot.y; },
             duration: 500,
             ease: Phaser.Math.Easing.Linear,
         });
-
-        this.scene.tweens.add({
-            targets: target.orb,
-            x: target.orb.startPos.x,
-            y:  target.orb.startPos.y,
-            duration: 500,
-            ease: Phaser.Math.Easing.Linear,
-        });
-
-        let tempTargetOrb = target.orb;
-        [target.orb, this.currentSlot.orb] = [this.currentSlot.orb, target.orb];
-        [this.currentSlot, tempTargetOrb.currentSlot] = [tempTargetOrb.currentSlot, this.currentSlot];
-
-        this.shadow.setPosition(this.startPos.x, this.startPos.y);
+        //activeCallback(target, key, value, targetIndex, totalTargets, tween)
     }
 
     addFirstSwapListener() {
@@ -109,7 +85,7 @@ class Orb extends Phaser.GameObjects.Image {
     onOrbRelease() {
 
         this.shadow.setVisible(false);
-        this.setPosition(this.startPos.x, this.startPos.y).setOrigin(0.5).setAlpha(1);
+        this.setPosition(this.slot.x, this.slot.y).setOrigin(0.5).setAlpha(1);
         if (this.hasSwapped) {
             this.hasSwapped = false;
             this.addFirstSwapListener();
@@ -118,13 +94,13 @@ class Orb extends Phaser.GameObjects.Image {
     }
 
     // type is a number
-    changeType(type){
+    changeType(type) {
         this.setTexture(typeTextureMap.get(type));
         this.shadow.setTexture(typeTextureMap.get(type));
         this.type = type;
     }
 
-    destroyOrb(){
+    destroyOrb() {
         this.shadow.destroy();
         this.destroy();
     }

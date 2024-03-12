@@ -1,7 +1,5 @@
 'use strict';
 
-console.log(window.screen.height)
-
 let config = {
   type: Phaser.WEBGL,
   parent: window,

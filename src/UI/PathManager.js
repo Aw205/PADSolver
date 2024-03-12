@@ -81,7 +81,7 @@ class PathManager {
         let stepIndex = this.pathIndex + direction
         if (stepIndex > -1 && stepIndex < this.path.length) {
             let curr = this.board.orbArray[this.path[this.pathIndex].x][this.path[this.pathIndex].y];
-            let target = this.board.orbSlotArray[this.path[stepIndex].x][this.path[stepIndex].y];
+            let target = this.board.orbArray[this.path[stepIndex].x][this.path[stepIndex].y];
             curr.swapLocations2(target);
             this.pathIndex += direction;
             return;
