@@ -238,7 +238,6 @@ class Solve {
         console.log("Average combos: " + combos/iters);
 
     }
-
 }
 
 class Solution {
@@ -255,5 +254,3 @@ class Solution {
     }
 
 }
-
-

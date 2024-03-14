@@ -128,27 +128,23 @@ class BoardScene extends Phaser.Scene {
 
                 this.events.emit("message log", MessageLog.IN_PROGRESS,"Solving board...");
                 this.board.solveInProgress = true;
-                document.getElementById("combo-paths").innerHTML = "";
+
                 this.pathManager.g.clear();
+                document.getElementById("combo-paths").innerHTML = "";
                 document.getElementById("solve-button").classList.add("button--loading");
 
                 setTimeout(() => {
 
                     let model = this.board.getNumericModel();
-                    let solver = new Solve(model);
-                    let res = solver.beamSearch();
+                    let res = new Solve(model).beamSearch();
+            
                     document.getElementById("solve-button").classList.remove("button--loading");
 
-                 
                     this.statWindow.updateStats(res);
-
-                    let path = res.solution.path;
                     this.pathManager.initialBoard = model;
-                    this.pathManager.path = path;
-                    this.pathManager.createLinePath(path);
 
-                    document.getElementById("combo-paths").firstChild.classList.add("path-select");
-
+                    document.getElementById("combo-paths").firstChild.click();
+                   
                     this.events.emit("message log", MessageLog.COMPLETION,"Finished solve");
                     this.board.solveInProgress = false;
                 }, 10);

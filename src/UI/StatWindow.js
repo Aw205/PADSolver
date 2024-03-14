@@ -2,11 +2,11 @@ class StatWindow {
 
     constructor(scene) {
         this.scene = scene;
+        this.pathList = [];
         this.create();
     }
 
     create() {
-
         let html = `<div style=" width: 270px; height: 630px; background-color: rgb(30,30,30); border-radius: 10px; padding: 10px;"> 
 
                             <details style="background-color: rgb(20,20,20); border-radius: 10px;" open>
@@ -30,7 +30,6 @@ class StatWindow {
                     </div>`
 
         this.scene.add.dom(1120, 375).createFromHTML(html);
-
     }
 
     /**
@@ -48,11 +47,11 @@ class StatWindow {
         ccEle.textContent = cc;
         swapEle.textContent = path.length - 1;
 
-        let pathStats = [];
+        //let pathStats = [];
 
         for (let i = 0; i < 20; i++) {
 
-            this.scene.pathManager.pathList.push(result.solutionList[i].path);
+            this.pathList.push(result.solutionList[i].path);
 
             if (result.solutionList[i].comboList.length > 1) {
 
@@ -60,7 +59,7 @@ class StatWindow {
                 for (let combo of result.solutionList[i].comboList) {
                     let color = typeTextureMap.get(combo.color);
                     let c = color.charAt(0).toUpperCase()+ color.slice(1);
-                    comboHtml += ` <img src="../assets/UI/${c}.svg" style = "width: 10%; height: 10%; padding: 0px 5px;"> x${combo.number}`;
+                    comboHtml += ` <img src="assets/UI/${c}.svg" style = "width: 10%; height: 10%; padding: 0px 5px;"> x${combo.number}`;
                 }
                 document.getElementById("combo-paths").innerHTML += `<div class= "orbs-matched" data-path="${i}"> ${comboHtml} </div>`;
                 //pathStats.push({comboCount: result.solutionList[i].comboList.length, swapCount: result.solutionList[i].path.length});
@@ -68,13 +67,14 @@ class StatWindow {
             }
         }
 
-        document.querySelectorAll('.orbs-matched').forEach(sol => {
-            sol.addEventListener('click', () => {
-                document.querySelector(".path-select").classList.remove("path-select");
-                sol.classList.add("path-select");
+        document.querySelectorAll('.orbs-matched').forEach(solution => {
+            solution.addEventListener('click', () => {
+
+                document.querySelector(".path-select")?.classList.remove("path-select");
+                solution.classList.add("path-select");
+                this.scene.pathManager.setPath(this.pathList[solution.dataset.path]);
                 //swapEle.textContent = pathStats;
-                this.scene.pathManager.setPath(sol.dataset.path);
-                this.scene.pathManager.resetBoard();
+
             });
         });
     }

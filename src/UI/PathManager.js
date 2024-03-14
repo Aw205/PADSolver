@@ -5,6 +5,7 @@ class PathManager {
 
         this.scene = scene;
         this.path = path;
+
         this.board = board;
         this.pathIndex = 0;
         this.playing = false;
@@ -12,7 +13,6 @@ class PathManager {
 
         this.createPathButtons();
 
-        this.pathList = [];
         this.initialBoard = null;
         this.g = this.scene.add.graphics({ lineStyle: { width: 5, color: 0, alpha: 0.8 } });
     }
@@ -33,15 +33,13 @@ class PathManager {
         document.getElementById("first-button").addEventListener("pointerup", () => {
 
             if (this.initialBoard != null) {
-                this.scene.board.setBoard(this.initialBoard);
-                this.pathIndex = 0;
+                this.setPath(this.path);
             }
         });
         document.getElementById("prev-button").addEventListener("pointerup", () => {
             this.step(-1);
         });
         document.getElementById("play-button").addEventListener("click", () => {
-
             if (this.play()) {
                 document.getElementById("play-image").classList.toggle("fa-play");
             }
@@ -92,7 +90,6 @@ class PathManager {
     }
 
     /**
-     * 
      * @returns whether button should be toggled
      */
     play() {
@@ -125,11 +122,7 @@ class PathManager {
     }
 
 
-    setPath(index) {
-        this.g.clear();
-        this.pathIndex = 0; // also need to reset the state of the board to beginning
-        this.createLinePath(this.pathList[index]);
-    }
+    
 
     createLinePath(path) {
 
@@ -234,11 +227,14 @@ class PathManager {
         this.g.setVisible(true);
     }
 
+    setPath(path) {
 
-    resetBoard(){
-        this.board.setBoard(this.initialBoard);
+        this.g.clear();
         this.pathIndex = 0;
-
+        this.scene.board.setBoard(this.initialBoard);
+        this.createLinePath(path);
+        this.path = path;
+        
     }
 
 }
