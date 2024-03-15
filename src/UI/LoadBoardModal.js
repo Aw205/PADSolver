@@ -84,24 +84,34 @@ class LoadBoardModal {
             let df = `<div id="board-${this.boardID}" class="test" style="${borderstyle}"> 
                             ${args[0]} 
                             <input type="text" value= "${args[1]}" class="thumbnail-title"> 
+                            <div class="board-delete-button">
+                                <i class="fa-solid fa-trash-can fa-2xs fa-fw"> </i>
+                            </div>
                         </div>`;
 
             this.boardList.push(args[2]);
             document.getElementById("thumbnail-grid").insertAdjacentHTML('beforeend', df);
             let bid = this.boardID;
 
-            document.getElementById(`board-${this.boardID}`).addEventListener("click", (event) => {
-                let prev = document.querySelector(".test-select");
-                if (prev != null) {
-                    prev.classList.remove("test-select");
-                }
+            let boardEle = document.getElementById(`board-${this.boardID}`);
+            boardEle.addEventListener("click", (event) => {
+
+                document.querySelector(".test-select")?.classList.remove("test-select");
                 event.currentTarget.classList.add("test-select");
                 document.getElementById("selected-board").src = event.currentTarget.firstElementChild.src;
                 this.currBoardModel = this.boardList[bid];
 
             });
+            boardEle.querySelector(".board-delete-button").addEventListener("click",(event)=>{
+                event.stopPropagation();
+                localStorage.removeItem(args[1]);
+                boardEle.remove();
+            });
+
             this.boardID++;
         });
+
+       
     }
 
 

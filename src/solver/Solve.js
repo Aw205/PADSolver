@@ -24,7 +24,7 @@ class Solve {
         let searchedSolutions = [];
 
         let successorSolutions = this.initialSearch();
-      
+
 
         for (let i = 0; i < this.NUM_ITERATIONS; i++) {
 
@@ -44,10 +44,12 @@ class Solve {
                 if (path.length < 2) {
                     continue;
                 }
+                
                 this.updateBoard(path);
 
-                let currentPos = new Phaser.Math.Vector2(path[path.length - 1].x, path[path.length - 1].y);
-                let prevPos = new Phaser.Math.Vector2(path[path.length - 2].x, path[path.length - 2].y);
+                let currentPos = path[path.length - 1];
+                let prevPos = path[path.length - 2];
+
                 let comboList = this.boardModel.calcCombos();
 
                 this.selectedType = this.boardModel.orbs[currentPos.x][currentPos.y];
@@ -79,7 +81,7 @@ class Solve {
         // const timeElapsed = timeEnd - timeStart;
         //console.log("Total search time: " + timeElapsed);
 
-        return {solution: bestSolution, solutionList: searchedSolutions };
+        return { solution: bestSolution, solutionList: searchedSolutions };
 
     }
 
@@ -130,7 +132,7 @@ class Solve {
         }
         if (this.selectedType != board.orbs[prevPos.x][prevPos.y]) {
 
-            let newComboList = board.calcCombos();  
+            let newComboList = board.calcCombos();
             if (newComboList.length < comboList.length - 2) {
                 return new Solution(newComboList, [currentPos]);
             }
@@ -155,7 +157,7 @@ class Solve {
         }
 
         if (depth == 0) {
-            
+
             // if none of the moves are better than current solution then return nothing
             return moves; //successors for beam
         }
@@ -211,10 +213,10 @@ class Solve {
 
     test() {
         //generate random boards
-        // solve and collect stats on random boards
+        //solve and collect stats on random boards
 
         let combos = 0;
-        let iters= 1;
+        let iters = 1;
 
 
         for (let i = 0; i < iters; i++) {
@@ -230,12 +232,12 @@ class Solve {
             this.boardModel.orbs = arr;
             let res = this.beamSearch();
             let num = res.solution.comboList.length
-            combos+= num;
+            combos += num;
 
-            console.log("combos: " + num +" path length: " + res.solution.path.length);
+            console.log("combos: " + num + " path length: " + res.solution.path.length);
         }
 
-        console.log("Average combos: " + combos/iters);
+        console.log("Average combos: " + combos / iters);
 
     }
 }

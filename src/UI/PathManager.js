@@ -74,8 +74,6 @@ class PathManager {
 
     step(direction) {
 
-        //this.board.orbArray[path[0].x][path[0].y].setAlpha(0.5);
-
         let stepIndex = this.pathIndex + direction
         if (stepIndex > -1 && stepIndex < this.path.length) {
             let curr = this.board.orbArray[this.path[this.pathIndex].x][this.path[this.pathIndex].y];
@@ -104,7 +102,6 @@ class PathManager {
         }
 
         if (!this.playing) {
-
             this.playEvent = this.scene.time.addEvent({
                 delay: 500,
                 callback: this.step,
@@ -120,9 +117,6 @@ class PathManager {
         this.playing = false;
         return true;
     }
-
-
-    
 
     createLinePath(path) {
 
