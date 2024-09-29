@@ -218,7 +218,7 @@ input[type="range"] {
 .active {
 
   border-left-color: goldenrod;
-  filter: brightness(0.8);
+  filter: brightness(1.1);
 
 }
 
@@ -375,29 +375,21 @@ input[type="range"] {
 
 .search-bar {
 
-  background-color: black;
+  background-color: rgb(20,20,20);
   font: 1rem kreon;
   color: beige;
-  border-radius: 10px 0 0 10px;
-  border: 1px solid darkGray;
+  border-radius: 0 10px 10px 0;
+  border: none;
 }
 
-.search-button {
+.search-symbol {
 
-  cursor: pointer;
   color: darkGray;
-  background-color: black;
+  background-color: rgb(20,20,20);
   font-size: 1rem;
-  border-radius: 0 10px 10px 0;
-  border: 1px solid darkgray;
-  border-left: none;
+  border-radius: 10px 0 0 10px;
   padding: 1%;
 
-}
-
-.search-button:hover {
-
-  filter: brightness(1.2);
 }
 
 .load-modal {
@@ -424,21 +416,21 @@ input[type="range"] {
 
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
-  gap: 5%;
   padding-top: 5%;
   padding-bottom: 5%;
+  row-gap: 50px;
   height: 50%;
   border-radius: 15px;
   background-color: rgb(40, 40, 40);
   overflow-y: auto;
   justify-items: center;
   border: 0.4rem outset rgba(61, 61, 53, 0.54);
+
 }
 
 #thumbnail-grid::-webkit-scrollbar-thumb {
   background: rgb(60, 60, 60);
   border-radius: 10px;
-
 }
 
 #thumbnail-grid::-webkit-scrollbar {
@@ -450,10 +442,10 @@ input[type="range"] {
   border-radius: 20px;
   background-color: rgb(35, 35, 35);
   border: 0.5rem ridge;
-  aspect-ratio: 6/5;
-  width: 60%;
   padding: 5%;
-  padding-bottom: 0px;
+  padding-bottom: 10%;
+  height: 170px;
+  width: 170px;
   cursor: pointer;
   transition: transform 0.2s;
   transform-style: preserve-3d;
@@ -507,7 +499,7 @@ input[type="range"] {
   font: 1rem kreon;
   width: 90%;
   position: relative;
-  top: -8%;
+  /* top: -8%; */
   color: beige
 }
 
@@ -516,7 +508,6 @@ input[type="range"] {
   display: flex;
   background-color: rgb(45, 45, 45);
   height: 15%;
-  /* border: 1px solid dimgray; */
   font: 1rem kreon;
   color: gray;
   align-items: center;

@@ -14,7 +14,10 @@ class PathManager {
         this.createPathButtons();
 
         this.initialBoard = null;
+        this.finalBoard = null;
         this.g = this.scene.add.graphics({ lineStyle: { width: 5, color: 0, alpha: 0.8 } });
+
+        this.g.setDepth(10);
     }
 
     createPathButtons() {
@@ -50,19 +53,7 @@ class PathManager {
         });
 
         document.getElementById("last-button").addEventListener("pointerup", () => {
-
-            let copy = [...this.initialBoard].map(row => [...row])
-            for (let i = 0; i < this.path.length - 1; i++) {
-
-                let row = this.path[i].x;
-                let row2 = this.path[i + 1].x;
-                let col = this.path[i].y
-                let col2 = this.path[i + 1].y;
-
-                [copy[row][col], copy[row2][col2]] = [copy[row2][col2], copy[row][col]];
-            }
-
-            this.scene.board.setBoard(copy)
+            this.scene.board.setBoard(this.finalBoard)
             this.pathIndex = this.path.length - 1;
         });
 
@@ -76,9 +67,9 @@ class PathManager {
 
         let stepIndex = this.pathIndex + direction
         if (stepIndex > -1 && stepIndex < this.path.length) {
-            let curr = this.board.orbArray[this.path[this.pathIndex].x][this.path[this.pathIndex].y];
-            let target = this.board.orbArray[this.path[stepIndex].x][this.path[stepIndex].y];
-            curr.swapLocations2(target);
+            let curr = this.board.orbArray[this.path[this.pathIndex]];
+            let target = this.board.orbArray[this.path[stepIndex]];
+            curr.swapAnimated(target);
             this.pathIndex += direction;
             return;
         }
@@ -121,15 +112,15 @@ class PathManager {
     createLinePath(path) {
 
         let prevPos = new Phaser.Math.Vector2(0, 0);
-        let startOrb = this.scene.board.orbArray[path[0].x][path[0].y];
+        let startOrb = this.scene.board.orbArray[path[0]];
         let sp = new Phaser.Curves.Spline([startOrb.x, startOrb.y]);
         let visited = [];
         let offset = 0;
 
         for (let i = 0; i < path.length - 1; i++) {
 
-            let curr = this.scene.board.orbArray[path[i].x][path[i].y];
-            let target = this.scene.board.orbArray[path[i + 1].x][path[i + 1].y];
+            let curr = this.scene.board.orbArray[path[i]];
+            let target = this.scene.board.orbArray[path[i + 1]];
 
             let dx = target.x - curr.x;
             let dy = target.y - curr.y;
@@ -167,22 +158,27 @@ class PathManager {
 
         sp.draw(this.g, sp.points.length - 1);
 
-        this.g.fillStyle(0x33cc33, 1);
+        this.g.fillStyle(0x33cc33, 0.5);
         this.g.fillCircle(start.x, start.y, 10);
 
-        this.g.fillStyle(0xff0000, 1);
+        this.g.fillStyle(0xff0000, 0.5);
         this.g.fillCircle(end.x, end.y, 10);
 
-        this.g.fillStyle(0, 1);
+        this.g.fillStyle(0, 0.5);
         this.g.strokeCircle(start.x, start.y, 10);
         this.g.strokeCircle(end.x, end.y, 10);
+
+        // let follower = new Phaser.GameObjects.PathFollower(this.scene,sp,start.x,start.y,"fire");
+        // follower.setAlpha(0.8).setScale(0.5);
+        // this.scene.add.existing(follower);
+        // follower.startFollow({duration: path.length*500});
 
     }
 
     calcPathOffset(path, currentIndex, currDir, visited) {
 
         for (let i = currentIndex; i < path.length - 1; i++) {
-            let found = visited.find(p => p.position.equals(path[i]));
+            let found = visited.find(p => p.position == path[i]);
             if (found != null && currDir == found.direction) {
                 return 20;
             }
@@ -195,7 +191,7 @@ class PathManager {
 
 
     getDirection(curr, prev) {
-        return (curr.x - prev.x) == 0 ? "vertical" : "horizontal";
+        return Math.abs(curr - prev) == 1 ? "horizontal" : "vertical";
 
     }
 
@@ -223,12 +219,17 @@ class PathManager {
 
     setPath(path) {
 
-        this.g.clear();
+        this.g.clear(); // set depth also so it displays above the orbs
         this.pathIndex = 0;
         this.scene.board.setBoard(this.initialBoard);
         this.createLinePath(path);
         this.path = path;
-        
+
+        let copy = [...this.initialBoard];
+        for (let i = 0; i < path.length - 1; i++) {
+            [copy[path[i]], copy[path[i+1]]] = [copy[path[i+1]], copy[path[i]]];
+        }
+        this.finalBoard = copy;        
     }
 
 }

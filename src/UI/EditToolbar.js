@@ -77,7 +77,7 @@ class EditToolbar {
                 this.scene.input.setDefaultCursor(`url(assets/UI/paintbrush.svg) 0 64, auto`);
                 this.scene.input.on("pointermove", (pointer, currentlyOver) => {
                     if (pointer.isDown && currentlyOver.length > 0) {
-                        currentlyOver[0].orb.changeType(ids.indexOf(id));
+                        currentlyOver[0].orb.setType(ids.indexOf(id));
                     }
                 });
                 this.scene.board.setOrbInteractive(false);

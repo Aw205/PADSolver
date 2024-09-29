@@ -28,6 +28,7 @@ class BoardScene extends Phaser.Scene {
         new LoadBoardModal(this);
         this.createDialogListeners();
         new MessageLog(this);
+        BoardModel.precalculateOrbSwaps();
 
     }
 
@@ -98,17 +99,16 @@ class BoardScene extends Phaser.Scene {
             if (!this.board.solveInProgress) {
                
                 if(document.getElementById("shuffle-toggle").classList.contains("button-activate")){
-                    if(this.board.orbArray.flat().some(item => item === null)){
+                    if(this.board.orbArray.some(item => item === null)){
                         this.events.emit("message log",MessageLog.ERROR,"Can't shuffle incomplete board");
                         return;
                     }
-                    let model = this.board.getNumericModel().flat().sort((a, b) => 0.5 - Math.random());
-                    let arr =  Array.from({ length: 5 }, (_, rowIndex) => model.slice(rowIndex * 6, (rowIndex + 1) * 6));
-                    this.board.setBoard(arr);
+                    let model = this.board.getNumericModel().sort((a, b) => 0.5 - Math.random());
+                    this.board.setBoard(model);
                     return;
                 }
                 this.events.emit("message log", MessageLog.STANDARD,"Randomized board");
-                const arr = Array.from({ length: 5 }, () => Array.from({ length: 6 }, () => Phaser.Math.Between(0, 5)));
+                const arr = Array.from({ length: 30 }, () =>  Phaser.Math.Between(0, 5));
                 this.board.setBoard(arr);
                 this.board.setOrbInteractive(true);
 
@@ -137,7 +137,7 @@ class BoardScene extends Phaser.Scene {
 
                     let model = this.board.getNumericModel();
                     let res = new Solve(model).beamSearch();
-            
+    
                     document.getElementById("solve-button").classList.remove("button--loading");
 
                     this.statWindow.updateStats(res);

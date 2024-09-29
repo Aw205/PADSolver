@@ -1,5 +1,5 @@
 
-const OrbType = Object.freeze({ FIRE: 0, WATER: 1, WOOD: 2, LIGHT: 3, DARK: 4, HEART: 5 });
+const ORB_TYPE_TO_TEXTURE_KEY = Object.freeze(["fire","water","wood","light","dark","heart"]);
 
 class Orb extends Phaser.GameObjects.Image {
 
@@ -9,9 +9,7 @@ class Orb extends Phaser.GameObjects.Image {
     constructor(scene, x, y, texture) {
         super(scene, x, y, texture);
 
-        this.type = null; //number
-
-        this.isVisited = false;
+        this.type = null; 
         this.slot = null;
         this.shadow = this.scene.add.image(x, y, texture).setAlpha(0.4).setVisible(false);
         this.hasSwapped = false;
@@ -34,7 +32,7 @@ class Orb extends Phaser.GameObjects.Image {
             this.setPosition(dragX, dragY);
         });
         this.on("dragenter", (pointer, target) => {
-            this.swapLocations(target);
+            this.swap(target);
         });
         this.on("drop", (pointer, target) => {
             this.onOrbRelease();
@@ -45,9 +43,13 @@ class Orb extends Phaser.GameObjects.Image {
 
     }
 
-    swapLocations(target) {
+    /**
+     * @param {OrbSlot} target 
+     */
+    swap(target) {
 
-        this.scene.board.swapOrbs(this.slot.row, this.slot.col, target.row, target.col);
+        this.scene.board.swapOrbs(this.slot.index, target.index);
+
         target.orb.setPosition(this.slot.x, this.slot.y);
         this.shadow.setPosition(target.x, target.y);
 
@@ -57,11 +59,14 @@ class Orb extends Phaser.GameObjects.Image {
 
     }
 
-    swapLocations2(target) {
+     /**
+     * @param {Orb} target 
+     */
+    swapAnimated(target) {
 
-        this.scene.board.swapOrbs(this.slot.row, this.slot.col, target.slot.row, target.slot.col);
+        this.scene.board.swapOrbs(this.slot.index,target.slot.index);
+        
         this.shadow.setPosition(target.slot.x, target.slot.y);
-
         [target.slot.orb, this.slot.orb] = [this.slot.orb, target.slot.orb];
         [this.slot, target.slot] = [target.slot, this.slot];
 
@@ -72,7 +77,6 @@ class Orb extends Phaser.GameObjects.Image {
             duration: 500,
             ease: Phaser.Math.Easing.Linear,
         });
-        //activeCallback(target, key, value, targetIndex, totalTargets, tween)
     }
 
     addFirstSwapListener() {
@@ -93,10 +97,14 @@ class Orb extends Phaser.GameObjects.Image {
         }
     }
 
-    // type is a number
-    changeType(type) {
-        this.setTexture(typeTextureMap.get(type));
-        this.shadow.setTexture(typeTextureMap.get(type));
+    /**
+     * 
+     * @param {Number} type from 0 - 5 
+     */
+    setType(type) {
+
+        this.setTexture(ORB_TYPE_TO_TEXTURE_KEY[type]);
+        this.shadow.setTexture(ORB_TYPE_TO_TEXTURE_KEY[type]);
         this.type = type;
     }
 

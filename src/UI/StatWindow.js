@@ -57,8 +57,8 @@ class StatWindow {
 
                 let comboHtml = ``;
                 for (let combo of result.solutionList[i].comboList) {
-                    let color = typeTextureMap.get(combo.color);
-                    let c = color.charAt(0).toUpperCase()+ color.slice(1);
+                    let color = ORB_TYPE_TO_TEXTURE_KEY[combo.color];
+                    let c = color.charAt(0).toUpperCase() + color.slice(1);
                     comboHtml += ` <img src="assets/UI/${c}.svg" style = "width: 10%; height: 10%; padding: 0px 5px;"> x${combo.number}`;
                 }
                 document.getElementById("combo-paths").innerHTML += `<div class= "orbs-matched" data-path="${i}"> ${comboHtml} </div>`;

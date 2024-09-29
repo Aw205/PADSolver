@@ -1,29 +1,33 @@
+
 class BoardModel {
 
+    static orbMoves = [];
 
     constructor(board) {
 
-        this.HEIGHT = 5;
-        this.WIDTH = 6;
-
         this.orbs = board;
-        this.comboColors = null;
-
-        this.visited = new Array(this.HEIGHT);
-        for (let i = 0; i < this.HEIGHT; i++) {
-            this.visited[i] = new Array(this.WIDTH).fill(false);
+        this.hash = 0;
+        //this.hash = this.getHash();
+        this.zobristOrbNums = new Array(6); //[Type][Index]
+        this.zobristPointerNums = new Array(30);
+        for (let type = 0; type < 6; type++) {
+            this.zobristOrbNums[type] = new Array(30);
+            for (let i = 0; i < 30; i++) {
+                this.zobristOrbNums[type][i] = Phaser.Math.Between(0, Number.MAX_VALUE);
+                this.zobristPointerNums[i] = Phaser.Math.Between(0,Number.MAX_VALUE);
+            }
         }
+        this.visited = 0;
     }
 
     calcCombos() {
-
-        let clone = this.orbs.map(row => [...row]);
+        let clone = [...this.orbs];
 
         let comboList = [];
         let currentCombos = -1;
 
         while (currentCombos != 0) {
-            this.resetVisited();
+            this.visited = 0;
             let newCombos = this.findCombos(clone);
             currentCombos = newCombos.length;
             comboList = comboList.concat(newCombos);
@@ -38,66 +42,50 @@ class BoardModel {
      * @returns list of combos
      */
     findCombos(arr) {
-
+        
         let returnList = [];
 
-        for (let row = 0; row < this.HEIGHT; row++) {
-            for (let col = 0; col < this.WIDTH; col++) {
-
-                let type = arr[row][col];
-                let comboSet = new Set();
-
-                if (type != -1 && !this.visited[row][col]) {
-                    this.visited[row][col] = true;
-                    this.floodfill(arr, row, col, type, comboSet);
-                }
-
-                for (let pos of comboSet) {
-                    arr[pos[0]][pos[1]] = -1;
-                }
-                if (comboSet.size > 2) {
-                    let comboInfo = { color: type, number: comboSet.size };
-                    returnList.push(comboInfo);
-                }
+        for (let i = 0; i < 30; i++) {
+            let type = arr[i];
+            let comboSet = new Set();
+            if (type != -1 && ((this.visited & (1 << i)) == 0)) {
+                this.visited |= 1 << i;
+                this.floodfill(arr, i, type, comboSet);
+            }
+            for (let pos of comboSet) {
+                arr[pos] = -1;
+            }
+            if (comboSet.size > 2) {
+                let comboInfo = { color: type, number: comboSet.size };
+                returnList.push(comboInfo);
             }
         }
-
         return returnList;
     }
 
+    floodfill(arr, index, type, comboSet) {
 
-    floodfill(arr, row, col, type, comboSet) {
-
-        let adj_arr = [];
+        let adj = [];
         let matches = [[], []]; //horizontal and vertical matches
 
-        let x = [-1, 0, 1, 0];
-        let y = [0, 1, 0, -1];
-
-        for (let i = 0; i < 4; i++) {
-            let adjRow = row + x[i];
-            let adjCol = col + y[i];
-            if (this.isInBounds(adjRow, adjCol) && arr[adjRow][adjCol] == type) {
-                (x[i] == 0) ? matches[0].push([adjRow, adjCol]) : matches[1].push([adjRow, adjCol]);
-                if (!this.visited[adjRow][adjCol]) {
-                    adj_arr.push([adjRow, adjCol]);
+        for (let m of BoardModel.orbMoves[index]) {
+            if (arr[m] == type) {
+                (Math.abs(m - index) == 1) ? matches[0].push(m) : matches[1].push(m);
+                if ((this.visited & (1 << m)) == 0) {
+                    adj.push(m);
                 }
             }
         }
-        for (let pos of adj_arr) {
-            this.visited[pos[0]][pos[1]] = true;
-            this.floodfill(arr, pos[0], pos[1], type, comboSet);
+        for (let pos of adj) {
+            this.visited |= 1 << pos;
+            this.floodfill(arr, pos, type, comboSet);
         }
         for (let m of matches) {
             if (m.length == 2) {
-                comboSet.add([row, col]);
-                comboSet.add(m[0]);
-                comboSet.add(m[1]);
-
+                comboSet.add(index).add(m[0]).add(m[1]);
             }
         }
     }
-
 
     simulateGravity(arr, currentCombos) {
 
@@ -105,51 +93,36 @@ class BoardModel {
             return;
         }
         let dropDist = 0;
-        for (let col = 0; col < this.WIDTH; col++) {
-            for (let row = this.HEIGHT - 1; row > -1; row--) {
-                let current = arr[row][col];
-                if (current == -1) {
-                    dropDist++;
+        for (let col = 24; col < 30; col++) {
+            for (let i = col; i > -1; i-=6) {
+                if (arr[i] == -1) {
+                    dropDist+=6;
                     continue;
                 }
-                [arr[row][col], arr[row + dropDist][col]] = [arr[row + dropDist][col], arr[row][col]];
+                [arr[i], arr[i + dropDist]] = [arr[i + dropDist], arr[i]];
             }
             dropDist = 0;
         }
     }
 
-    isInBounds(row, col) {
-        return (row > -1 && row < this.HEIGHT && col > -1 && col < this.WIDTH);
+    swapOrbs(currIdx, targetIdx) {
+        [this.orbs[currIdx], this.orbs[targetIdx]] = [this.orbs[targetIdx], this.orbs[currIdx]];
+        this.hash ^= this.zobristOrbNums[this.orbs[currIdx]][currIdx] ^ this.zobristOrbNums[this.orbs[currIdx]][currIdx] ^ this.zobristPointerNums[currIdx] ^ this.zobristPointerNums[targetIdx];
     }
 
-    swapOrbs(currentPos, targetPos) {
-        let rows = [currentPos.x, targetPos.x];
-        let cols = [currentPos.y, targetPos.y];
-        [this.orbs[rows[0]][cols[0]], this.orbs[rows[1]][cols[1]]] = [this.orbs[rows[1]][cols[1]], this.orbs[rows[0]][cols[0]]];
-    }
-
-    resetVisited() {
-
-        for (let i = 0; i < this.HEIGHT; i++) {
-            for (let j = 0; j < this.WIDTH; j++) {
-                this.visited[i][j] = false;
-            }
-        }
-    }
-
-
+    /**
+     * @param {*} currentPos - position of orb currently held
+     * @returns 
+     */
     getHash(currentPos) {
 
-        let hash = 0;
-        for (let i = 0; i < 5; i++) {
-            for (let j = 0; j < 6; j++) {
-                hash = (hash * 31 + this.orbs[i][j] * 37 + i * 41 + j * 43) & 0xFFFFFFFF;
-            }
+        let hash = this.zobristPointerNums[currentPos];
+        for(let i = 0; i < 30; i++){
+            let type = this.orbs[i];
+            hash ^= this.zobristOrbNums[type][i];
         }
-        return (hash * 53 + currentPos.x * 59 + currentPos.y * 61) & 0xFFFFFFFF;
-
+        return hash; 
     }
-
 
     getStaticEvaluation() {
 
@@ -163,4 +136,25 @@ class BoardModel {
         }
     }
 
+    //x-x-x 0 1 2
+    //x-x-x 3 4 5
+    static precalculateOrbSwaps() {
+
+        for (let i = 0; i < 30; i++) {
+            let legalMoves = [];
+            let possibleMoves = [i + 1, i - 1, i + 6, i - 6];
+            for (let move of possibleMoves) {
+                if (move > -1 && move < 30) {
+                    if (Math.abs(move - i) == 1) {
+                        if( Math.floor(move / 6) == Math.floor(i / 6)){
+                            legalMoves.push(move);
+                        }
+                        continue;
+                    }
+                    legalMoves.push(move);
+                }
+            }
+            BoardModel.orbMoves.push(legalMoves);
+        }
+    }
 }

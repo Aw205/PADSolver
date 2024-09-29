@@ -1,28 +1,37 @@
 # PAD Solver
 A Puzzles & Dragons simulator and solver. 
 
-<img src="assets/images/padsolver_example.png" alt="example"/>
+<img src="assets/images/padsolver_example.png">
 
 ## Features
 
 ### Board Simulation  
 
-Combo as you would in game. In order to begin comboing, the board must not have empty orb slots. There also exists toggles for skyfalls and a movement timer.
-
-> [!TIP]
-> Use in conjunction with the path overlay to practice solutions!
+Combo as you would in game. There are toggles beside the board to customize various board settings like skyfalls. 
 
 ### Board Solve
 
-Use the solve button to generate a list of paths in the solutions window. Currently, the solutions prioritize combo count > path length. Select paths in the solutions window to view their stats and to display the path overlay on the board. The start and end point of the paths are indicated by the green and red dots respectively.
+Use the solve button to generate a list of paths in the solutions window. Currently, the solutions prioritize combo count > path length. Select paths in the solutions window to view their stats and to display the path overlay on the board. The start and end point of the paths are indicated by the green and red dots respectively. Combo with the path overlay to practice solutions!
 
 ### Save/Load Boards
 
-If you have any specific boards you want to revisit or practice, this is an easy way to do so! Note that you can also upload screenshots (ideally taken from inside the game) to load a board.
+Save and load boards for future use! This is useful if you want to practice on specific boards or common configurations.
+
+<img src="assets/images/padsolver_load_example.png">
+
+> [!TIP]
+> You can also upload screenshots (ideally taken from inside the game) to load a board.
 
 ### Board Editing
 
-There is a toolbar at the located towards the bottom of the page that allows for intuitive board editing. Paint orbs onto the board with the orb palette, convert orbs from one type to another, or just simply shuffle orbs without triggering combos.
+Use the toolbar for intuitive board editing. 
+
+<img src="assets/images/padsolver_toolbar_example.png">
+
+- `Orb Palette` - Paint orbs onto the board by selecting an orb type and dragging across the board.
+- `Orb Convert` - Change orb types by toggling the appropriate orb types for the before and after.
+- `Change the World` - Allows shuffling of orbs without triggering combos.
+
 
 ## Related
 

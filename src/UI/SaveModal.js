@@ -61,7 +61,7 @@ class SaveModal {
                 boardName = "Untitled";
             }
             localStorage.setItem(boardName, JSON.stringify(this.currBoardModel));
-            this.scene.events.emit("saveBoard", [this.thumbnailHTML, boardName, this.currBoardModel]);
+            this.scene.events.emit("saveBoard", {imageHTML: this.thumbnailHTML, name: boardName, model: this.currBoardModel });
         });
 
     }
@@ -71,12 +71,11 @@ class SaveModal {
         let canvas = document.getElementById('loadBoardCanvas');
         let ctx = canvas.getContext('2d');
         let orbSize = 50;
-        for (let row = 0; row < board.length; row++) {
-            for (let col = 0; col < board[row].length; col++) {
-                let i = board[row][col];
-                ctx.drawImage(SaveModal.pixelOrbs[i], col * orbSize, row * orbSize, orbSize, orbSize);
-            }
+
+        for(let i = 0; i< 30;i++){
+            ctx.drawImage(SaveModal.pixelOrbs[board[i]], (i%6) * orbSize, Math.floor(i/6) * orbSize, orbSize, orbSize);
         }
+
         let url = canvas.toDataURL('image/png');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         return `<img src="${url}" class="thumbnail">`;

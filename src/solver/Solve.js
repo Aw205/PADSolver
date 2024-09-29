@@ -1,9 +1,9 @@
-
 class Solve {
 
-    constructor(board, depth, beamWidth, numIterations) {
+    constructor(board) {
 
         this.boardModel = new BoardModel(board);
+
         this.transpositionTable = new Map();
         this.DEPTH_LIMIT = 10;
         this.BEAM_WIDTH = 15;
@@ -14,7 +14,6 @@ class Solve {
 
     /**
      * Where the solve starts. 
-     * 
      * @returns {Solution} bestSolution: {combo List ,path} solutionList
      */
     beamSearch() {
@@ -22,9 +21,7 @@ class Solve {
         const timeStart = performance.now();
 
         let searchedSolutions = [];
-
         let successorSolutions = this.initialSearch();
-
 
         for (let i = 0; i < this.NUM_ITERATIONS; i++) {
 
@@ -44,15 +41,14 @@ class Solve {
                 if (path.length < 2) {
                     continue;
                 }
-                
+
                 this.updateBoard(path);
 
                 let currentPos = path[path.length - 1];
                 let prevPos = path[path.length - 2];
-
+                this.selectedType = this.boardModel.orbs[currentPos];
                 let comboList = this.boardModel.calcCombos();
 
-                this.selectedType = this.boardModel.orbs[currentPos.x][currentPos.y];
 
                 let solutions = this.search(this.boardModel, prevPos, currentPos, comboList, 0);
 
@@ -61,12 +57,11 @@ class Solve {
                 for (let s of solutions) {
                     s.path = [...path, ...s.path];
                 }
-
                 successorSolutions.push(...solutions);
             }
         }
 
-        searchedSolutions.push(...successorSolutions);
+        searchedSolutions = searchedSolutions.concat(successorSolutions);
         searchedSolutions.sort((a, b) => {
             if (a.comboList.length == b.comboList.length) {
                 return a.path.length - b.path.length;
@@ -76,10 +71,12 @@ class Solve {
 
         let bestSolution = searchedSolutions[0];
 
-        // console.log("searched solutions best: combos: " + bestSolution.comboList.length + "path: " + bestSolution.path.length );
+        console.log("searched solutions best: combos: " + bestSolution.comboList.length + "path: " + bestSolution.path.length );
         // const timeEnd = performance.now();
         // const timeElapsed = timeEnd - timeStart;
-        //console.log("Total search time: " + timeElapsed);
+        // console.log("Total search time: " + timeElapsed);
+
+        //let solutions = this.search(this.boardModel, 0, 0, [], 0);
 
         return { solution: bestSolution, solutionList: searchedSolutions };
 
@@ -87,60 +84,31 @@ class Solve {
 
     /**
      * Starts a search from every position on the board.
-     * 
      * @returns The results obtained at each position.
      */
     initialSearch() {
 
-        let results = [];
+        let successorSolutions = [];
         let comboList = this.boardModel.calcCombos();
 
-        for (let row = 0; row < 5; row++) {
-            for (let col = 0; col < 6; col++) {
-
-                let currentPos = new Phaser.Math.Vector2(row, col);
-                let prevPos = new Phaser.Math.Vector2(row, col);
-                this.selectedType = this.boardModel.orbs[row][col];
-                let res = this.search(this.boardModel, prevPos, currentPos, comboList, 0);
-                for (let r of res) {
-                    r.path.unshift(currentPos);
-                }
-                results.push(...res);
+        for (let i = 0; i < 30; i++) {
+            this.selectedType = this.boardModel.orbs[i];
+            let res = this.search(this.boardModel, i, i, comboList, 0);
+            for (let r of res) {
+                r.path.unshift(i);
             }
+            successorSolutions.push(...res);
         }
-
-        return results;
+        return successorSolutions;
     }
 
-
-    // return value is solution in the form [combo count, [path]]
     search(board, prevPos, currentPos, comboList, depth) {
 
-        this.count++;
-
-        let hash = board.getHash(currentPos);
-        let hashRes = this.transpositionTable.get(hash);
-
-        if (hashRes != undefined && depth < hashRes) {
-            this.transpositionTable.set(hash, depth);
-        }
-        else if (hashRes != undefined) {
-            if (depth == 0) {
-                return [new Solution([], [])];
-            }
-            return new Solution([], []);
-        }
-        if (this.selectedType != board.orbs[prevPos.x][prevPos.y]) {
+        
+        if (this.selectedType != board.orbs[prevPos]) {
 
             let newComboList = board.calcCombos();
-            if (newComboList.length < comboList.length - 2) {
-                return new Solution(newComboList, [currentPos]);
-            }
             comboList = newComboList;
-        }
-
-        if (comboList.length == 0 && depth > 2) {
-            return new Solution([], [currentPos]);
         }
 
         if (depth == this.DEPTH_LIMIT) {
@@ -148,18 +116,17 @@ class Solve {
         }
 
         let moves = [];
-
-        for (let m of this.getValidMoves(prevPos, currentPos)) {
-
-            board.swapOrbs(currentPos, m);
-            moves.push(this.search(board, currentPos, m, comboList, depth + 1));
-            board.swapOrbs(currentPos, m);
+        for(let m of BoardModel.orbMoves[currentPos]){
+            if(m != prevPos){
+                board.swapOrbs(currentPos, m);
+                moves.push(this.search(board, currentPos, m, comboList, depth + 1));
+                board.swapOrbs(currentPos, m);
+            }
         }
 
-        if (depth == 0) {
 
-            // if none of the moves are better than current solution then return nothing
-            return moves; //successors for beam
+        if (depth == 0) {
+            return moves;
         }
 
         let bestMove = moves.reduce((max, current) => {
@@ -170,39 +137,15 @@ class Solve {
         });
 
         if (bestMove.comboList.length <= comboList.length) {
-            this.transpositionTable.set(hash, depth);
             return new Solution(comboList, [currentPos]);
         }
 
         let path = [currentPos, ...bestMove.path];
-        this.transpositionTable.set(hash, depth);
+        //this.transpositionTable.set(this.boardModel.hash,this.DEPTH_LIMIT - depth);
 
         return new Solution(bestMove.comboList, path);
     }
 
-    getValidMoves(prevPos, currentPos) {
-
-
-        let moves = [];
-        let x = [-1, 0, 1, 0]; // -1,0 0,1 1,0 0,-1
-        let y = [0, 1, 0, -1];
-
-        for (let i = 0; i < 4; i++) {
-
-            let adjRow = currentPos.x + x[i];
-            let adjCol = currentPos.y + y[i];
-            let newMove = new Phaser.Math.Vector2(adjRow, adjCol);
-
-            if (this.isInBounds(adjRow, adjCol) && !newMove.equals(prevPos)) {
-                moves.push(newMove);
-            }
-        }
-        return moves;
-    }
-
-    isInBounds(row, col) {
-        return (row > -1 && row < 5 && col > -1 && col < 6);
-    }
 
     updateBoard(path) {
         for (let i = 0; i < path.length - 1; i++) {
@@ -210,23 +153,16 @@ class Solve {
         }
     }
 
-
+    //generate, solve, and collect stats on random boards
     test() {
-        //generate random boards
-        //solve and collect stats on random boards
 
         let combos = 0;
         let iters = 1;
-
-
         for (let i = 0; i < iters; i++) {
 
             const arr = [];
-            for (let i = 0; i < 5; i++) {
-                arr[i] = [];
-                for (let j = 0; j < 6; j++) {
-                    arr[i][j] = Phaser.Math.Between(0, 5);
-                }
+            for (let i = 0; i < 30; i++) {
+                arr[i] = Phaser.Math.Between(0, 1);
             }
 
             this.boardModel.orbs = arr;
@@ -236,9 +172,7 @@ class Solve {
 
             console.log("combos: " + num + " path length: " + res.solution.path.length);
         }
-
         console.log("Average combos: " + combos / iters);
-
     }
 }
 
@@ -248,7 +182,6 @@ class Solution {
      * @param {*} comboList 
      * @param {*} path 
      */
-
     constructor(comboList, path) {
 
         this.comboList = comboList;
