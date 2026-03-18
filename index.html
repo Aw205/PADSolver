@@ -5,86 +5,393 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A Puzzles & Dragons board simulator and solver.">
-    <link rel="icon" type="image/png" href="assets/images/bastet.png">
-    <link rel="stylesheet" href="src/styles/fontawesome-free-6.5.1-web/css/all.min.css">
+    <meta name="description"
+        content="Test your skills on custom boards or have the solver generate a solution for you. Share your results with others and save your boards to your collection!">
+    <link rel="icon" type="image/webp" href="assets/images/padsolver_logo.webp">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kreon:wght@300..700" rel="stylesheet">
     <link rel="stylesheet" href="src/styles/main.css">
-    <title> PAD solver and simulator </title>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100&icon_names=add_circle,arrow_circle_down,background_dot_small,comment,conversion_path,delete,discover_tune,edit_square,keyboard_arrow_left,keyboard_arrow_right,leaderboard,menu,palette,pause,play_arrow,save,search,settings,share,shuffle,skip_next,skip_previous,swap_horizontal_circle,timer,translate,wand_stars" />
+    <title> PAD Solver & Simulator | Puzzles & Dragons </title>
 
     <style>
         body {
             background-color: rgb(25, 25, 25);
         }
+
         @font-face {
-            font-family: "kreon";
-            src: url('assets/fonts/Kreon-Regular.ttf');
+            font-family: "rowdy";
+            src: url('assets/fonts/Rowdy-Regular.ttf');
         }
     </style>
+
 </head>
 
 <body>
 
-    <!-- LOGO-->
+    <div class="main-container">
 
-    <div
-        style="position: absolute;  display: inline-block; height: 100%; width: 12%; top:0; left: 0; background-color: rgb(30, 30, 30);">
+       
+        <menu class="main-menu">
+            <button id="menu-button">
+                <span class="material-symbols-outlined" style="font-size: 2rem; color: beige;">menu</span>
+            </button>
+            <div>
+                <span style="background-image: linear-gradient(pink, magenta);
+                color: transparent;
+                background-clip: text; font: 2rem rowdy;">PAD&nbsp;</span>
+                <span style="color: orange; font: 2rem rowdy; background-image: linear-gradient(orange, coral);
+                color: transparent;
+                background-clip: text;">Solver</span>
+                <hr
+                    style="border: none; border-top: 1px solid dimgray;  border-image: linear-gradient(to right, pink, coral) 1;">
+            </div>
+
+            <div class="menu-icons" style="display: none;">
+                <!-- <div class="solver-config-button">
+                    <span class="material-symbols-outlined menu-icon">conversion_path</span>Solver & Stats
+                </div> -->
+                <div class="settings-button">
+                    <span class="material-symbols-outlined menu-icon">settings</span>Settings
+                </div>
+                <div class="load-board-button">
+                    <span class="material-symbols-outlined menu-icon">background_dot_small</span>Load Board
+                </div>
+                <div class="comment-button">
+                    <span class="material-symbols-outlined menu-icon">comment</span>Comment
+                </div>
+                <div class="language-button">
+                    <span class="material-symbols-outlined menu-icon">translate</span>Language
+                </div>
+            </div>
+
+        </menu>
+
+        <div class="sidebar-container">
+            <div style="padding: 1rem;">
+                <span style="background-image: linear-gradient(pink, magenta);
+                color: transparent;
+                background-clip: text; font: 2rem rowdy;">PAD&nbsp;</span>
+                <span style="color: orange; font: 2rem rowdy; background-image: linear-gradient(orange, coral);
+                color: transparent;
+                background-clip: text;">Solver</span>
+                <hr
+                    style="border: none; border-top: 1px solid dimgray;  border-image: linear-gradient(to right, pink, coral) 1;">
+            </div>
+            <div class="sidebar-button settings-button">
+                <span class="material-symbols-outlined" style="width: 15%; font-size: 2rem;">settings</span>
+                <span data-i18n="settings"></span>
+            </div>
+            <div class="sidebar-button load-board-button">
+                <span class="material-symbols-outlined" style="width: 15%; font-size: 2rem;">background_dot_small</span>
+                <span data-i18n="load board"></span>
+            </div>
+            <div class="sidebar-button comment-button">
+                <span class="material-symbols-outlined" style="width: 15%; font-size: 2rem;">comment</span>
+                <span data-i18n="comment"></span>
+            </div>
+            <div class="sidebar-button language-button">
+                <span class="material-symbols-outlined" style="width: 15%; font-size: 2rem;">translate</span>
+                <span data-i18n="language"></span>
+            </div>
+           
+        </div>
+
+        <div class="solver-config-container">
+
+            <button style="color:orange; position: absolute; left:100%; top: 0;background-color: rgb(20,20,20); border: none; border-radius: 0 5px 5px 0; font-size: 2rem; cursor: pointer;" class="solver-config-button">
+                
+                <span class="material-symbols-outlined">conversion_path</span>
+            
+            </button>
+
+            <details open>
+                <summary>
+                    <span class="material-symbols-outlined">discover_tune</span>
+                    <span data-i18n="solver configuration"></span>
+                    <span>&#9654;</span>
+                </summary>
+                <div class="config-container">
+                    <!-- <div class="save-load-container">
+                        <select>
+                            <option value="" disabled selected hidden>Load</option>
+                        </select>
+
+                        <span style="user-select: none;">|</span>
+                        <button
+                            style="color: darkgray; border-radius: 5px;background-color: rgb(30, 30, 30); font: 1rem kreon;">Save</button>
+                    </div> -->
+                    <div class="start-position-input-container">
+                        <div data-i18n="starting position"></div>
+                        <span class="material-symbols-outlined" id="position-edit-icon">edit_square</span>
+                    </div>
+                    <p data-i18n="combo weight"></p>
+                    <div class="orb-weight-container">
+                        <combo-config></combo-config>
+                    </div>
+                    <span class="material-symbols-outlined add-config-button">add_circle</span>
+                </div>
+            </details>
+
+            <details open>
+                <summary>
+                    <span class="material-symbols-outlined">leaderboard</span>
+                    <span data-i18n="statistics"></span>
+                    <span>&#9654;</span>
+                </summary>
+
+                <div class="stats-container">
+
+                    <details open>
+                        <summary data-i18n="manual solve">Manual solve</summary>
+                        <table class="styled-table">
+                            <caption><span class="manual-solve-timestamp">n/a</span></caption>
+                            <tbody>
+                                <tr>
+                                    <td data-i18n="combos">Combos</td>
+                                    <td id="combo-count">--</td>
+                                </tr>
+                                <tr>
+                                    <td data-i18n="path length">Path length</td>
+                                    <td id="path-length-count">--</td>
+                                </tr>
+                                <tr>
+                                    <td data-i18n="direction change">Direction change</td>
+                                    <td id="direction-change-count">--</td>
+                                </tr>
+                                <tr>
+                                    <td data-i18n="orbs cleared">Orbs cleared</td>
+                                    <td id="orb-clear-count">--</td>
+                                </tr>
+                                <tr>
+                                    <td data-i18n="time">Time (s)</td>
+                                    <td id="time-count">--</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </details>
+
+                    <details>
+                        <summary data-i18n="auto solve">Auto solve</summary>
+                        <table class="styled-table">
+                            <tbody>
+                                <tr>
+                                    <td data-i18n="score">Score</td>
+                                    <td id="score-count">--</td>
+                                </tr>
+                                <tr>
+                                    <td data-i18n="combos">Combos</td>
+                                    <td id="auto-combo-count">--</td>
+                                </tr>
+                                <tr>
+                                    <td data-i18n="path length">Path length</td>
+                                    <td id="auto-path-length-count">--</td>
+                                </tr>
+                                <tr>
+                                    <td data-i18n="direction change">Direction change</td>
+                                    <td id="auto-direction-change-count">--</td>
+                                </tr>
+                                <tr>
+                                    <td data-i18n="orbs cleared">Orbs cleared</td>
+                                    <td id="auto-orb-clear-count">--</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </details>
+                </div>
+            </details>
+
+            <details open>
+                <summary id="solution-window" class="solution-summary">
+                    <span class="material-symbols-outlined">conversion_path</span>
+                    <span data-i18n="solutions"></span>
+                    <span>&#9654;</span>
+                </summary>
+
+                <input type="checkbox" id="path-checkbox" checked>
+                <label style="color: beige; font: 1rem kreon; user-select: none;" for="path-checkbox"
+                    data-i18n="show path"></label>
+
+                <div id="combo-paths" style="margin-top: 1rem;">
+                    <span data-i18n="solve a board!">Solve a board!</span>
+                </div>
+            </details>
+
+        </div>
+
+        <div class="board-grid-container">
+            <div class="board-position-container">
+                <div class="board-toolbar-container">
+                    <div id="board-edit-toolbar">
+                        <div>
+                            <div class="tooltip">
+                                <span id="save-modal-open-button" class="material-symbols-outlined"
+                                    style="font-size: 2rem;">save</span>
+                                <div class="tooltiptext" data-i18n="save"></div>
+                            </div>
+
+                            <div class="share-button tooltip">
+                                <span class="material-symbols-outlined"
+                                    style="color: beige; font-size: 2rem;">share</span>
+                                <div class="tooltiptext" data-i18n="share"></div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; border: 1px solid dimgray; height: fit-content;">
+
+                            <div id="timer-toggle" class="tooltip">
+                                <div id="timer-container">
+                                    <span class="material-symbols-outlined" style="font-size: 2rem;">timer</span>
+                                    <input id="timer-input" type="number" placeholder="move time" min="1" step="0.1"
+                                        style="display: none;" />
+                                    <div class="tooltiptext" data-i18n="timer"></div>
+                                </div>
+                            </div>
+
+                            <div id="shuffle-toggle" class="tooltip">
+                                <span class="material-symbols-outlined"
+                                    style="color: inherit; font-size: 2rem;">shuffle</span>
+                                <div class="tooltiptext" data-i18n="shuffle"></div>
+                            </div>
+
+                            <div id="skyfall-toggle" class="tooltip">
+                                <span class="material-symbols-outlined"
+                                    style="font-size: 2rem;">arrow_circle_down</span>
+                                <div class="tooltiptext" data-i18n="skyfall"></div>
+                            </div>
+
+                            <div id="free-move-toggle"
+                                style="color: darkgray; white-space: nowrap; align-items: center; display: flex;">
+                                <span data-i18n="free move"></span>
+                            </div>
+
+                        </div>
+
+                        <div style="display: flex; border: 1px solid dimgray; height: fit-content;" class="board-edit">
+
+                            <div id="palette-toggle" class="tooltip" data-type="Fire">
+                                <span class="material-symbols-outlined" style="font-size: 2rem;">palette</span>
+                                <div class="tooltiptext" data-i18n="orb palette"></div>
+                            </div>
+
+                            <div class="tooltip orb-modifier-container" data-modifier="enhance">
+                                <span class="material-symbols-outlined" style="font-size: 2rem;">wand_stars</span>
+                                <div class="tooltiptext" data-i18n="orb modifiers"></div>
+                            </div>
+
+                            <div class="tooltip orb-change-button-container">
+                                <span class="material-symbols-outlined"
+                                    style="font-size: 2rem;">swap_horizontal_circle</span>
+                                <div class="tooltiptext" data-i18n="orb convert"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="auxiliary-container">
+                        <div class="palette-container">
+                            <img src="assets/UI/fire.svg" data-type="Fire" draggable="false" class="palette-active">
+                            <img src="assets/UI/water.svg" data-type="Water" draggable="false">
+                            <img src="assets/UI/wood.svg" data-type="Wood" draggable="false">
+                            <img src="assets/UI/light.svg" data-type="Light" draggable="false">
+                            <img src="assets/UI/dark.svg" data-type="Dark" draggable="false">
+                            <img src="assets/UI/heart.svg" data-type="Heart" draggable="false">
+                        </div>
+                        <div class="orb-change-container">
+                            <div class="from-orbs">
+                                <img src="assets/UI/fire.svg" data-type="Fire" draggable="false">
+                                <img src="assets/UI/water.svg" data-type="Water" draggable="false">
+                                <img src="assets/UI/wood.svg" data-type="Wood" draggable="false">
+                                <img src="assets/UI/light.svg" data-type="Light" draggable="false">
+                                <img src="assets/UI/dark.svg" data-type="Dark" draggable="false">
+                                <img src="assets/UI/heart.svg" data-type="Heart" draggable="false">
+                            </div>
+                            <button class="orb-change-button">➜</button>
+                            <img src="assets/UI/fire.svg" id="to-orb" data-type="Fire">
+
+                        </div>
+                        <div class="modifier-container">
+                            <img src="assets/UI/plus.svg" data-modifier="enhance" class="">
+                            <img src="assets/UI/sunglasses.svg" data-modifier="blind">
+                            <img src="assets/UI/roulette.svg" data-modifier="roulette">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="board-container"></div>
+                <div class="board-edit-container">
+                    <div id="path-button-container">
+                        <span id="first-button" class="material-symbols-outlined path-button"
+                            aria-label="First">skip_previous</span>
+                        <span id="prev-button" class="material-symbols-outlined path-button"
+                            aria-label="Previous">keyboard_arrow_left</span>
+                        <span id="play-button" class="material-symbols-outlined path-button"
+                            aria-label="Play or Pause">play_arrow</span>
+                        <span id="next-button" class="material-symbols-outlined path-button"
+                            aria-label="Next">keyboard_arrow_right</span>
+                        <span id="last-button" class="material-symbols-outlined path-button"
+                            aria-label="Last">skip_next</span>
+                    </div>
+                    <div class="board-button-container">
+                        <button id="randomize-button" data-i18n="randomize"></button>
+                        <button id="reset-button" data-i18n="reset"></button>
+                        <button id="solve-button"><span data-i18n="solve"></span></button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 
+    
 
-    <div style="position: absolute; top: 0; left: 0; height: 10%;  width: 12%;">
+    <settings-modal></settings-modal>
+    <to-orb-modal></to-orb-modal>
+    <language-modal></language-modal>
+    <save-board-modal></save-board-modal>
+    <load-board-modal></load-board-modal>
+    <position-select-modal></position-select-modal>
+    <comment-modal></comment-modal>
 
-        <div id="logo-container">
-            <img id="bastet-logo" src="assets/images/bastet.png" style=" width: 40%; padding-right: 3%;"> PAD&nbsp;<span
-                style="color: rgb(160,180,160);">solver</span>
-        </div>
-        <div id="show-dialog-button" class="sidebar-button">
-            <img src="assets/UI/cog.svg" style="transition: transform 0.3s ease;"> Settings
-        </div>
-        <div id="load-board-button" class="sidebar-button">
-            <img src="assets/UI/board.svg" style="width: 15%; height: auto;"> Load Board
-        </div>
-    </div>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@v3.87.0/dist/phaser.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
-    <div id="github-link">
-        <a href="https://github.com/Aw205/PADSolver">
-            <i class="fa-brands fa-github git-img" style=" color:gray; font-size: 4rem;"></i>
-        </a>
-    </div>
+    <script src="src/LocalStorageService.js"></script>
+    <script src="./src/UI/toolbar.js"></script>
+    <script src="./src/UI/TestShader.js"></script>
 
-    <div
-        style="position: absolute;  display: inline-block; height: 20%; width: 30%; bottom:10px; right: 0; background-color: rgba(45, 45, 45, 0.647);">
+    <script type="module" src="src/components/combo-config.js"></script>
+    <script type="module" src="src/components/solver-solution.js"></script>
+    <script type="module" src="src/components/position-select-modal.js"></script>
+    <script type="module" src="src/components/comment-modal.js"></script>
+    <script type="module" src="src/components/save-board-modal.js"></script>
+    <script type="module" src="src/components/load-board-list-item.js"></script>
+    <script type="module" src="src/components/load-board-modal.js"></script>
+    <script type="module" src="src/components/language-modal.js"></script>
+    <script type="module" src="src/components/to-orb-modal.js"></script>
+    <script type="module" src="src/components/settings-modal.js"></script>
 
-        <div id="chat-header">
-            <i class="fa-regular fa-newspaper"
-                style="color: gray; font-size: 1.5rem; padding-right: 1%; padding-left: 1%;"></i> Log
-        </div>
-        <div id="chat-box"></div>
+    <script type="module" src="src/UI/Board.js"></script>
+    <script type="module" src="src/solver/BoardModel.js"></script>
+    <script type="module" src="src/solver/Solve.js"></script>
+    <script type="module" src="src/solver/worker.js"></script>
+    <script type="module" src="src/scenes/BoardScene.js"></script>
+    <script type="module" src="src/Main.js"></script>
 
-    </div>
+  
+    <script src="src/UI/Orb.js"></script>
+    <script src="src/UI/OrbSlot.js"></script>
+    <script src="src/UI/PathManager.js"></script>
+    <script src="src/UI/EditToolbar.js"></script>
 
+    
+    <script src="src/scenes/LoadingScreen.js"></script>
 
-    <script src="./lib/phaser.min.js"></script>
-    <script src="./src/UI/Board.js"></script>
-    <script src="./src/UI/Orb.js"></script>
-    <script src="./src/UI/OrbSlot.js"></script>
-    <script src="./src/UI/PathManager.js"></script>
-    <script src="./src/UI/SaveModal.js"></script>
-    <script src="./src/UI/MessageLog.js"></script>
-    <script src="./src/UI/EditToolbar.js"></script>
-    <script src="./src/UI/StatWindow.js"></script>
-    <script src="./src/UI/SettingModal.js"></script>
-    <script src="./src/UI/ImageProcessor.js"></script>
-    <script src="./src/UI/LoadBoardModal.js"></script>
-    <script src="./src/solver/BoardModel.js"></script>
-    <script src="./src/solver/Solve.js"></script>
-    <script src="./src/scenes/LoadingScreen.js"></script>
-    <script src="./src/scenes/BoardScene.js"></script>
-    <script src="./src/Main.js"></script>
     <canvas id="myCanvas" hidden="hidden"></canvas>
-
-    <script async src="./lib/docs.opencv.org_3.3.1_opencv.js" type="text/javascript"></script>
-
-    <canvas id="loadBoardCanvas" width="300" height="250" hidden="hidden"></canvas>
+    <canvas id="loadBoardCanvas" width="65" height="54" hidden="hidden"></canvas>
 
 </body>
 

@@ -1,12 +1,18 @@
 'use strict';
 
+import BoardScene from "./scenes/BoardScene.js";
+
 let config = {
   type: Phaser.WEBGL,
-  parent: window,
-  width: 1280,
-  height: 960,
+  parent: 'board-container',
+  width: Orb.HEIGHT * 6,
+  height: Orb.HEIGHT * 5,
   resolution: window.devicePixelRatio,
-  scene: [LoadingScreen,BoardScene],
+  scene: [LoadingScreen, BoardScene],
+  transparent: true,
+  input:{
+    windowEvents: false
+  },
   scale: {
     mode: Phaser.Scale.FIT
   },
@@ -18,4 +24,4 @@ let config = {
   }
 };
 
-let game = new Phaser.Game(config);
+const game = new Phaser.Game(config);

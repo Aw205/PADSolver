@@ -32,12 +32,6 @@ class LoadingScreen extends Phaser.Scene {
     }
 
     createProgressBar() {
-
-        this.add.dom(game.config.width / 2, game.config.height / 2 - 50).createFromHTML(`<p style = "user-select:none; font: 32px kreon; color: white;" > Loading... </p>`);
-        let progressBar = this.add.dom(game.config.width / 2, game.config.height / 2).createFromHTML(`<progress id = "progress-bar" max="100" value="0"></progress>`).getChildByID("progress-bar");
-        this.load.on("progress", (progress) => {
-            progressBar.value = progress * 100;
-        }, this);
         this.load.once("complete", () => {
             this.load.off("progress");
             this.scene.start("BoardScene");

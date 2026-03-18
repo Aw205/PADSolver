@@ -1,42 +1,55 @@
-
-const ORB_TYPE_TO_TEXTURE_KEY = Object.freeze(["fire","water","wood","light","dark","heart"]);
+const ORB_TYPE_TO_TEXTURE_KEY = Object.freeze(["fire", "water", "wood", "light", "dark", "heart"]);
 
 class Orb extends Phaser.GameObjects.Image {
 
-    static HEIGHT = 100;
-    static WIDTH = 100;
+    static HEIGHT = 208;
+    static WIDTH = 208;
 
     constructor(scene, x, y, texture) {
         super(scene, x, y, texture);
 
-        this.type = null; 
+        this.type = null;
         this.slot = null;
         this.shadow = this.scene.add.image(x, y, texture).setAlpha(0.4).setVisible(false);
         this.hasSwapped = false;
+        this.startTime = 0;
 
         this.setInteractive({ draggable: true, useHandCursor: true });
         this.addFirstSwapListener();
         this.#createListeners();
+        this.isBlind = false;
+        this.isEnhanced = false;
+        this.plus = null;
+
+        this.isPointerdown = false;
+
 
         this.scene.add.existing(this);
+
     }
 
     #createListeners() {
 
         this.on("pointerdown", (pointer, localX, localY) => {
+            this.isPointerdown = true;
+            this.setToTop();
             this.shadow.setPosition(this.x, this.y).setVisible(true);
             this.setAlpha(0.8);
             this.setOrigin(1 - localX / Orb.HEIGHT, 1 - localY / Orb.HEIGHT);
+            this.setTint(0xffffff);
         });
         this.on("drag", (pointer, dragX, dragY) => {
             this.setPosition(dragX, dragY);
         });
         this.on("dragenter", (pointer, target) => {
-            this.swap(target);
+            if (this.hasSwapped) {
+                this.swap(target);
+            }
         });
-        this.on("drop", (pointer, target) => {
-            this.onOrbRelease();
-        });
+        // this.on("drop", (pointer, target) => {
+        //     console.log("here in drop");
+        //     this.onOrbRelease();
+        // });
         this.on("pointerup", () => {
             this.onOrbRelease();
         });
@@ -47,6 +60,10 @@ class Orb extends Phaser.GameObjects.Image {
      * @param {OrbSlot} target 
      */
     swap(target) {
+
+        if (target.orb.isBlind) {
+            target.orb.unblind();
+        }
 
         this.scene.board.swapOrbs(this.slot.index, target.index);
 
@@ -59,13 +76,13 @@ class Orb extends Phaser.GameObjects.Image {
 
     }
 
-     /**
-     * @param {Orb} target 
-     */
+    /**
+    * @param {Orb} target 
+    */
     swapAnimated(target) {
 
-        this.scene.board.swapOrbs(this.slot.index,target.slot.index);
-        
+        this.scene.board.swapOrbs(this.slot.index, target.slot.index);
+
         this.shadow.setPosition(target.slot.x, target.slot.y);
         [target.slot.orb, this.slot.orb] = [this.slot.orb, target.slot.orb];
         [this.slot, target.slot] = [target.slot, this.slot];
@@ -81,20 +98,72 @@ class Orb extends Phaser.GameObjects.Image {
 
     addFirstSwapListener() {
         this.once("dragleave", (pointer, target) => {
+            if (this.isBlind) {
+                this.isBlind = false;
+                this.shadow.setTint(0xffffff);
+            }
             this.hasSwapped = true;
             this.scene.board.prevBoard = this.scene.board.getNumericModel();
+            this.startTime = performance.now();
         });
     }
 
     onOrbRelease() {
 
+        this.isPointerdown = false;
+        this.scene.pauseRoulettes();
+        if (this.isBlind) {
+            this.setTint(0);
+        }
         this.shadow.setVisible(false);
         this.setPosition(this.slot.x, this.slot.y).setOrigin(0.5).setAlpha(1);
         if (this.hasSwapped) {
             this.hasSwapped = false;
             this.addFirstSwapListener();
-            this.scene.events.emit("solveBoard");
+            if (!document.getElementById("free-move-toggle").classList.contains("button-activate")) {
+                this.scene.events.emit("solveBoard");
+                document.getElementById("time-count").textContent = ((performance.now() - this.startTime) / 1000).toFixed(2);
+            }
         }
+
+    }
+
+
+    enhance() {
+
+        this.isEnhanced = true;
+        this.setPipeline("TestShader");
+        this.plus = this.scene.add.image(this.x, this.y, "plus");
+    }
+
+    blind() {
+        this.isBlind = true;
+        this.shadow.setTint(0);
+        this.scene.tweens.addCounter({
+            from: 0,
+            to: 100,
+            duration: 200,
+            onUpdate: (tween) => {
+                const value = tween.getValue();
+                const color = Phaser.Display.Color.Interpolate.ColorWithColor({ r: 255, g: 255, b: 255 }, { r: 0, g: 0, b: 0 }, 100, value);
+                this.setTint(Phaser.Display.Color.GetColor(color.r, color.g, color.b));
+            }
+        });
+    }
+
+    unblind() {
+
+        this.isBlind = false;
+        this.scene.tweens.addCounter({
+            from: 0,
+            to: 100,
+            duration: 200,
+            onUpdate: (tween) => {
+                const value = tween.getValue();
+                const color = Phaser.Display.Color.Interpolate.ColorWithColor({ r: 0, g: 0, b: 0 }, { r: 255, g: 255, b: 255 }, 100, value);
+                this.setTint(Phaser.Display.Color.GetColor(color.r, color.g, color.b));
+            }
+        });
     }
 
     /**
@@ -105,6 +174,22 @@ class Orb extends Phaser.GameObjects.Image {
 
         this.setTexture(ORB_TYPE_TO_TEXTURE_KEY[type]);
         this.shadow.setTexture(ORB_TYPE_TO_TEXTURE_KEY[type]);
+        this.setScale(0.9);
+        this.scene.tweens.add({
+            targets: this,
+            scale: 1,
+            duration: 300,
+            ease: Phaser.Math.Easing.Back.Out
+        });
+        this.type = type;
+    }
+
+    setTypeNoAnim(type) {
+
+        if (this.type != type) {
+            this.setTexture(ORB_TYPE_TO_TEXTURE_KEY[type]);
+            this.shadow.setTexture(ORB_TYPE_TO_TEXTURE_KEY[type]);
+        }
         this.type = type;
     }
 

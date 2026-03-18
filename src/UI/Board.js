@@ -1,8 +1,11 @@
+import BoardModel from "../solver/BoardModel.js";
 
-class Board extends Phaser.GameObjects.GameObject {
+export default class Board extends Phaser.GameObjects.GameObject {
 
     constructor(scene, x, y) {
         super(scene);
+
+        window.board = this;
 
         this.solveInProgress = false;
         this.prevBoard = null;
@@ -17,25 +20,58 @@ class Board extends Phaser.GameObjects.GameObject {
         this.orbSlotArray = new Array(30);
 
         this.visited = 0;
+        this.path = [];
 
         this.comboList = [];
         this.generateBoard();
 
         this.scene.events.on("solveBoard", () => {
+
+            let model = new BoardModel(this.getNumericModel(),[]);
+            let res = model.calcCombos();
+            document.getElementById("combo-count").textContent = res.comboList.length;
+
+            let count = 0;
+            for (let combo of res.comboList) {
+                count += combo.number;
+            }
+            let dirChanges = 0;
+            let prevDiff = 0;
+            for (let i = 1; i < this.path.length; i++) {
+                let diff = this.path[i] - this.path[i-1];
+                if (diff != prevDiff) {
+                    dirChanges++;
+                    prevDiff = diff;
+                }
+            }
+
+            document.querySelector(".manual-solve-timestamp").textContent = "Board - " + new Date().toLocaleTimeString("en-US")
+
+            document.getElementById("orb-clear-count").textContent = count + "/30";
+            document.getElementById("path-length-count").textContent = this.path.length;
+            document.getElementById("direction-change-count").textContent = dirChanges;
+            this.path = [];
+
             this.solveBoard();
         });
 
     }
 
     swapOrbs(i, j) {
+        this.path.push(i);
         [this.orbArray[i], this.orbArray[j]] = [this.orbArray[j], this.orbArray[i]];
     }
 
     generateBoard() {
 
+        let res = this.decode();
+
         for (let i = 0; i < 30; i++) {
 
             let rand = Phaser.Math.Between(0, 5);
+            if (res != null) {
+                rand = res[i];
+            }
             let x = this.x + i % 6 * Orb.WIDTH;
             let y = this.y + Math.floor(i / 6) * Orb.HEIGHT;
 
@@ -53,6 +89,70 @@ class Board extends Phaser.GameObjects.GameObject {
 
             this.orbArray[i].slot = slot;
         }
+
+    }
+
+    getBoardUrl() {
+
+        const board = this.getNumericModel().join("");
+        let num = 0n;
+        for (let digit of board) {
+            num = num * 6n + BigInt(digit);
+        }
+        let param = this.encodeBase62(num);
+        let url = new URL(window.location.href);
+        url.searchParams.set("board", param)
+        return url.href;
+
+    }
+
+    decode() {
+
+        const url = new URLSearchParams(window.location.search);
+        let param = url.get("board");
+        if (param == null) {
+            return null;
+        }
+        let s = this.decodeBase62(param);
+        let result = [];
+        let temp = s;
+        for (let i = 0; i < 30; i++) {
+            result.unshift(Number(temp % 6n));
+            temp = temp / 6n;
+        }
+        const board = result.join('');
+        return board;
+
+    }
+
+    encode() {
+
+        let s = this.getNumericModel().join("");
+        let base = 0n;
+        for (let digit of s) {
+            base = base * 6n + BigInt(digit);
+        }
+        base = this.encodeBase62(base);
+    }
+
+    encodeBase62(num) {
+        const ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        if (num === 0n) return '0';
+        let result = '';
+        while (num > 0n) {
+            result = ALPHABET[Number(num % 62n)] + result;
+            num = num / 62n;
+        }
+        return result;
+    }
+
+    decodeBase62(str) {
+        const ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let result = 0n;
+        for (let char of str) {
+            result = result * 62n + BigInt(ALPHABET.indexOf(char));
+        }
+        return result;
     }
 
     solveBoard() {
@@ -60,7 +160,9 @@ class Board extends Phaser.GameObjects.GameObject {
         this.solveInProgress = true;
 
         this.resetBoardState();
-        let numCombos = this.findCombos();
+        let list = this.findCombos();
+        // let numCombos = this.findCombos();
+        let numCombos = list.length;
         if (numCombos > 0) {
             return this.fadeCombos();
         }
@@ -68,6 +170,8 @@ class Board extends Phaser.GameObjects.GameObject {
             if (!this.orbArray.some(item => item === null)) {
                 this.setOrbInteractive(true);
             }
+            
+            this.scene.resumeRoulettes();
             this.solveInProgress = false;
         }
     }
@@ -128,18 +232,20 @@ class Board extends Phaser.GameObjects.GameObject {
         for (let i = 0; i < 30; i++) {
             let o = this.orbArray[i];
             let comboSet = new Set();
+            let BB = { val: 0 };
             if (o != null && ((this.visited & (1 << i)) == 0)) {
                 this.visited |= 1 << i;
-                this.floodfill(i, o.type, comboSet);
+                this.floodfill(i, o.type, comboSet, BB);
             }
             if (comboSet.size > 2) {
                 this.comboList.push(comboSet);
             }
         }
-        return this.comboList.length;
+        // return this.comboList.length;
+        return this.comboList;
     }
 
-    floodfill(index, type, comboSet) {
+    floodfill(index, type, comboSet, BB) {
 
         let adj = [];
         let matches = [[], []];
@@ -156,11 +262,13 @@ class Board extends Phaser.GameObjects.GameObject {
 
         for (let pos of adj) {
             this.visited |= 1 << pos;
-            this.floodfill(pos, type, comboSet);
+            this.floodfill(pos, type, comboSet, BB);
         }
 
         for (let m of matches) {
             if (m.length == 2) {
+
+                BB.val = BB.val | (1 << index) | (1 << m[0]) | (1 << m[1])
                 comboSet.add(index).add(m[0]).add(m[1]);
             }
         }

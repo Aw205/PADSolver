@@ -22,16 +22,6 @@ class PathManager {
 
     createPathButtons() {
 
-        let html = `
-            <div id = "path-button-container">
-                <button id= "first-button" class="path-button"> <i class= "fa fa-step-backward"></i> </button>
-                <button id= "prev-button"  class="path-button"> <i class= "fa fa-chevron-left"></i> </button>
-                <button id= "play-button"  class="path-button"> <i id="play-image" class= "fa fa-pause fa-play fa-fw"> </i> </button>
-                <button id= "next-button"  class="path-button"> <i class= "fa fa-chevron-right"></i> </button>
-                <button id= "last-button"  class="path-button"> <i class= "fa fa-step-forward"></i> </button>
-            </div>
-            <i id="eye-button" class="fa fa-eye-slash fa-eye fa-fw tooltip icon-button" style="position:absolute;"> <span class="tooltiptext right-tooltiptext">Show Path</span> </i>`;
-        this.scene.add.dom(600, 610).createFromHTML(html);
 
         document.getElementById("first-button").addEventListener("pointerup", () => {
 
@@ -42,10 +32,8 @@ class PathManager {
         document.getElementById("prev-button").addEventListener("pointerup", () => {
             this.step(-1);
         });
-        document.getElementById("play-button").addEventListener("click", () => {
-            if (this.play()) {
-                document.getElementById("play-image").classList.toggle("fa-play");
-            }
+        document.getElementById("play-button").addEventListener("click", (event) => {
+             document.getElementById("play-button").textContent = (this.play()) ? "pause" : "play_arrow"
         });
 
         document.getElementById("next-button").addEventListener("pointerup", () => {
@@ -57,8 +45,7 @@ class PathManager {
             this.pathIndex = this.path.length - 1;
         });
 
-        document.getElementById("eye-button").addEventListener("click", (event) => {
-            event.target.classList.toggle("fa-eye");
+        document.getElementById("path-checkbox").addEventListener("change", (event) => {
             this.togglePathVisibility();
         });
     }
@@ -189,7 +176,6 @@ class PathManager {
         return 0;
     }
 
-
     getDirection(curr, prev) {
         return Math.abs(curr - prev) == 1 ? "horizontal" : "vertical";
 
@@ -209,7 +195,6 @@ class PathManager {
         return (dx != 0 && dy != 0);
     }
 
-
     togglePathVisibility() {
         if (this.g.visible) {
             return this.g.setVisible(false);
@@ -227,9 +212,9 @@ class PathManager {
 
         let copy = [...this.initialBoard];
         for (let i = 0; i < path.length - 1; i++) {
-            [copy[path[i]], copy[path[i+1]]] = [copy[path[i+1]], copy[path[i]]];
+            [copy[path[i]], copy[path[i + 1]]] = [copy[path[i + 1]], copy[path[i]]];
         }
-        this.finalBoard = copy;        
+        this.finalBoard = copy;
     }
 
 }
