@@ -11,7 +11,7 @@ class ComboConfig extends HTMLElement {
 
         this.innerHTML = `
         <span class="material-symbols-outlined" style="color:indianred; cursor: pointer;">delete</span>
-        <img src="assets/UI/unknown.webp" class="shape-image">
+        <img src="assets/images/awakenings/unknown.webp" class="shape-image">
         <select class="shape-select">
             <option value="" disabled selected hidden data-i18n="shape">Shape</option>
             <option value="TPA" data-i18n="tpa">TPA</option>
@@ -22,7 +22,7 @@ class ComboConfig extends HTMLElement {
         </select>
         <label>1.5</label>
         <input type="range" step="0.1" max="3">
-        <img src="assets/UI/unknown.webp" class="attribute-image">
+        <img src="assets/images/awakenings/unknown.webp" class="attribute-image">
         <select class="attribute-select">
             <option value="" disabled selected hidden data-i18n="attribute">Attribute</option>
             <option value="0" data-i18n="fire">Fire</option>
@@ -42,7 +42,7 @@ class ComboConfig extends HTMLElement {
         let trash = this.querySelector("span");
 
         shapeSelect.addEventListener("change", (event) => {
-            shapeImg.src = `assets/UI/awakenings/${event.target.value}.webp`;
+            shapeImg.src = `assets/images/awakenings/${event.target.value}.webp`;
         });
 
         attributeSelect.addEventListener("change", (event) => {
@@ -50,7 +50,7 @@ class ComboConfig extends HTMLElement {
             let names = ["fire", "water", "wood", "light", "dark", "heart","any"];
 
             if(event.target.value == "any"){
-                attributeImg.src = `assets/images/orbs/any.webp`;
+                attributeImg.src = `assets/images/orbs/any.svg`;
                 range.className = "any";
             }
             else{

@@ -174,9 +174,7 @@ export default class BoardScene extends Phaser.Scene {
                     return b.specificity - a.specificity;
                 });
 
-                console.log(configs);
                 let startPositions = getStartPositions();
-                console.log(startPositions);
                 let model = this.board.getNumericModel();
                 const myWorker = new Worker("src/solver/worker.js", { type: 'module' });
                 myWorker.postMessage({ model: model, configs: configs, startPositions: startPositions });

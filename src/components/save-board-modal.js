@@ -20,8 +20,8 @@ export default class SaveBoardModal extends HTMLElement {
         </dialog>`;
 
 
-        for (let id of ["Fire", "Water", "Wood", "Light", "Dark", "Heart"]) {
-            this.preloadImage(`assets/images/orbs/${id}_pixel.png`);
+        for (let id of ["fire", "water", "wood", "light", "dark", "heart"]) {
+            this.preloadImage(`assets/images/orbs/${id}_pixel.webp`);
         }
 
         let input = this.querySelector("input");
@@ -68,7 +68,7 @@ export default class SaveBoardModal extends HTMLElement {
         for (let i = 0; i < 30; i++) {
             ctx.drawImage(SaveBoardModal.pixelOrbs[board[i]], (i % 6) * orbSize + (i % 6), Math.floor(i / 6) * orbSize + Math.floor(i / 6), orbSize, orbSize);
         }
-        let url = canvas.toDataURL('image/png');
+        let url = canvas.toDataURL('image/webp');
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         return `<img src="${url}">`;
     }

@@ -1,19 +1,14 @@
 {
     "image": {
-        "fire": "images/orbs/Fire.webp",
-        "water": "images/orbs/Water.webp",
-        "wood": "images/orbs/Wood.webp",
-        "light": "images/orbs/Light.webp",
-        "dark": "images/orbs/Dark.webp",
-        "heart": "images/orbs/Heart.webp",
-        "plus": "UI/plus_1.webp",
-        "roulette": "UI/roulette.webp"
+        "fire": "images/orbs/fire.webp",
+        "water": "images/orbs/water.webp",
+        "wood": "images/orbs/wood.webp",
+        "light": "images/orbs/light.webp",
+        "dark": "images/orbs/dark.webp",
+        "heart": "images/orbs/heart.webp",
+        "plus": "images/modifiers/plus.webp",
+        "roulette": "images/modifiers/roulette.webp"
     },
     "svg": {},
-    "audio": {},
-    "aseprite": {},
-    "spritesheet": {},
-    "json": {},
-    "bitmapFont": {},
-    "tilemapTiledJSON": {}
+    "json": {}
 }
