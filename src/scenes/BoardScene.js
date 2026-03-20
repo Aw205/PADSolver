@@ -42,7 +42,6 @@ export default class BoardScene extends Phaser.Scene {
         });
 
         document.querySelector(".solver-config-button").addEventListener("click",()=>{
-
             document.querySelector(".solver-config-container").classList.toggle("show1");
         })
 

@@ -79,7 +79,6 @@ export default class Board extends Phaser.GameObjects.GameObject {
             this.orbArray[i].type = rand;
 
             rand = Phaser.Math.Between(0, 5);
-
             this.skyfallArray[i] = new Orb(this.scene, x, y - this.BOARD_HEIGHT * Orb.HEIGHT, ORB_TYPE_TO_TEXTURE_KEY[rand]).setVisible(false);
             this.skyfallArray[i].type = rand;
 

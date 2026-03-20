@@ -417,7 +417,7 @@ input[type="range"] {
 
   border-left: 1px solid rgba(105, 105, 105, 0.2);
   padding: 1rem;
-  /* overflow-y: scroll; */
+  overflow-y: scroll;
   scrollbar-color: rgb(45, 45, 45) transparent;
 
   &>details {

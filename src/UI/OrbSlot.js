@@ -9,14 +9,11 @@ class OrbSlot extends Phaser.GameObjects.Zone {
 
     }
 
-
-
     addRoulette() {
 
         if (!this.hasRoulette) {
 
             this.hasRoulette = true;
-            
             this.scene.add.image(this.x, this.y, "roulette");
             let g = this.scene.add.graphics({ fillStyle: { color: 0xffffff, alpha: 0.8 } }).setDepth(-1);
 
@@ -39,9 +36,7 @@ class OrbSlot extends Phaser.GameObjects.Zone {
                     }
                 }
             });
-
             this.scene.rouletteTweens.push(tw);
-
             this.scene.tweens.tweens.forEach((t)=>{
                 t.restart();
             });

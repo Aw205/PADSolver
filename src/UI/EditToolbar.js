@@ -93,7 +93,11 @@ class EditToolbar {
                     if (pointer.isDown) {
                         let modifier = orbModifierContainer.dataset.modifier;
                         if (modifier == "enhance") {
-                            currentlyOver[0].orb?.enhance();
+                            let o = currentlyOver[0].orb;
+
+                            if(!o.isEnhanced){
+                                o.enhance();
+                            }
                         }
                         else if (modifier == "blind") {
                             let o = currentlyOver[0].orb;
