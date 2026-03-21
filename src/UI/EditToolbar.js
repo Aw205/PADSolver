@@ -95,7 +95,6 @@ class EditToolbar {
                         let modifier = orbModifierContainer.dataset.modifier;
                         if (modifier == "enhance") {
                             let o = currentlyOver[0].orb;
-
                             if (!o.isEnhanced) {
                                 o.enhance();
                             }
@@ -106,8 +105,11 @@ class EditToolbar {
                                 o.blind();
                             }
                         }
-                        else if (modifier = "roulette") {
+                        else if (modifier == "roulette") {
                             currentlyOver[0].orb?.slot.addRoulette();
+                        }
+                        else if (modifier == "erase") {
+                            currentlyOver[0].orb?.removeModifiers();
                         }
                     }
 
@@ -123,6 +125,12 @@ class EditToolbar {
                             if (!o.isBlind) {
                                 o.blind();
                             }
+                        }
+                        else if (modifier == "roulette") {
+                            currentlyOver[0].orb?.slot.addRoulette();
+                        }
+                        else if (modifier == "erase") {
+                            currentlyOver[0].orb?.removeModifiers();
                         }
                     }
                 });
@@ -166,8 +174,8 @@ class EditToolbar {
                 let to = ids.indexOf(document.getElementById("to-orb").dataset.type);
                 this.scene.board.changeOrbs(from, to);
             }
-            else if(e.target.tagName == "IMG"){
-               e.target.classList.toggle("palette-active");
+            else if (e.target.tagName == "IMG") {
+                e.target.classList.toggle("palette-active");
             }
 
         });

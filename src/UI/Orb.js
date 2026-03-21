@@ -32,7 +32,7 @@ class Orb extends Phaser.GameObjects.Container {
 
         this.addFirstSwapListener();
         this.#createListeners();
-       
+
         this.add([this.orbImage]);
         this.scene.add.existing(this);
     }
@@ -142,11 +142,13 @@ class Orb extends Phaser.GameObjects.Container {
 
 
     enhance() {
+        if (!this.isEnhanced) {
+            this.isEnhanced = true;
+            this.orbImage.setPipeline("TestShader");
+            this.plus = this.scene.add.image(0, 0, "plus");
+            this.add(this.plus);
+        }
 
-        this.isEnhanced = true;
-        this.orbImage.setPipeline("TestShader");
-        this.plus = this.scene.add.image(0,0, "plus");
-        this.add(this.plus);
     }
 
     blind() {
@@ -178,6 +180,28 @@ class Orb extends Phaser.GameObjects.Container {
             }
         });
     }
+
+    removeEnhance() {
+        this.isEnhanced = false;
+        this.orbImage.resetPipeline();
+        this.remove(this.plus);
+        this.plus.destroy();
+        this.plus = null;
+
+    }
+
+    removeModifiers() {
+        if (this.isEnhanced) {
+            this.removeEnhance();
+        }
+        if (this.isBlind) {
+            this.unblind();
+        }
+        if(this.slot.hasRoulette){
+            this.slot.removeRoulette();
+        }
+    }
+
 
     /**
      * 
