@@ -8,11 +8,18 @@ class Orb extends Phaser.GameObjects.Container {
     constructor(scene, x, y, texture) {
         super(scene, x, y);
 
+
+        this.setSize(Orb.WIDTH, Orb.HEIGHT);
+
         this.orbImage = this.scene.add.image(0, 0, texture);
+        this.shadow = this.scene.add.image(x, y, texture).setAlpha(0.4).setVisible(false);
 
         this.type = null;
         this.slot = null;
-        this.shadow = this.scene.add.image(x, y, texture).setAlpha(0.4).setVisible(false);
+        this.isBlind = false;
+        this.isEnhanced = false;
+        this.plus = null;
+        this.isPointerdown = false;
         this.hasSwapped = false;
         this.startTime = 0;
 
@@ -25,17 +32,9 @@ class Orb extends Phaser.GameObjects.Container {
 
         this.addFirstSwapListener();
         this.#createListeners();
-        this.isBlind = false;
-        this.isEnhanced = false;
-        this.plus = null;
-        this.isPointerdown = false;
-
-        this.setSize(208, 208);
+       
         this.add([this.orbImage]);
         this.scene.add.existing(this);
-
-
-
     }
 
     #createListeners() {

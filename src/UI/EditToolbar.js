@@ -16,16 +16,19 @@ class EditToolbar {
             this.scene.input.removeAllListeners("pointermove");
             this.scene.input.removeAllListeners("pointerdown");
             this.scene.board.setOrbInteractive(true);
+
             document.querySelectorAll(".board-edit .button-activate").forEach((tool) => {
                 if (tool != e.currentTarget) {
                     tool.classList.toggle("button-activate");
                 }
             });
+
             e.currentTarget.classList.toggle("button-activate");
             let ele = document.querySelector(".auxiliary-container .show:not(.palette-container)")
             if (ele != undefined) {
                 ele.classList.remove("show");
             }
+
             if (e.currentTarget.classList.contains("button-activate")) {
                 this.scene.board.setOrbInteractive(false);
                 this.scene.input.on("pointerdown", (pointer, currentlyOver) => {
@@ -57,15 +60,13 @@ class EditToolbar {
             }
         });
 
-        let orbs = document.querySelector(".palette-container").children;
-        for (let o of orbs) {
-            o.addEventListener("click", (event) => {
+        document.querySelector(".palette-container").addEventListener("click", (e) => {
+            if (e.target.tagName == "IMG") {
                 document.querySelector(".palette-container .palette-active")?.classList.remove("palette-active");
-                event.target.classList.add("palette-active");
-                paletteToggle.dataset.type = o.dataset.type;
-            });
-        }
-
+                e.target.classList.add("palette-active");
+                paletteToggle.dataset.type = e.target.dataset.type;
+            }
+        });
 
         let orbModifierContainer = document.querySelector(".orb-modifier-container");
         orbModifierContainer.addEventListener("click", (e) => {
@@ -95,7 +96,7 @@ class EditToolbar {
                         if (modifier == "enhance") {
                             let o = currentlyOver[0].orb;
 
-                            if(!o.isEnhanced){
+                            if (!o.isEnhanced) {
                                 o.enhance();
                             }
                         }
@@ -126,8 +127,6 @@ class EditToolbar {
                     }
                 });
             }
-
-
         });
         let modifierContainer = document.querySelector(".modifier-container");
         for (let e of modifierContainer.children) {
@@ -143,7 +142,6 @@ class EditToolbar {
         }
 
         document.querySelector(".orb-change-button-container").addEventListener("click", (e) => {
-
             document.querySelector(".orb-change-container").classList.toggle("show");
             document.querySelectorAll(".board-edit .button-activate").forEach((tool) => {
                 if (tool != e.currentTarget) {
@@ -156,25 +154,22 @@ class EditToolbar {
                 ele.classList.remove("show");
             }
         });
-
-        let fromArr = document.querySelector(".from-orbs");
-        for (let c of fromArr.children) {
-            c.addEventListener("click", (e) => {
-                c.classList.toggle("palette-active");
-            });
-        }
-
-        document.getElementById("to-orb").addEventListener("click", (e) => {
-            document.querySelector(".to-orb-menu").showModal();
-        });
-
-        document.querySelector(".orb-change-button").addEventListener("click", () => {
-            let from = [];
-            for (let ele of document.querySelectorAll(".from-orbs .palette-active")) {
-                from.push(ids.indexOf(ele.dataset.type));
+        document.querySelector(".orb-change-container").addEventListener("click", (e) => {
+            if (e.target.id == "to-orb") {
+                document.querySelector(".to-orb-menu").showModal();
             }
-            let to = ids.indexOf(document.getElementById("to-orb").dataset.type);
-            this.scene.board.changeOrbs(from, to);
+            else if (e.target.className == "orb-change-button") {
+                let from = [];
+                for (let ele of document.querySelectorAll(".from-orbs .palette-active")) {
+                    from.push(ids.indexOf(ele.dataset.type));
+                }
+                let to = ids.indexOf(document.getElementById("to-orb").dataset.type);
+                this.scene.board.changeOrbs(from, to);
+            }
+            else if(e.target.tagName == "IMG"){
+               e.target.classList.toggle("palette-active");
+            }
+
         });
     }
 }

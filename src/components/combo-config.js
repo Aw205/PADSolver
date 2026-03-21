@@ -7,6 +7,8 @@ class ComboConfig extends HTMLElement {
 
     connectedCallback() {
 
+        if (this.innerHTML.trim() !== "") return;
+
         const template = document.getElementById('combo-config-template');
         const templateContent = document.importNode(template.content, true);
 

@@ -16,7 +16,6 @@ class OrbSlot extends Phaser.GameObjects.Zone {
             this.hasRoulette = true;
             this.scene.add.image(this.x, this.y, "roulette");
             let g = this.scene.add.graphics({ fillStyle: { color: 0xffffff, alpha: 0.8 } }).setDepth(-1);
-
             let tw = this.scene.tweens.addCounter({
                 from: 0,
                 to: 360,

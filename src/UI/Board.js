@@ -52,6 +52,7 @@ export default class Board extends Phaser.GameObjects.GameObject {
             document.getElementById("direction-change-count").textContent = dirChanges;
             this.path = [];
 
+            this.setOrbInteractive(false);
             this.solveBoard();
         });
 
@@ -240,7 +241,6 @@ export default class Board extends Phaser.GameObjects.GameObject {
                 this.comboList.push(comboSet);
             }
         }
-        // return this.comboList.length;
         return this.comboList;
     }
 

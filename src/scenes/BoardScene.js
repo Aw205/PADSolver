@@ -38,17 +38,26 @@ export default class BoardScene extends Phaser.Scene {
                 if (event.target == e) {
                     e.close();
                 }
-            })
+            });
         });
-
-        document.querySelector(".solver-config-button").addEventListener("click",()=>{
-            document.querySelector(".solver-config-container").classList.toggle("show1");
-        })
 
         const menuBtn = document.querySelector('#menu-button');
         menuBtn.addEventListener('click', () => {
-            document.querySelector(".menu-icons").classList.toggle("show");
+            document.querySelector(".menu-icons").showModal();
         });
+        const menuModal = document.querySelector('.menu-icons');
+        menuModal.addEventListener("click", (e) => {
+            menuModal.close();
+        });
+
+        const solverButton = document.querySelector('.solver-config-button');
+        solverButton.addEventListener('click', () => {
+            document.querySelector(".solver-config-modal").showModal();
+        });
+
+        const mobileQuery = window.matchMedia('(max-width: 1024px)');
+        mobileQuery.addEventListener('change', this.handleLayoutChange.bind(this));
+        this.handleLayoutChange(mobileQuery);
 
         const addConfigButton = document.querySelector('.add-config-button');
         const orbWeightContainer = document.querySelector('.orb-weight-container');
@@ -56,6 +65,17 @@ export default class BoardScene extends Phaser.Scene {
             let newNode = document.createElement("combo-config");
             orbWeightContainer.appendChild(newNode);
         });
+    }
+
+    handleLayoutChange(e) {
+        let menuModal2 = document.querySelector(".solver-config-modal");
+        const content = document.querySelector('.solver-config-container');
+        const originalParent = document.querySelector('.main-container');
+        if (e.matches) {
+            menuModal2.appendChild(content);
+        } else {
+            originalParent.appendChild(content);
+        }
     }
 
     createSideBarToggles() {
@@ -88,9 +108,6 @@ export default class BoardScene extends Phaser.Scene {
                     className: "toast",
                 }).showToast();
             }
-
-
-
         });
 
         document.getElementById("skyfall-toggle").addEventListener("pointerup", (event) => {

@@ -50,12 +50,36 @@ dialog {
   font: 1rem Kreon;
 }
 
+.logo-container {
+
+  padding: 1rem;
+
+  &>span:nth-child(1) {
+    font: 2rem rowdy;
+    color: transparent;
+    background-image: linear-gradient(pink, magenta);
+    background-clip: text;
+  }
+
+  &>span:nth-child(2) {
+    font: 2rem rowdy;
+    color: transparent;
+    background-image: linear-gradient(orange, coral);
+    background-clip: text;
+  }
+
+  &>hr {
+    border: none;
+    border-top: 1px solid transparent;
+    border-image: linear-gradient(to right, pink, coral) 1;
+  }
+}
+
 .board-edit-container {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   align-items: center;
-  padding-top: 1rem;
   user-select: none;
 
 }
@@ -64,7 +88,6 @@ dialog {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 1rem;
 }
 
 #board-edit-toolbar {
@@ -412,8 +435,7 @@ input[type="range"] {
 
 .solver-config-container {
 
-  grid-column: -1 / -2;
-  grid-row: 1 / -1;
+  width: 30rem;
 
   border-left: 1px solid rgba(105, 105, 105, 0.2);
   padding: 1rem;
@@ -698,6 +720,10 @@ input[type="range"] {
   color: gray;
   user-select: none;
   cursor: pointer;
+
+  &>span:nth-child(1) {
+    font-size: 2rem;
+  }
 
   &:hover:not(:has(.language-menu:hover)) {
     background-color: rgb(47, 46, 46);
@@ -1152,44 +1178,36 @@ solver-solution {
 
   position: relative;
   border-right: 1px solid rgba(105, 105, 105, 0.2);
-  grid-column: 1 / 2;
-  grid-row: 1 / 9;
 }
 
 .main-container {
-  display: grid;
+  display: flex;
   height: 100vh;
-  grid-template: repeat(8, 1fr) / 14rem repeat(6, 1fr) 30rem;
-  /* grid-template: repeat(8, 1fr) / 14rem repeat(6, 1fr) 30vw; */
   position: relative;
+  justify-content: space-between;
 }
 
 .board-position-container {
 
-  position: absolute;
   width: 32vw;
-  left: 50%;
-  bottom: 50%;
-  transform: translate(-50%, 50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+
 }
 
 #board-container {
   aspect-ratio: 6/5;
 }
 
-.board-grid-container {
-
-  position: relative;
-  grid-column: 2 / 8;
-  grid-row: 1 / -1;
-
-}
-
 .main-menu {
 
   position: relative;
   display: none;
-  padding-inline: 1rem;
+  padding: 0;
+  anchor-name: --menu-anchor;
+
 
   &>button {
 
@@ -1206,42 +1224,44 @@ solver-solution {
     }
   }
 
-  &>.menu-icons {
 
-    position: absolute;
-    top: 110%;
-    background-color: rgb(30, 30, 30);
-    border: 1px solid dimgray;
+}
+
+.menu-icons {
+
+  position-anchor: --menu-anchor;
+  top: anchor(bottom);
+  left: calc(anchor(left) + 2rem);
+  margin: 0;
+  padding: 0;
+  font-family: kreon;
+  background-color: rgb(30, 30, 30);
+
+  &::backdrop {
+    background-color: transparent;
+  }
+
+  &>div {
+
     display: flex;
-    flex-direction: column;
-    font-family: kreon;
+    color: beige;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem;
+    cursor: pointer;
     border-radius: 5px;
-    z-index: 99;
 
-    &>div {
-
-      display: flex;
-      color: beige;
-      align-items: center;
-      gap: 1rem;
-      padding: 0.5rem;
-      cursor: pointer;
-      border-radius: 5px;
-
-      &:hover {
-        background-color: rgb(40, 40, 40);
-      }
-
-      &>.menu-icon {
-        display: flex;
-        align-items: center;
-        font-size: 2rem;
-        color: beige;
-
-      }
+    &:hover {
+      background-color: rgb(40, 40, 40);
     }
 
+    &>.menu-icon {
+      display: flex;
+      align-items: center;
+      font-size: 2rem;
+      color: beige;
 
+    }
   }
 }
 
@@ -1255,18 +1275,27 @@ solver-solution {
   }
 }
 
-
-
 @media only screen and (max-width:1024px) {
 
   .main-container {
-    display: block;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
   }
 
   .main-menu {
     display: flex;
-    gap: 1rem;
     align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding-left: 1rem;
+    margin-top: 0;
+  }
+
+  .board-position-container {
+    width: clamp(22rem, 60vw, 30rem);
   }
 
   .sidebar-container {
@@ -1274,30 +1303,9 @@ solver-solution {
   }
 
   .solver-config-container {
-    position: fixed;
-    left: -25rem;
-    height: 100%;
-    z-index: 99;
-    background-color: rgb(20, 20, 20);
-    height: 90%;
-    transition: left 0.5s ease;
-    padding-top:2rem;
-    padding-right: 3rem;
 
-  }
-
-  .solver-config-container.show1 {
-    left:0;
-  }
-
-  .board-position-container {
-    width: clamp(25rem, 50vw, 30rem);
-  }
-
-  .board-grid-container {
-    position: absolute;
-    width: 100vw;
-    height: 90%;
+    background-color: rgb(30, 30, 30);
+    width: 75vw;
   }
 
   #board-edit-toolbar {
