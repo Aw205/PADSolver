@@ -21,13 +21,14 @@ export default class SaveBoardModal extends HTMLElement {
 
 
         for (let id of ["fire", "water", "wood", "light", "dark", "heart"]) {
-            this.preloadImage(`assets/images/orbs/${id}_pixel.webp`);
+            this.preloadImage(`assets/orbs/${id}_pixel.webp`);
         }
 
         let input = this.querySelector("input");
 
         let saveOpenButton = document.getElementById("save-modal-open-button");
         saveOpenButton.addEventListener("click", () => {
+           
             document.getElementById("save-board-modal").showModal();
             let html = SaveBoardModal.getThumbnailHTML(window.board.getNumericModel());
             document.getElementById("save-modal-thumbnail").innerHTML = html;

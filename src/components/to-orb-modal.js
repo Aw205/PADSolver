@@ -8,12 +8,12 @@ class ToOrbModal extends HTMLElement {
         this.innerHTML =
             `
             <dialog class="to-orb-menu">
-                <img src="assets/images/orbs/fire.svg" data-type="Fire" draggable="false" class="palette-active">
-                <img src="assets/images/orbs/water.svg" data-type="Water" draggable="false">
-                <img src="assets/images/orbs/wood.svg" data-type="Wood" draggable="false">
-                <img src="assets/images/orbs/light.svg" data-type="Light" draggable="false">
-                <img src="assets/images/orbs/dark.svg" data-type="Dark" draggable="false">
-                <img src="assets/images/orbs/heart.svg" data-type="Heart" draggable="false">
+                <img src="assets/orbs/fire.svg" data-type="fire" draggable="false" class="palette-active">
+                <img src="assets/orbs/water.svg" data-type="water" draggable="false">
+                <img src="assets/orbs/wood.svg" data-type="wood" draggable="false">
+                <img src="assets/orbs/light.svg" data-type="light" draggable="false">
+                <img src="assets/orbs/dark.svg" data-type="dark" draggable="false">
+                <img src="assets/orbs/heart.svg" data-type="heart" draggable="false">
             </dialog>`;
 
         let toOrb = document.getElementById("to-orb");

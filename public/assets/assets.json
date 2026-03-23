@@ -1,0 +1,14 @@
+{
+    "image": {
+        "fire": "orbs/fire.webp",
+        "water": "orbs/water.webp",
+        "wood": "orbs/wood.webp",
+        "light": "orbs/light.webp",
+        "dark": "orbs/dark.webp",
+        "heart": "orbs/heart.webp",
+        "plus": "modifiers/plus.webp",
+        "roulette": "modifiers/roulette.webp"
+    },
+    "svg": {},
+    "json": {}
+}

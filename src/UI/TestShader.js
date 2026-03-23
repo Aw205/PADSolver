@@ -1,5 +1,6 @@
+import { Renderer } from "phaser";
 
-class TestShader extends Phaser.Renderer.WebGL.Pipelines.PreFXPipeline {
+export default class TestShader extends Renderer.WebGL.Pipelines.PreFXPipeline {
 
 
   constructor(game){

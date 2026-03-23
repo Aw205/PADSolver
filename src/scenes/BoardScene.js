@@ -1,5 +1,10 @@
 import Board from "../UI/Board.js";
 import getStartPositions from "../components/position-select-modal.js";
+import { Orb } from "../UI/Orb.js";
+import { ORB_HEIGHT } from "../UI/Orb.js";
+import TestShader from "../UI/TestShader.js";
+import PathManager from "../UI/PathManager.js";
+import EditToolbar from "../UI/EditToolbar.js";
 
 export default class BoardScene extends Phaser.Scene {
 
@@ -9,12 +14,12 @@ export default class BoardScene extends Phaser.Scene {
 
     create() {
 
-        this.add.grid(0, 0, Orb.HEIGHT * 6, Orb.HEIGHT * 5, Orb.HEIGHT, Orb.HEIGHT, 0x1c130f)
+        this.add.grid(0, 0, ORB_HEIGHT * 6, ORB_HEIGHT * 5, ORB_HEIGHT, ORB_HEIGHT, 0x1c130f)
             .setAltFillStyle(0x2e201a)
             .setOrigin(0, 0)
             .setOutlineStyle().setDepth(-999);
 
-        this.board = new Board(this, Orb.HEIGHT / 2, Orb.HEIGHT / 2);
+        this.board = new Board(this, ORB_HEIGHT / 2, ORB_HEIGHT / 2);
         this.pathManager = new PathManager(this, null, this.board);
 
         this.rouletteTweens = [];
@@ -81,7 +86,6 @@ export default class BoardScene extends Phaser.Scene {
     createSideBarToggles() {
 
         document.querySelector(".share-button").addEventListener("click", (e) => {
-
 
             if (this.board.orbArray.some((o) => o === null)) {
                 Toastify({
@@ -192,7 +196,7 @@ export default class BoardScene extends Phaser.Scene {
 
                 let startPositions = getStartPositions();
                 let model = this.board.getNumericModel();
-                const myWorker = new Worker("src/solver/worker.js", { type: 'module' });
+                const myWorker = new Worker(new URL("../solver/worker.js",import.meta.url), { type: 'module' });
                 myWorker.postMessage({ model: model, configs: configs, startPositions: startPositions });
                 myWorker.onmessage = (event) => {
 

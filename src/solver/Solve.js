@@ -95,10 +95,6 @@ export class Solve {
             }
             successorSolutions.push(...res);
         }
-
-        // for (let i = 0; i < 30; i++) {
-           
-        // }
         return successorSolutions;
     }
 

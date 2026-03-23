@@ -1,4 +1,7 @@
-class OrbSlot extends Phaser.GameObjects.Zone {
+import { GameObjects } from "phaser";
+import { Orb } from "./Orb";
+
+export default class OrbSlot extends GameObjects.Zone {
 
     constructor(scene, x, y, index) {
         super(scene, x, y, Orb.WIDTH, Orb.HEIGHT);
@@ -35,7 +38,7 @@ class OrbSlot extends Phaser.GameObjects.Zone {
                 loop: -1,
                 onLoop: () => {
                     if (!this.orb.isPointerdown) {
-                        this.orb.setTypeNoAnim((this.orb.type + 1) % 6);
+                        this.orb.setType((this.orb.type + 1) % 6);
                     }
                 }
             });

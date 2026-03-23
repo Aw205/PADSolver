@@ -1,4 +1,4 @@
-class PathManager {
+export default class PathManager {
 
 
     constructor(scene, path, board) {
@@ -22,9 +22,7 @@ class PathManager {
 
     createPathButtons() {
 
-
         document.getElementById("first-button").addEventListener("pointerup", () => {
-
             if (this.initialBoard != null) {
                 this.setPath(this.path);
             }
@@ -90,7 +88,6 @@ class PathManager {
             this.playing = true;
             return true;
         }
-
         this.playEvent.remove(false);
         this.playing = false;
         return true;

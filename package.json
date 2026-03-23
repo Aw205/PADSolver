@@ -1,0 +1,33 @@
+{
+  "name": "padsolver",
+  "version": "1.0.0",
+  "description": "A Puzzles & Dragons simulator and solver.",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aw205/PADSolver.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Aw205/PADSolver/issues"
+  },
+  "homepage": "https://github.com/Aw205/PADSolver#readme",
+  "devDependencies": {
+    "terser": "^5.46.1",
+    "vite": "^8.0.1"
+  },
+  "dependencies": {
+    "phaser": "^3.90.0"
+  }
+}

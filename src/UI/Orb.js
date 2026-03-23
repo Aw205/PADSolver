@@ -1,20 +1,43 @@
-const ORB_TYPE_TO_TEXTURE_KEY = Object.freeze(["fire", "water", "wood", "light", "dark", "heart"]);
 
-class Orb extends Phaser.GameObjects.Container {
+export const ORB_TYPE_MAP = new Map();
+ORB_TYPE_MAP.set(0, "fire");
+ORB_TYPE_MAP.set(1, "water");
+ORB_TYPE_MAP.set(2, "wood");
+ORB_TYPE_MAP.set(3, "light");
+ORB_TYPE_MAP.set(4, "dark");
+ORB_TYPE_MAP.set(5, "heart");
+ORB_TYPE_MAP.set(6, "poison");
+ORB_TYPE_MAP.set(7, "jammer");
+ORB_TYPE_MAP.set("fire", 0);
+ORB_TYPE_MAP.set("water", 1);
+ORB_TYPE_MAP.set("wood", 2);
+ORB_TYPE_MAP.set("light", 3);
+ORB_TYPE_MAP.set("dark", 4);
+ORB_TYPE_MAP.set("heart", 5);
+ORB_TYPE_MAP.set("poison", 6);
+ORB_TYPE_MAP.set("jammer", 7);
+
+export const ORB_HEIGHT = 208;
+
+import { GameObjects } from "phaser";
+
+export class Orb extends GameObjects.Container {
 
     static HEIGHT = 208;
     static WIDTH = 208;
 
-    constructor(scene, x, y, texture) {
+    /**
+    * @param {int} type 
+    */
+    constructor(scene, x, y, type) {
         super(scene, x, y);
-
 
         this.setSize(Orb.WIDTH, Orb.HEIGHT);
 
-        this.orbImage = this.scene.add.image(0, 0, texture);
-        this.shadow = this.scene.add.image(x, y, texture).setAlpha(0.4).setVisible(false);
+        this.orbImage = this.scene.add.image(0, 0, ORB_TYPE_MAP.get(type));
+        this.shadow = this.scene.add.image(x, y, ORB_TYPE_MAP.get(type)).setAlpha(0.4).setVisible(false);
 
-        this.type = null;
+        this.type = type;
         this.slot = null;
         this.isBlind = false;
         this.isEnhanced = false;
@@ -33,7 +56,7 @@ class Orb extends Phaser.GameObjects.Container {
         this.addFirstSwapListener();
         this.#createListeners();
 
-        this.add([this.orbImage]);
+        this.add(this.orbImage);
         this.scene.add.existing(this);
     }
 
@@ -56,10 +79,6 @@ class Orb extends Phaser.GameObjects.Container {
                 this.swap(target);
             }
         });
-        // this.on("drop", (pointer, target) => {
-        //     console.log("here in drop");
-        //     this.onOrbRelease();
-        // });
         this.on("pointerup", () => {
             this.onOrbRelease();
         });
@@ -197,7 +216,7 @@ class Orb extends Phaser.GameObjects.Container {
         if (this.isBlind) {
             this.unblind();
         }
-        if(this.slot.hasRoulette){
+        if (this.slot.hasRoulette) {
             this.slot.removeRoulette();
         }
     }
@@ -205,29 +224,22 @@ class Orb extends Phaser.GameObjects.Container {
 
     /**
      * 
-     * @param {Number} type from 0 - 5 
+     * @param {int} type 0 - 5 
      */
-    setType(type) {
+    setType(type, showAnim = false) {
 
-        this.orbImage.setTexture(ORB_TYPE_TO_TEXTURE_KEY[type]);
-        this.shadow.setTexture(ORB_TYPE_TO_TEXTURE_KEY[type]);
-        this.setScale(0.9);
-        this.scene.tweens.add({
-            targets: this,
-            scale: 1,
-            duration: 300,
-            ease: Phaser.Math.Easing.Back.Out
-        });
         this.type = type;
-    }
-
-    setTypeNoAnim(type) {
-
-        if (this.type != type) {
-            this.orbImage.setTexture(ORB_TYPE_TO_TEXTURE_KEY[type]);
-            this.shadow.setTexture(ORB_TYPE_TO_TEXTURE_KEY[type]);
+        this.orbImage.setTexture(ORB_TYPE_MAP.get(type));
+        this.shadow.setTexture(ORB_TYPE_MAP.get(type));
+        if (showAnim) {
+            this.setScale(0.9);
+            this.scene.tweens.add({
+                targets: this,
+                scale: 1,
+                duration: 300,
+                ease: Phaser.Math.Easing.Back.Out
+            });
         }
-        this.type = type;
     }
 
     destroyOrb() {

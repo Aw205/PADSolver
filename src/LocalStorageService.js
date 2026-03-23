@@ -1,3 +1,5 @@
+
+
 if (localStorage.getItem("settings") == undefined) {
     let defaultSettings = { boardAnimations: "medium", pathPlayback: "medium" };
     localStorage.setItem("settings", JSON.stringify(defaultSettings));

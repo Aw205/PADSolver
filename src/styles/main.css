@@ -1,10 +1,12 @@
+:root{
+
+  --toolbar-font-size: 2rem;
+
+}
+
 body {
   overflow: hidden;
   margin: 0;
-}
-
-canvas {
-  /* opacity: 0.2; */
 }
 
 .show {
@@ -75,15 +77,6 @@ dialog {
   }
 }
 
-.board-edit-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  align-items: center;
-  user-select: none;
-
-}
-
 .board-toolbar-container {
   display: flex;
   flex-direction: column;
@@ -92,16 +85,21 @@ dialog {
 
 #board-edit-toolbar {
 
-  user-select: none;
-  border-radius: 5px;
   display: flex;
   width: fit-content;
   justify-content: center;
+  user-select: none;
+  border-radius: 5px;
   font-family: Kreon;
-  padding: 0.4rem;
+  padding-bottom: 0.4rem;
   gap: 0.5rem;
   color: beige;
   z-index: 99;
+
+  & .toolbar-icon{
+    font-size: var(--toolbar-font-size);
+    pointer-events: none;
+  }
 
   &>div {
 
@@ -113,11 +111,10 @@ dialog {
 
     &>div {
 
-      height: 2rem;
+      height: var(--toolbar-font-size);
       padding: 0.2rem;
       border-radius: 5px;
       cursor: pointer;
-
       &:hover {
         background-color: rgb(50, 50, 50);
       }
@@ -131,7 +128,7 @@ dialog {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 2rem;
+  height: var(--toolbar-font-size);
   width: 90%;
   border-radius: 100px;
   border: 1px solid gray;
@@ -240,8 +237,10 @@ dialog {
 
 .board-button-container {
 
-  width: fit-content;
+  display: flex;
+  justify-content: center;
   white-space: nowrap;
+  user-select: none;
 
   &>button {
 
@@ -379,10 +378,6 @@ dialog {
   to {
     transform: rotate(1turn);
   }
-}
-
-input[type="file"] {
-  display: none;
 }
 
 input[type="range"] {

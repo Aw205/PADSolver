@@ -1,6 +1,9 @@
 import BoardModel from "../solver/BoardModel.js";
+import { GameObjects } from "phaser";
+import { Orb } from "./Orb.js";
+import OrbSlot from "./OrbSlot.js";
 
-export default class Board extends Phaser.GameObjects.GameObject {
+export default class Board extends GameObjects.GameObject {
 
     constructor(scene, x, y) {
         super(scene);
@@ -76,11 +79,11 @@ export default class Board extends Phaser.GameObjects.GameObject {
             let x = this.x + i % 6 * Orb.WIDTH;
             let y = this.y + Math.floor(i / 6) * Orb.HEIGHT;
 
-            this.orbArray[i] = new Orb(this.scene, x, y, ORB_TYPE_TO_TEXTURE_KEY[rand]);
+            this.orbArray[i] = new Orb(this.scene, x, y, rand);
             this.orbArray[i].type = rand;
 
             rand = Phaser.Math.Between(0, 5);
-            this.skyfallArray[i] = new Orb(this.scene, x, y - this.BOARD_HEIGHT * Orb.HEIGHT, ORB_TYPE_TO_TEXTURE_KEY[rand]).setVisible(false);
+            this.skyfallArray[i] = new Orb(this.scene, x, y - this.BOARD_HEIGHT * Orb.HEIGHT, rand).setVisible(false);
             this.skyfallArray[i].type = rand;
 
             let slot = new OrbSlot(this.scene, x, y, i);
@@ -186,7 +189,7 @@ export default class Board extends Phaser.GameObjects.GameObject {
                 let y = this.y + Math.floor(i / 6) * Orb.HEIGHT;
 
                 let rand = Phaser.Math.Between(0, 5);
-                this.skyfallArray[i] = new Orb(this.scene, x, y - this.BOARD_HEIGHT * Orb.HEIGHT, ORB_TYPE_TO_TEXTURE_KEY[rand]).setVisible(false);
+                this.skyfallArray[i] = new Orb(this.scene, x, y - this.BOARD_HEIGHT * Orb.HEIGHT,rand).setVisible(false);
                 this.skyfallArray[i].type = rand;
             }
         }
@@ -307,6 +310,9 @@ export default class Board extends Phaser.GameObjects.GameObject {
     }
 
 
+     /**
+     * Skyfalls new orbs 
+     */
     skyfall() {
 
         let dropDist = 0;
@@ -361,17 +367,21 @@ export default class Board extends Phaser.GameObjects.GameObject {
         this.solveBoard();
     }
 
+     /**
+     * 
+     * @param {int[]} arr
+     */
     setBoard(arr) {
 
         for (let i = 0; i < 30; i++) {
 
             let o = this.orbArray[i];
             if (o != null) {
-                o.setType(arr[i]);
+                o.setType(arr[i],true);
                 continue;
             }
             let s = this.orbSlotArray[i];
-            this.orbArray[i] = new Orb(this.scene, s.x, s.y, ORB_TYPE_TO_TEXTURE_KEY[arr[i]]);
+            this.orbArray[i] = new Orb(this.scene, s.x, s.y, arr[i]);
             this.orbArray[i].type = arr[i];
             this.orbArray[i].slot = s;
             s.orb = this.orbArray[i];
@@ -387,10 +397,15 @@ export default class Board extends Phaser.GameObjects.GameObject {
         return this.orbArray.map((arr) => arr.map((orb) => orb.type));
     }
 
+    /**
+     * 
+     * @param {int[]} from
+     * @param {int} to
+     */
     changeOrbs(from, to) {
         this.orbArray.forEach((o) => {
             if (from.includes(o.type)) {
-                o.setType(to);
+                o.setType(to,true);
             }
         });
     }

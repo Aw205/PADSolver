@@ -1,4 +1,6 @@
 
+import darkUrl from "../../assets/images/orbs/dark.webp"
+
 class ComboConfig extends HTMLElement {
 
     constructor() {
@@ -21,7 +23,7 @@ class ComboConfig extends HTMLElement {
         let trash = templateContent.querySelector("span");
 
         shapeSelect.addEventListener("change", (event) => {
-            shapeImg.src = `assets/images/awakenings/${event.target.value}.webp`;
+            shapeImg.src = `assets/awakenings/${event.target.value}.webp`;
         });
 
         attributeSelect.addEventListener("change", (event) => {
@@ -29,11 +31,11 @@ class ComboConfig extends HTMLElement {
             let names = ["fire", "water", "wood", "light", "dark", "heart", "any"];
 
             if (event.target.value == "any") {
-                attributeImg.src = `assets/images/orbs/any.svg`;
+                attributeImg.src = `assets/orbs/any.svg`;
                 range.className = "any";
             }
             else {
-                attributeImg.src = `assets/images/orbs/${names[event.target.value]}.webp`;
+                attributeImg.src = `assets/orbs/${names[event.target.value]}.webp`;
                 range.className = names[event.target.value];
             }
         });

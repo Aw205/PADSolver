@@ -37,8 +37,7 @@ class LanguageModal extends HTMLElement {
         if(!["en","ja","ko"].includes(lang)){
             lang = "en";
         }
-
-        const response = await fetch(`../assets/locales/${lang}.json`);
+        const response = await fetch(`assets/locales/${lang}.json`);
         phrases = await response.json();
 
         document.querySelectorAll('[data-i18n]').forEach(el => {

@@ -1,4 +1,5 @@
 import {phrases} from "./language-modal.js";
+import { ORB_TYPE_MAP } from "../UI/Orb.js";
 
 class SolverSolution extends HTMLElement {
 
@@ -18,11 +19,11 @@ class SolverSolution extends HTMLElement {
         let freqMap = new Map();
         let comboHtml = ``;
         for (let combo of solution.comboList) {
-            let color = ORB_TYPE_TO_TEXTURE_KEY[combo.color];
+            let color = ORB_TYPE_MAP.get(combo.color);
             freqMap.set(color, (freqMap.get(color) || 0) + 1);
         }
         for (const [key, value] of freqMap) {
-            comboHtml += ` <img src="assets/images/orbs/${key}.svg">x${value}`;
+            comboHtml += ` <img src="assets/orbs/${key}.svg">x${value}`;
           }
 
         let count = 0;

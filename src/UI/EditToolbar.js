@@ -1,183 +1,115 @@
-class EditToolbar {
+import { ORB_TYPE_MAP } from "./Orb";
+
+export default class EditToolbar {
 
     constructor(scene) {
         this.scene = scene;
         this.createListeners();
+        this.createOrbChangeListeners();
     }
 
     createListeners() {
 
-        let ids = ["Fire", "Water", "Wood", "Light", "Dark", "Heart"];
+        let paletteToggle = document.querySelector(".palette-toggle");
+        let modifierToggle = document.querySelector(".modifier-toggle");
+        let parent = paletteToggle.parentElement;
 
-        let paletteToggle = document.getElementById("palette-toggle");
-        paletteToggle.addEventListener("click", (e) => {
+        parent.addEventListener("click", (e) => {
 
-            document.querySelector(".palette-container").classList.toggle("show");
-            this.scene.input.removeAllListeners("pointermove");
-            this.scene.input.removeAllListeners("pointerdown");
-            this.scene.board.setOrbInteractive(true);
+            if (e.target.classList.length > 0) {
+                parent.querySelector(`.button-activate:not(.${e.target.classList[1]})`)?.classList.toggle("button-activate");
+                e.target.classList.toggle("button-activate");
+                document.querySelector(`.${e.target.dataset.container}`).classList.toggle("show");
+                document.querySelector(`.auxiliary-container .show:not(.${e.target.dataset.container})`)?.classList.remove("show");
 
-            document.querySelectorAll(".board-edit .button-activate").forEach((tool) => {
-                if (tool != e.currentTarget) {
-                    tool.classList.toggle("button-activate");
+                if (e.target.classList.contains("palette-toggle") || e.target.classList.contains("modifier-toggle")) {
+
+                    this.scene.input.removeAllListeners("pointermove");
+                    this.scene.input.removeAllListeners("pointerdown");
+                    this.scene.board.setOrbInteractive(true);
+
+                    let toggleFunc = e.target.dataset.container == "palette-container" ? this.paletteFunc.bind(this) : this.modifierFunc;
+                    if (e.target.classList.contains("button-activate")) {
+
+                        this.scene.board.setOrbInteractive(false);
+                        this.scene.input.on("pointerdown", (pointer, currentlyOver) => {
+                            toggleFunc(e.target, currentlyOver);
+                        });
+                        this.scene.input.on("pointermove", (pointer, currentlyOver) => {
+                            if (pointer.isDown) {
+                                toggleFunc(e.target, currentlyOver);
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
+        document.querySelectorAll(".palette-container, .modifier-container").forEach((container) => {
+            container.addEventListener("click", (e) => {
+                if (e.target.tagName == "IMG") {
+                    container.querySelector(".palette-active")?.classList.remove("palette-active");
+                    e.target.classList.add("palette-active");
+                    let toggle = container.classList[0] == "palette-container" ? paletteToggle : modifierToggle;
+                    toggle.dataset.type = e.target.dataset.type;
                 }
             });
+        })
+    }
 
-            e.currentTarget.classList.toggle("button-activate");
-            let ele = document.querySelector(".auxiliary-container .show:not(.palette-container)")
-            if (ele != undefined) {
-                ele.classList.remove("show");
-            }
+    createOrbChangeListeners() {
 
-            if (e.currentTarget.classList.contains("button-activate")) {
-                this.scene.board.setOrbInteractive(false);
-                this.scene.input.on("pointerdown", (pointer, currentlyOver) => {
-                    currentlyOver[0].orb?.setType(ids.indexOf(paletteToggle.dataset.type));
-
-                    if (currentlyOver[0].orb == undefined) {
-                        let slot = currentlyOver[0];
-                        let newOrb = new Orb(this.scene, slot.x, slot.y, ORB_TYPE_TO_TEXTURE_KEY[ids.indexOf(paletteToggle.dataset.type)]);
-                        slot.orb = newOrb;
-                        this.scene.board.orbArray[slot.index] = slot.orb;
-                        newOrb.slot = slot;
-                        newOrb.disableInteractive();
-                    }
-                })
-                this.scene.input.on("pointermove", (pointer, currentlyOver) => {
-                    if (pointer.isDown) {
-                        currentlyOver[0].orb?.setType(ids.indexOf(paletteToggle.dataset.type));
-
-                        if (currentlyOver[0].orb == undefined) {
-                            let slot = currentlyOver[0];
-                            let newOrb = new Orb(this.scene, slot.x, slot.y, ORB_TYPE_TO_TEXTURE_KEY[ids.indexOf(paletteToggle.dataset.type)]);
-                            slot.orb = newOrb;
-                            this.scene.board.orbArray[slot.index] = slot.orb;
-                            newOrb.slot = slot;
-                            newOrb.disableInteractive();
-                        }
-                    }
-                });
-            }
-        });
-
-        document.querySelector(".palette-container").addEventListener("click", (e) => {
-            if (e.target.tagName == "IMG") {
-                document.querySelector(".palette-container .palette-active")?.classList.remove("palette-active");
-                e.target.classList.add("palette-active");
-                paletteToggle.dataset.type = e.target.dataset.type;
-            }
-        });
-
-        let orbModifierContainer = document.querySelector(".orb-modifier-container");
-        orbModifierContainer.addEventListener("click", (e) => {
-
-            document.querySelector(".modifier-container").classList.toggle("show");
-
-            this.scene.input.removeAllListeners("pointerdown");
-            this.scene.input.removeAllListeners("pointermove");
-            this.scene.board.setOrbInteractive(true);
-
-            document.querySelectorAll(".board-edit .button-activate").forEach((tool) => {
-                if (tool != e.currentTarget) {
-                    tool.classList.toggle("button-activate");
-                }
-            });
-            e.currentTarget.classList.toggle("button-activate");
-            let ele = document.querySelector(".auxiliary-container .show:not(.modifier-container)")
-            if (ele != undefined) {
-                ele.classList.remove("show");
-            }
-
-            if (e.currentTarget.classList.contains("button-activate")) {
-                this.scene.board.setOrbInteractive(false);
-                this.scene.input.on("pointerdown", (pointer, currentlyOver) => {
-                    if (pointer.isDown) {
-                        let modifier = orbModifierContainer.dataset.modifier;
-                        if (modifier == "enhance") {
-                            let o = currentlyOver[0].orb;
-                            if (!o.isEnhanced) {
-                                o.enhance();
-                            }
-                        }
-                        else if (modifier == "blind") {
-                            let o = currentlyOver[0].orb;
-                            if (!o.isBlind) {
-                                o.blind();
-                            }
-                        }
-                        else if (modifier == "roulette") {
-                            currentlyOver[0].orb?.slot.addRoulette();
-                        }
-                        else if (modifier == "erase") {
-                            currentlyOver[0].orb?.removeModifiers();
-                        }
-                    }
-
-                });
-                this.scene.input.on("pointermove", (pointer, currentlyOver) => {
-                    if (pointer.isDown) {
-                        let modifier = orbModifierContainer.dataset.modifier;
-                        if (modifier == "enhance") {
-                            currentlyOver[0].orb?.enhance();
-                        }
-                        else if (modifier == "blind") {
-                            let o = currentlyOver[0].orb;
-                            if (!o.isBlind) {
-                                o.blind();
-                            }
-                        }
-                        else if (modifier == "roulette") {
-                            currentlyOver[0].orb?.slot.addRoulette();
-                        }
-                        else if (modifier == "erase") {
-                            currentlyOver[0].orb?.removeModifiers();
-                        }
-                    }
-                });
-            }
-        });
-        let modifierContainer = document.querySelector(".modifier-container");
-        for (let e of modifierContainer.children) {
-            e.addEventListener("click", () => {
-                modifierContainer.querySelectorAll(".palette-active").forEach((tool) => {
-                    if (tool != e) {
-                        tool.classList.remove("palette-active");
-                    }
-                });
-                event.target.classList.add("palette-active");
-                orbModifierContainer.dataset.modifier = e.dataset.modifier;
-            });
-        }
-
-        document.querySelector(".orb-change-button-container").addEventListener("click", (e) => {
-            document.querySelector(".orb-change-container").classList.toggle("show");
-            document.querySelectorAll(".board-edit .button-activate").forEach((tool) => {
-                if (tool != e.currentTarget) {
-                    tool.classList.toggle("button-activate");
-                }
-            });
-            e.currentTarget.classList.toggle("button-activate");
-            let ele = document.querySelector(".auxiliary-container .show:not(.orb-change-container)")
-            if (ele != undefined) {
-                ele.classList.remove("show");
-            }
-        });
         document.querySelector(".orb-change-container").addEventListener("click", (e) => {
+
             if (e.target.id == "to-orb") {
                 document.querySelector(".to-orb-menu").showModal();
             }
             else if (e.target.className == "orb-change-button") {
                 let from = [];
                 for (let ele of document.querySelectorAll(".from-orbs .palette-active")) {
-                    from.push(ids.indexOf(ele.dataset.type));
+                    from.push(ORB_TYPE_MAP.get(ele.dataset.type));
                 }
-                let to = ids.indexOf(document.getElementById("to-orb").dataset.type);
+                let to = ORB_TYPE_MAP.get(document.getElementById("to-orb").dataset.type);
                 this.scene.board.changeOrbs(from, to);
             }
             else if (e.target.tagName == "IMG") {
                 e.target.classList.toggle("palette-active");
             }
-
         });
+    }
+
+    paletteFunc(toggle, currentlyOver) {
+        currentlyOver[0].orb?.setType(ORB_TYPE_MAP.get(toggle.dataset.type),true);
+        if (currentlyOver[0].orb == undefined) {
+            let slot = currentlyOver[0];
+            let newOrb = new Orb(this.scene, slot.x, slot.y, ORB_TYPE_MAP.get(toggle.dataset.type));
+            slot.orb = newOrb;
+            this.scene.board.orbArray[slot.index] = slot.orb;
+            newOrb.slot = slot;
+            newOrb.disableInteractive();
+        }
+    }
+
+    modifierFunc(toggle, currentlyOver) {
+
+        let type = toggle.dataset.type;
+        if (type == "enhance") {
+            let o = currentlyOver[0].orb;
+            if (!o.isEnhanced) {
+                o.enhance();
+            }
+        }
+        else if (type == "blind") {
+            let o = currentlyOver[0].orb;
+            if (!o.isBlind) {
+                o.blind();
+            }
+        }
+        else if (type == "roulette") {
+            currentlyOver[0].orb?.slot.addRoulette();
+        }
+        else if (type == "erase") {
+            currentlyOver[0].orb?.removeModifiers();
+        }
     }
 }

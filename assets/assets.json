@@ -1,13 +1,13 @@
 {
     "image": {
-        "fire": "images/orbs/fire.webp",
-        "water": "images/orbs/water.webp",
-        "wood": "images/orbs/wood.webp",
-        "light": "images/orbs/light.webp",
-        "dark": "images/orbs/dark.webp",
-        "heart": "images/orbs/heart.webp",
-        "plus": "images/modifiers/plus.webp",
-        "roulette": "images/modifiers/roulette.webp"
+        "fire": "fire.webp",
+        "water": "water.webp",
+        "wood": "wood.webp",
+        "light": "light.webp",
+        "dark": "dark.webp",
+        "heart": "heart.webp",
+        "plus": "plus.webp",
+        "roulette": "roulette.webp"
     },
     "svg": {},
     "json": {}

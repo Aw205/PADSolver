@@ -72,22 +72,21 @@
         <main class="board-position-container">
             <div class="board-toolbar-container">
                 <div id="board-edit-toolbar">
+
                     <div>
-                        <div class="tooltip">
-                            <span id="save-modal-open-button" class="material-symbols-outlined"
-                                style="font-size: 2rem;">save</span>
+                        <div class="tooltip" id="save-modal-open-button">
+                            <span class="material-symbols-outlined toolbar-icon">save</span>
                             <div class="tooltiptext" data-i18n="save"></div>
                         </div>
                         <div class="share-button tooltip">
-                            <span class="material-symbols-outlined" style="color: beige; font-size: 2rem;">share</span>
+                            <span class="material-symbols-outlined toolbar-icon">share</span>
                             <div class="tooltiptext" data-i18n="share"></div>
                         </div>
                     </div>
-                    <div style="display: flex; border: 1px solid dimgray; height: fit-content;">
-
+                    <div>
                         <div id="timer-toggle" class="tooltip">
                             <div id="timer-container">
-                                <span class="material-symbols-outlined" style="font-size: 2rem;">timer</span>
+                                <span class="material-symbols-outlined toolbar-icon">timer</span>
                                 <input id="timer-input" type="number" placeholder="move time" min="1" step="0.1"
                                     style="display: none;" />
                                 <div class="tooltiptext" data-i18n="timer"></div>
@@ -95,13 +94,12 @@
                         </div>
 
                         <div id="shuffle-toggle" class="tooltip">
-                            <span class="material-symbols-outlined"
-                                style="color: inherit; font-size: 2rem;">shuffle</span>
+                            <span class="material-symbols-outlined toolbar-icon">shuffle</span>
                             <div class="tooltiptext" data-i18n="shuffle"></div>
                         </div>
 
                         <div id="skyfall-toggle" class="tooltip">
-                            <span class="material-symbols-outlined" style="font-size: 2rem;">arrow_circle_down</span>
+                            <span class="material-symbols-outlined toolbar-icon">arrow_circle_down</span>
                             <div class="tooltiptext" data-i18n="skyfall"></div>
                         </div>
 
@@ -111,21 +109,20 @@
                         </div>
 
                     </div>
-                    <div style="display: flex; border: 1px solid dimgray; height: fit-content;" class="board-edit">
+                    <div>
 
-                        <div id="palette-toggle" class="tooltip" data-type="Fire">
-                            <span class="material-symbols-outlined" style="font-size: 2rem;">palette</span>
+                        <div class="tooltip palette-toggle" data-type="fire" data-container="palette-container">
+                            <span class="material-symbols-outlined toolbar-icon">palette</span>
                             <div class="tooltiptext" data-i18n="orb palette"></div>
                         </div>
 
-                        <div class="tooltip orb-modifier-container" data-modifier="enhance">
-                            <span class="material-symbols-outlined" style="font-size: 2rem;">wand_stars</span>
+                        <div class="tooltip modifier-toggle" data-type="enhance" data-container="modifier-container">
+                            <span class="material-symbols-outlined toolbar-icon">wand_stars</span>
                             <div class="tooltiptext" data-i18n="orb modifiers"></div>
                         </div>
 
-                        <div class="tooltip orb-change-button-container">
-                            <span class="material-symbols-outlined"
-                                style="font-size: 2rem;">swap_horizontal_circle</span>
+                        <div class="tooltip orb-change-toggle" data-container="orb-change-container">
+                            <span class="material-symbols-outlined toolbar-icon">swap_horizontal_circle</span>
                             <div class="tooltiptext" data-i18n="orb convert"></div>
                         </div>
                     </div>
@@ -134,55 +131,54 @@
 
                 <div class="auxiliary-container">
                     <div class="palette-container">
-                        <img src="assets/images/orbs/fire.svg" data-type="Fire" draggable="false" class="palette-active"
+                        <img src="assets/images/orbs/fire.svg" data-type="fire" draggable="false" class="palette-active"
                             alt="Fire orb">
-                        <img src="assets/images/orbs/water.svg" data-type="Water" draggable="false" alt="Water orb">
-                        <img src="assets/images/orbs/wood.svg" data-type="Wood" draggable="false" alt="Wood orb">
-                        <img src="assets/images/orbs/light.svg" data-type="Light" draggable="false" alt="Light orb">
-                        <img src="assets/images/orbs/dark.svg" data-type="Dark" draggable="false" alt="Dark orb">
-                        <img src="assets/images/orbs/heart.svg" data-type="Heart" draggable="false" alt="Heart orb">
+                        <img src="assets/images/orbs/water.svg" data-type="water" draggable="false" alt="Water orb">
+                        <img src="assets/images/orbs/wood.svg" data-type="wood" draggable="false" alt="Wood orb">
+                        <img src="assets/images/orbs/light.svg" data-type="light" draggable="false" alt="Light orb">
+                        <img src="assets/images/orbs/dark.svg" data-type="dark" draggable="false" alt="Dark orb">
+                        <img src="assets/images/orbs/heart.svg" data-type="heart" draggable="false" alt="Heart orb">
+                    </div>
+                    <div class="modifier-container">
+                        <img src="assets/images/modifiers/plus.svg" data-type="enhance" alt="Enhance" class="palette-active">
+                        <img src="assets/images/modifiers/sunglasses.svg" data-type="blind" alt="Blind">
+                        <img src="assets/images/modifiers/roulette.svg" data-type="roulette" alt="Roulette">
+                        <img src="assets/images/modifiers/eraser.svg" data-type="erase" alt="Erase">
                     </div>
                     <div class="orb-change-container">
                         <div class="from-orbs">
-                            <img src="assets/images/orbs/fire.svg" data-type="Fire" draggable="false" alt="Fire orb">
-                            <img src="assets/images/orbs/water.svg" data-type="Water" draggable="false" alt="Water orb">
-                            <img src="assets/images/orbs/wood.svg" data-type="Wood" draggable="false" alt="Wood orb">
-                            <img src="assets/images/orbs/light.svg" data-type="Light" draggable="false" alt="Light orb">
-                            <img src="assets/images/orbs/dark.svg" data-type="Dark" draggable="false" alt="Dark orb">
-                            <img src="assets/images/orbs/heart.svg" data-type="Heart" draggable="false" alt="Heart orb">
+                            <img src="assets/images/orbs/fire.svg" data-type="fire" draggable="false" alt="Fire orb">
+                            <img src="assets/images/orbs/water.svg" data-type="water" draggable="false" alt="Water orb">
+                            <img src="assets/images/orbs/wood.svg" data-type="wood" draggable="false" alt="Wood orb">
+                            <img src="assets/images/orbs/light.svg" data-type="light" draggable="false" alt="Light orb">
+                            <img src="assets/images/orbs/dark.svg" data-type="dark" draggable="false" alt="Dark orb">
+                            <img src="assets/images/orbs/heart.svg" data-type="heart" draggable="false" alt="Heart orb">
                         </div>
                         <button class="orb-change-button">➜</button>
-                        <img src="assets/images/orbs/fire.svg" id="to-orb" data-type="Fire" alt="Target orb">
+                        <img src="assets/images/orbs/fire.svg" id="to-orb" data-type="fire" alt="Target orb">
                     </div>
-                    <div class="modifier-container">
-                        <img src="assets/images/modifiers/plus.svg" data-modifier="enhance" alt="Enhance">
-                        <img src="assets/images/modifiers/sunglasses.svg" data-modifier="blind" alt="Blind">
-                        <img src="assets/images/modifiers/roulette.svg" data-modifier="roulette" alt="Roulette">
-                        <img src="assets/images/modifiers/eraser.svg" data-modifier="erase" alt="Erase">
-                    </div>
+
                 </div>
             </div>
 
             <div id="board-container"></div>
-            <div class="board-edit-container">
-                <div id="path-button-container">
-                    <span id="first-button" class="material-symbols-outlined path-button"
-                        aria-label="First">skip_previous</span>
-                    <span id="prev-button" class="material-symbols-outlined path-button"
-                        aria-label="Previous">keyboard_arrow_left</span>
-                    <span id="play-button" class="material-symbols-outlined path-button"
-                        aria-label="Play or Pause">play_arrow</span>
-                    <span id="next-button" class="material-symbols-outlined path-button"
-                        aria-label="Next">keyboard_arrow_right</span>
-                    <span id="last-button" class="material-symbols-outlined path-button"
-                        aria-label="Last">skip_next</span>
-                </div>
-                <div class="board-button-container">
-                    <button id="randomize-button" data-i18n="randomize"></button>
-                    <button id="reset-button" data-i18n="reset"></button>
-                    <button id="solve-button"><span data-i18n="solve"></span></button>
-                </div>
+            <div id="path-button-container">
+                <span id="first-button" class="material-symbols-outlined path-button"
+                    aria-label="First">skip_previous</span>
+                <span id="prev-button" class="material-symbols-outlined path-button"
+                    aria-label="Previous">keyboard_arrow_left</span>
+                <span id="play-button" class="material-symbols-outlined path-button"
+                    aria-label="Play or Pause">play_arrow</span>
+                <span id="next-button" class="material-symbols-outlined path-button"
+                    aria-label="Next">keyboard_arrow_right</span>
+                <span id="last-button" class="material-symbols-outlined path-button" aria-label="Last">skip_next</span>
             </div>
+            <div class="board-button-container">
+                <button id="randomize-button" data-i18n="randomize"></button>
+                <button id="reset-button" data-i18n="reset"></button>
+                <button id="solve-button"><span data-i18n="solve"></span></button>
+            </div>
+
         </main>
 
         <div class="solver-config-container">
@@ -327,7 +323,6 @@
         </select>
     </template>
 
-
     <dialog class="solver-config-modal" style="background-color: rgb(30,30,30);"></dialog>
     <dialog class="menu-icons">
         <div class="solver-config-button">
@@ -354,12 +349,11 @@
     <position-select-modal></position-select-modal>
     <comment-modal></comment-modal>
 
-    <script src="https://cdn.jsdelivr.net/npm/phaser@v3.87.0/dist/phaser.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
-    <script src="src/LocalStorageService.js"></script>
-    <script src="./src/UI/TestShader.js"></script>
+    <script type="module" src="src/LocalStorageService.js"></script>
+    <script type="module" src="./src/UI/TestShader.js"></script>
 
     <script type="module" src="src/components/combo-config.js"></script>
     <script type="module" src="src/components/solver-solution.js"></script>
@@ -375,18 +369,14 @@
     <script type="module" src="src/UI/Board.js"></script>
     <script type="module" src="src/solver/BoardModel.js"></script>
     <script type="module" src="src/solver/Solve.js"></script>
-    <script type="module" src="src/solver/worker.js"></script>
     <script type="module" src="src/scenes/BoardScene.js"></script>
     <script type="module" src="src/Main.js"></script>
 
-
-    <script src="src/UI/Orb.js"></script>
-    <script src="src/UI/OrbSlot.js"></script>
-    <script src="src/UI/PathManager.js"></script>
-    <script src="src/UI/EditToolbar.js"></script>
-
-
-    <script src="src/scenes/LoadingScreen.js"></script>
+    <script type="module" src="src/UI/Orb.js"></script>
+    <script type="module" src="src/UI/OrbSlot.js"></script>
+    <script type="module" src="src/UI/PathManager.js"></script>
+    <script type="module" src="src/UI/EditToolbar.js"></script>
+    <script type="module" src="src/scenes/LoadingScreen.js"></script>
 
     <canvas id="myCanvas" hidden="hidden"></canvas>
     <canvas id="loadBoardCanvas" width="65" height="54" hidden="hidden"></canvas>

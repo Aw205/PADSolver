@@ -1,4 +1,7 @@
-class LoadingScreen extends Phaser.Scene {
+
+import { Scene } from "phaser";
+
+export default class LoadingScreen extends Scene {
 
     constructor() {
         super({
@@ -11,7 +14,6 @@ class LoadingScreen extends Phaser.Scene {
     }
 
     preload() {
-
         this.load.setBaseURL("assets/");
         this.loadAssets(this.cache.json.get("assets"));
         this.createProgressBar();
