@@ -1,6 +1,4 @@
 
-import darkUrl from "../../assets/images/orbs/dark.webp"
-
 class ComboConfig extends HTMLElement {
 
     constructor() {
@@ -14,8 +12,10 @@ class ComboConfig extends HTMLElement {
         const template = document.getElementById('combo-config-template');
         const templateContent = document.importNode(template.content, true);
 
-        let range = templateContent.querySelector("input");
-        let label = templateContent.querySelector("label");
+        let rangeLabel = templateContent.querySelector(".range-label");
+        let range = rangeLabel.querySelector("input");
+        let rangeValue = rangeLabel.querySelector("span");
+
         let shapeSelect = templateContent.querySelector(".shape-select");
         let shapeImg = templateContent.querySelector(".shape-image");
         let attributeSelect = templateContent.querySelector(".attribute-select");
@@ -40,7 +40,7 @@ class ComboConfig extends HTMLElement {
             }
         });
         range.addEventListener("input", function () {
-            label.innerHTML = this.value;
+            rangeValue.textContent = this.value;
         });
 
         trash.addEventListener("click", () => {

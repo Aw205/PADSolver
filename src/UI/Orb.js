@@ -23,16 +23,13 @@ import { GameObjects } from "phaser";
 
 export class Orb extends GameObjects.Container {
 
-    static HEIGHT = 208;
-    static WIDTH = 208;
-
     /**
     * @param {int} type 
     */
     constructor(scene, x, y, type) {
         super(scene, x, y);
 
-        this.setSize(Orb.WIDTH, Orb.HEIGHT);
+        this.setSize(ORB_HEIGHT, ORB_HEIGHT);
 
         this.orbImage = this.scene.add.image(0, 0, ORB_TYPE_MAP.get(type));
         this.shadow = this.scene.add.image(x, y, ORB_TYPE_MAP.get(type)).setAlpha(0.4).setVisible(false);
@@ -67,8 +64,8 @@ export class Orb extends GameObjects.Container {
             this.setToTop();
             this.shadow.setPosition(this.x, this.y).setVisible(true);
             this.orbImage.setAlpha(0.8);
-            this.orbImage.setOrigin(1 - localX / Orb.HEIGHT, 1 - localY / Orb.HEIGHT);
-            this.plus?.setOrigin(1 - localX / Orb.HEIGHT, 1 - localY / Orb.HEIGHT);
+            this.orbImage.setOrigin(1 - localX / ORB_HEIGHT, 1 - localY / ORB_HEIGHT);
+            this.plus?.setOrigin(1 - localX / ORB_HEIGHT, 1 - localY / ORB_HEIGHT);
             this.orbImage.setTint(0xffffff);
         });
         this.on("drag", (pointer, dragX, dragY) => {

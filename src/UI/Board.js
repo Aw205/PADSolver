@@ -1,6 +1,6 @@
 import BoardModel from "../solver/BoardModel.js";
 import { GameObjects } from "phaser";
-import { Orb } from "./Orb.js";
+import { Orb,ORB_HEIGHT } from "./Orb.js";
 import OrbSlot from "./OrbSlot.js";
 
 export default class Board extends GameObjects.GameObject {
@@ -76,14 +76,14 @@ export default class Board extends GameObjects.GameObject {
             if (res != null) {
                 rand = res[i];
             }
-            let x = this.x + i % 6 * Orb.WIDTH;
-            let y = this.y + Math.floor(i / 6) * Orb.HEIGHT;
+            let x = this.x + i % 6 * ORB_HEIGHT;
+            let y = this.y + Math.floor(i / 6) * ORB_HEIGHT;
 
             this.orbArray[i] = new Orb(this.scene, x, y, rand);
             this.orbArray[i].type = rand;
 
             rand = Phaser.Math.Between(0, 5);
-            this.skyfallArray[i] = new Orb(this.scene, x, y - this.BOARD_HEIGHT * Orb.HEIGHT, rand).setVisible(false);
+            this.skyfallArray[i] = new Orb(this.scene, x, y - this.BOARD_HEIGHT * ORB_HEIGHT, rand).setVisible(false);
             this.skyfallArray[i].type = rand;
 
             let slot = new OrbSlot(this.scene, x, y, i);
@@ -185,11 +185,11 @@ export default class Board extends GameObjects.GameObject {
         for (let i = 0; i < 30; i++) {
             if (this.skyfallArray[i] == null) {
 
-                let x = this.x + Math.floor(i % 6) * Orb.WIDTH;
-                let y = this.y + Math.floor(i / 6) * Orb.HEIGHT;
+                let x = this.x + Math.floor(i % 6) * ORB_HEIGHT;
+                let y = this.y + Math.floor(i / 6) * ORB_HEIGHT;
 
                 let rand = Phaser.Math.Between(0, 5);
-                this.skyfallArray[i] = new Orb(this.scene, x, y - this.BOARD_HEIGHT * Orb.HEIGHT,rand).setVisible(false);
+                this.skyfallArray[i] = new Orb(this.scene, x, y - this.BOARD_HEIGHT * ORB_HEIGHT,rand).setVisible(false);
                 this.skyfallArray[i].type = rand;
             }
         }
@@ -290,7 +290,7 @@ export default class Board extends GameObjects.GameObject {
                 }
                 this.scene.tweens.add({
                     targets: current,
-                    y: current.y + (dropDist / 6) * Orb.HEIGHT,
+                    y: current.y + (dropDist / 6) * ORB_HEIGHT,
                     duration: 500,
                     ease: Phaser.Math.Easing.Linear,
                 });
@@ -327,7 +327,7 @@ export default class Board extends GameObjects.GameObject {
                 }
                 this.scene.tweens.add({
                     targets: current,
-                    y: current.y + (dropDist / 6) * Orb.HEIGHT,
+                    y: current.y + (dropDist / 6) * ORB_HEIGHT,
                     duration: 500,
                     ease: Phaser.Math.Easing.Linear,
                 });
@@ -352,7 +352,7 @@ export default class Board extends GameObjects.GameObject {
 
                 this.scene.tweens.add({
                     targets: current,
-                    y: current.y + (dropDist / 6) * Orb.HEIGHT,
+                    y: current.y + (dropDist / 6) * ORB_HEIGHT,
                     duration: 500,
                     ease: Phaser.Math.Easing.Linear
                 });

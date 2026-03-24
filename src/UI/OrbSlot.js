@@ -1,10 +1,10 @@
 import { GameObjects } from "phaser";
-import { Orb } from "./Orb";
+import { ORB_HEIGHT } from "./Orb";
 
 export default class OrbSlot extends GameObjects.Zone {
 
     constructor(scene, x, y, index) {
-        super(scene, x, y, Orb.WIDTH, Orb.HEIGHT);
+        super(scene, x, y, ORB_HEIGHT, ORB_HEIGHT);
         this.setInteractive({ dropZone: true });
         this.orb = null;
         this.index = index;
@@ -32,7 +32,7 @@ export default class OrbSlot extends GameObjects.Zone {
                     this.g.clear();
                     const startAngle = Phaser.Math.DegToRad(-90);
                     const endAngle = Phaser.Math.DegToRad(value - 90);
-                    this.g.slice(this.x, this.y, Orb.WIDTH / 2 + 5, startAngle, endAngle, false);
+                    this.g.slice(this.x, this.y, ORB_HEIGHT / 2 + 5, startAngle, endAngle, false);
                     this.g.fillPath();
                 },
                 loop: -1,

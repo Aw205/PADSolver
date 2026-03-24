@@ -8,6 +8,7 @@ class LanguageModal extends HTMLElement {
     }
 
     connectedCallback() {
+
         this.innerHTML =
             `
             <dialog class="language-menu">

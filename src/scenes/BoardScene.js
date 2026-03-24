@@ -1,6 +1,5 @@
 import Board from "../UI/Board.js";
 import getStartPositions from "../components/position-select-modal.js";
-import { Orb } from "../UI/Orb.js";
 import { ORB_HEIGHT } from "../UI/Orb.js";
 import TestShader from "../UI/TestShader.js";
 import PathManager from "../UI/PathManager.js";
@@ -10,6 +9,19 @@ export default class BoardScene extends Phaser.Scene {
 
     constructor() {
         super("BoardScene");
+    }
+
+    preload(){
+
+        this.load.image('fire', 'assets/orbs/fire.webp');
+        this.load.image('water', 'assets/orbs/water.webp');
+        this.load.image('wood', 'assets/orbs/wood.webp');
+        this.load.image('light', 'assets/orbs/light.webp');
+        this.load.image('dark', 'assets/orbs/dark.webp');
+        this.load.image('heart', 'assets/orbs/heart.webp');
+        this.load.image('plus','assets/modifiers/plus.webp');
+        this.load.image('roulette', 'assets/modifiers/roulette.webp');
+
     }
 
     create() {
@@ -77,6 +89,8 @@ export default class BoardScene extends Phaser.Scene {
         const content = document.querySelector('.solver-config-container');
         const originalParent = document.querySelector('.main-container');
         if (e.matches) {
+
+            content.style.display = "block";
             menuModal2.appendChild(content);
         } else {
             originalParent.appendChild(content);

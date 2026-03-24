@@ -10,8 +10,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:title" content="PAD Solver & Simulator | Puzzles & Dragons" />
     <meta property="og:url" content="https://padsolver.com" />
-    <meta property="og:description"
-        content="Solve custom boards and share your solutions!" />
+    <meta property="og:description" content="Solve custom boards and share your solutions!" />
     <meta property="og:image" content="https://padsolver.com/assets/og_padsolver.jpg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -20,20 +19,20 @@
     <link rel="icon" type="image/webp" href="assets/images/padsolver_logo.webp">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Kreon:wght@300..700" rel="stylesheet">
     <link rel="stylesheet" href="src/styles/main.css">
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100&icon_names=add_circle,arrow_circle_down,background_dot_small,comment,conversion_path,delete,discover_tune,edit_square,keyboard_arrow_left,keyboard_arrow_right,leaderboard,menu,palette,pause,play_arrow,save,search,settings,share,shuffle,skip_next,skip_previous,swap_horizontal_circle,timer,translate,wand_stars" />
     <title> PAD Solver & Simulator | Puzzles & Dragons </title>
 
     <style>
-        body {
-            background-color: rgb(25, 25, 25);
+        @font-face {
+            font-family: "kreon";
+            src: url('assets/fonts/Kreon-Regular.woff2');
         }
 
         @font-face {
             font-family: "rowdy";
-            src: url('assets/fonts/Rowdy-Regular.ttf');
+            src: url('assets/fonts/Rowdy.woff2');
         }
     </style>
 
@@ -115,7 +114,7 @@
 
                         <div id="free-move-toggle"
                             style="color: darkgray; white-space: nowrap; align-items: center; display: flex;">
-                            <span data-i18n="free move"></span>
+                            <span data-i18n="free move">Free Move</span>
                         </div>
 
                     </div>
@@ -168,7 +167,6 @@
                         <button class="orb-change-button">➜</button>
                         <img src="assets/images/orbs/fire.svg" id="to-orb" data-type="fire" alt="Target orb">
                     </div>
-
                 </div>
             </div>
 
@@ -185,9 +183,9 @@
                 <span id="last-button" class="material-symbols-outlined path-button" aria-label="Last">skip_next</span>
             </div>
             <div class="board-button-container">
-                <button id="randomize-button" data-i18n="randomize"></button>
-                <button id="reset-button" data-i18n="reset"></button>
-                <button id="solve-button"><span data-i18n="solve"></span></button>
+                <button id="randomize-button" data-i18n="randomize">Randomize</button>
+                <button id="reset-button" data-i18n="reset">Reset</button>
+                <button id="solve-button"><span data-i18n="solve">Solve</span></button>
             </div>
 
         </main>
@@ -200,20 +198,11 @@
                     <span>&#9654;</span>
                 </summary>
                 <div class="config-container">
-                    <!-- <div class="save-load-container">
-                        <select>
-                            <option value="" disabled selected hidden>Load</option>
-                        </select>
-
-                        <span style="user-select: none;">|</span>
-                        <button
-                            style="color: darkgray; border-radius: 5px;background-color: rgb(30, 30, 30); font: 1rem kreon;">Save</button>
-                    </div> -->
                     <div class="start-position-input-container">
-                        <div data-i18n="starting position"></div>
+                        <div data-i18n="starting position">Starting position:</div>
                         <span class="material-symbols-outlined" id="position-edit-icon">edit_square</span>
                     </div>
-                    <p data-i18n="combo weight"></p>
+                    <p data-i18n="combo weight">Combo weights:</p>
                     <div class="orb-weight-container">
                         <combo-config></combo-config>
                     </div>
@@ -304,15 +293,15 @@
                     <span data-i18n="solve a board!">Solve a board!</span>
                 </div>
             </details>
-
         </div>
 
     </div>
 
     <template id="combo-config-template">
         <span class="material-symbols-outlined" style="color:indianred; cursor: pointer;">delete</span>
-        <img src="assets/images/awakenings/unknown.webp" class="shape-image">
-        <select class="shape-select">
+        <img src="assets/images/awakenings/unknown.webp" class="shape-image" alt="">
+
+        <select class="shape-select" aria-label="Select shape">
             <option value="" disabled selected hidden data-i18n="shape">Shape</option>
             <option value="TPA" data-i18n="tpa">TPA</option>
             <option value="VDP" data-i18n="vdp">VDP</option>
@@ -320,10 +309,14 @@
             <option value="cross" data-i18n="cross">Cross</option>
             <option value="any" data-i18n="any">Any</option>
         </select>
-        <label>1.5</label>
-        <input type="range" step="0.1" max="3">
-        <img src="assets/images/awakenings/unknown.webp" class="attribute-image">
-        <select class="attribute-select">
+
+        <label class="range-label">
+            <span>1.5</span>
+            <input type="range" step="0.1" max="3">
+        </label>
+        <img src="assets/images/awakenings/unknown.webp" class="attribute-image" alt="">
+
+        <select class="attribute-select" aria-label="Select attribute">
             <option value="" disabled selected hidden data-i18n="attribute">Attribute</option>
             <option value="0" data-i18n="fire">Fire</option>
             <option value="1" data-i18n="water">Water</option>
@@ -387,7 +380,6 @@
     <script type="module" src="src/UI/OrbSlot.js"></script>
     <script type="module" src="src/UI/PathManager.js"></script>
     <script type="module" src="src/UI/EditToolbar.js"></script>
-    <script type="module" src="src/scenes/LoadingScreen.js"></script>
 
     <canvas id="myCanvas" hidden="hidden"></canvas>
     <canvas id="loadBoardCanvas" width="65" height="54" hidden="hidden"></canvas>

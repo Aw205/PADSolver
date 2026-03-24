@@ -2,7 +2,6 @@
 import { Game } from "phaser";
 import { ORB_HEIGHT } from "./UI/Orb.js";
 import BoardScene from "./scenes/BoardScene.js";
-import LoadingScreen from "./scenes/LoadingScreen.js";
 
 let config = {
   type: Phaser.WEBGL,
@@ -10,7 +9,7 @@ let config = {
   width: ORB_HEIGHT * 6,
   height: ORB_HEIGHT * 5,
   resolution: window.devicePixelRatio,
-  scene: [LoadingScreen, BoardScene],
+  scene: [BoardScene],
   transparent: true,
   input:{
     windowEvents: false
@@ -21,9 +20,7 @@ let config = {
   dom: {
     createContainer: true
   },
-  autoCenter: Phaser.Scale.CENTER_BOTH,
-  plugins: {
-  }
+  autoCenter: Phaser.Scale.CENTER_BOTH
 };
 
 const game = new Game(config);
