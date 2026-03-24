@@ -31,7 +31,7 @@ export default class PathManager {
             this.step(-1);
         });
         document.getElementById("play-button").addEventListener("click", (event) => {
-             document.getElementById("play-button").textContent = (this.play()) ? "pause" : "play_arrow"
+            document.getElementById("play-button").textContent = this.play();
         });
 
         document.getElementById("next-button").addEventListener("pointerup", () => {
@@ -59,7 +59,8 @@ export default class PathManager {
             return;
         }
         if (this.pathIndex == this.path.length - 1) {
-            document.getElementById("play-button").click();
+            document.getElementById("play-button").textContent = "play_arrow";
+            this.playing = false;
         }
     }
 
@@ -67,30 +68,24 @@ export default class PathManager {
      * @returns whether button should be toggled
      */
     play() {
-
-        if (this.playing && this.pathIndex == this.path.length - 1) {
+        if (this.playing) {
             this.playing = false;
-            return true;
+            this.playEvent.remove(false);
+            this.playing = false;
+            return "play_arrow";
         }
-
-        if (this.pathIndex == this.path.length - 1) {
-            return false;
-        }
-
-        if (!this.playing) {
+        else if (!this.playing) {
+            this.playing = true;
             this.playEvent = this.scene.time.addEvent({
                 delay: 500,
                 callback: this.step,
                 args: [1],
                 callbackScope: this,
                 repeat: this.path.length - 1 - this.pathIndex,
+
             });
-            this.playing = true;
-            return true;
+            return "pause";
         }
-        this.playEvent.remove(false);
-        this.playing = false;
-        return true;
     }
 
     createLinePath(path) {

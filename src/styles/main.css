@@ -1,4 +1,4 @@
-:root{
+:root {
 
   --toolbar-font-size: 2rem;
 
@@ -96,7 +96,7 @@ dialog {
   color: beige;
   z-index: 99;
 
-  & .toolbar-icon{
+  & .toolbar-icon {
     font-size: var(--toolbar-font-size);
     pointer-events: none;
   }
@@ -115,6 +115,7 @@ dialog {
       padding: 0.2rem;
       border-radius: 5px;
       cursor: pointer;
+
       &:hover {
         background-color: rgb(50, 50, 50);
       }
@@ -465,7 +466,7 @@ input[type="range"] {
 
       gap: 1rem;
       width: 100%;
-
+   
       &> :first-child {
         color: orange;
         width: 1rem;
@@ -505,14 +506,14 @@ input[type="range"] {
     animation: gradientMove 4s linear infinite;
     z-index: -1;
     transition: opacity 400ms ease-in-out;
-    opacity: 0
+    opacity: 0;
   }
 
   &::after {
     content: "";
     position: absolute;
     inset: 1px;
-    width: 99.2%;
+    width: 99%;
     border-radius: inherit;
     background-color: rgb(25, 25, 25);
     border: 2px solid transparent;
@@ -1193,6 +1194,7 @@ solver-solution {
 }
 
 #board-container {
+  width: 100%;
   aspect-ratio: 6/5;
 }
 
