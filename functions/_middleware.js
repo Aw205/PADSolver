@@ -17,5 +17,15 @@ export async function onRequest(context) {
                 element.setAttribute("content", ogUrl);
             },
         })
+        .on('meta[property="og:image:width"]', {
+            element(element) {
+                element.setAttribute("content", "300");
+            },
+        })
+        .on('meta[property="og:image:height"]', {
+            element(element) {
+                element.setAttribute("content", "250");
+            },
+        })
         .transform(response);
 }

@@ -1,14 +1,40 @@
-
 import { ImageResponse } from 'workers-og';
 
 export async function onRequest(context) {
-    //const { searchParams } = new URL(context.request.url);    
-    //const gridId = searchParams.get("board");
+    const { searchParams } = new URL(context.request.url);
+    const board = searchParams.get("board");
 
-    const html = `<div style="display: flex; flex-wrap: wrap; gap:2px; width: 312px; height: 260px;">`;
-    for (let i = 0; i < 30; i++) {
-        html += `<img src="https://padsolver.com/assets/orbs/dark.png" width="50" height="50">`;
+    const map = ["fire", "water", "wood", "light", "dark", "heart", "poision", "jammer"];
+    let typeArr = decode(board);
+    let html = `<div style="display: flex; flex-wrap: wrap; width: 300px; height: 250px;">`;
+    let colors = ["#1c130f", "#2e201a"];
+    for (let i = 0; i < typeArr.length; i++) {
+        if (i % 6 == 0 && i != 0) {
+            colors.reverse();
+        }
+        let color = (i % 2 == 0) ? colors[0] : colors[1];
+        html += `<img src="http://padsolver.com/assets/orbs/${map[typeArr[i]]}.png" width="50" height="50" style="background-color:${color};">`;
     }
     html += "</div>"
-    return new ImageResponse(html, { width: 312, height: 260 });
+    return new ImageResponse(html, { width: 300, height: 250 });
+}
+
+function decode(board) {
+    let s = decodeBase62(board);
+    let result = [];
+    let temp = s;
+    for (let i = 0; i < 30; i++) {
+        result.unshift(Number(temp % 6n));
+        temp = temp / 6n;
+    }
+    return result;
+}
+
+function decodeBase62(str) {
+    const ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let result = 0n;
+    for (let char of str) {
+        result = result * 62n + BigInt(ALPHABET.indexOf(char));
+    }
+    return result;
 }
