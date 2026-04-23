@@ -123,8 +123,7 @@ export default class Board extends GameObjects.GameObject {
             result.unshift(Number(temp % 6n));
             temp = temp / 6n;
         }
-        const board = result.join('');
-        return board;
+        return result;
 
     }
 
