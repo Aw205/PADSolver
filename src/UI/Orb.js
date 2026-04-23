@@ -19,7 +19,8 @@ ORB_TYPE_MAP.set("jammer", 7);
 
 export const ORB_HEIGHT = 208;
 
-import { GameObjects } from "phaser";
+import { GameObjects, Geom, Display, Math as PhaserMath, TintModes } from "phaser";
+import { ShineController } from "./ShineShader";
 
 export class Orb extends GameObjects.Container {
 
@@ -31,7 +32,7 @@ export class Orb extends GameObjects.Container {
 
         this.setSize(ORB_HEIGHT, ORB_HEIGHT);
 
-        this.orbImage = this.scene.add.image(0, 0, ORB_TYPE_MAP.get(type));
+        this.orbImage = this.scene.add.image(0, 0, ORB_TYPE_MAP.get(type)).enableFilters();
         this.shadow = this.scene.add.image(x, y, ORB_TYPE_MAP.get(type)).setAlpha(0.4).setVisible(false);
 
         this.type = type;
@@ -44,8 +45,8 @@ export class Orb extends GameObjects.Container {
         this.startTime = 0;
 
         this.setInteractive({
-            hitArea: new Phaser.Geom.Rectangle(0, 0, 208, 208),
-            hitAreaCallback: Phaser.Geom.Rectangle.Contains,
+            hitArea: new Geom.Rectangle(0, 0, 208, 208),
+            hitAreaCallback: Geom.Rectangle.Contains,
             useHandCursor: true,
             draggable: true
         });
@@ -55,6 +56,10 @@ export class Orb extends GameObjects.Container {
 
         this.add(this.orbImage);
         this.scene.add.existing(this);
+
+        // const shine = new ShineController(this.orbImage.filters.internal);
+        // gameObject.filters.internal.add(shine);
+
     }
 
     #createListeners() {
@@ -118,7 +123,7 @@ export class Orb extends GameObjects.Container {
             x: target => { return target.slot.x; },
             y: target => { return target.slot.y; },
             duration: 500,
-            ease: Phaser.Math.Easing.Linear,
+            ease: PhaserMath.Easing.Linear,
         });
     }
 
@@ -160,24 +165,25 @@ export class Orb extends GameObjects.Container {
     enhance() {
         if (!this.isEnhanced) {
             this.isEnhanced = true;
-            this.orbImage.setPipeline("TestShader");
             this.plus = this.scene.add.image(0, 0, "plus");
             this.add(this.plus);
+            const shine = new ShineController(this.orbImage.filters.internal);
+            this.orbImage.filters.internal.add(shine);
         }
 
     }
 
     blind() {
         this.isBlind = true;
-        this.shadow.setTint(0);
+        this.shadow.setTint(0).setTintMode(TintModes.FILL);
         this.scene.tweens.addCounter({
             from: 0,
             to: 100,
             duration: 200,
             onUpdate: (tween) => {
                 const value = tween.getValue();
-                const color = Phaser.Display.Color.Interpolate.ColorWithColor({ r: 255, g: 255, b: 255 }, { r: 0, g: 0, b: 0 }, 100, value);
-                this.orbImage.setTint(Phaser.Display.Color.GetColor(color.r, color.g, color.b));
+                const color = Display.Color.Interpolate.ColorWithColor({ r: 255, g: 255, b: 255 }, { r: 0, g: 0, b: 0 }, 100, value);
+                this.orbImage.setTint(Display.Color.GetColor(color.r, color.g, color.b));
             }
         });
     }
@@ -191,19 +197,18 @@ export class Orb extends GameObjects.Container {
             duration: 200,
             onUpdate: (tween) => {
                 const value = tween.getValue();
-                const color = Phaser.Display.Color.Interpolate.ColorWithColor({ r: 0, g: 0, b: 0 }, { r: 255, g: 255, b: 255 }, 100, value);
-                this.orbImage.setTint(Phaser.Display.Color.GetColor(color.r, color.g, color.b));
+                const color = Display.Color.Interpolate.ColorWithColor({ r: 0, g: 0, b: 0 }, { r: 255, g: 255, b: 255 }, 100, value);
+                this.orbImage.setTint(Display.Color.GetColor(color.r, color.g, color.b));
             }
         });
     }
 
     removeEnhance() {
         this.isEnhanced = false;
-        this.orbImage.resetPipeline();
         this.remove(this.plus);
         this.plus.destroy();
         this.plus = null;
-
+        this.orbImage.filters.internal.clear();
     }
 
     removeModifiers() {
@@ -234,7 +239,7 @@ export class Orb extends GameObjects.Container {
                 targets: this,
                 scale: 1,
                 duration: 300,
-                ease: Phaser.Math.Easing.Back.Out
+                ease: PhaserMath.Easing.Back.Out
             });
         }
     }

@@ -1,7 +1,10 @@
 'use strict';
 import { Game } from "phaser";
 import { ORB_HEIGHT } from "./UI/Orb.js";
+import ShineFilterShader from "./UI/ShineShader.js";
 import BoardScene from "./scenes/BoardScene.js";
+
+import * as Phaser from 'phaser';
 
 let config = {
   type: Phaser.WEBGL,
@@ -11,7 +14,7 @@ let config = {
   resolution: window.devicePixelRatio,
   scene: [BoardScene],
   transparent: true,
-  input:{
+  input: {
     windowEvents: false
   },
   scale: {
@@ -19,6 +22,11 @@ let config = {
   },
   dom: {
     createContainer: true
+  },
+  render: {
+    renderNodes: {
+      ShineFilter: ShineFilterShader 
+    }
   },
   autoCenter: Phaser.Scale.CENTER_BOTH
 };

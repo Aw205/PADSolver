@@ -1,3 +1,5 @@
+import { Math as PhaserMath, Curves } from "phaser";
+
 export default class PathManager {
 
 
@@ -90,9 +92,9 @@ export default class PathManager {
 
     createLinePath(path) {
 
-        let prevPos = new Phaser.Math.Vector2(0, 0);
+        let prevPos = new PhaserMath.Vector2(0, 0);
         let startOrb = this.scene.board.orbArray[path[0]];
-        let sp = new Phaser.Curves.Spline([startOrb.x, startOrb.y]);
+        let sp = new Curves.Spline([startOrb.x, startOrb.y]);
         let visited = [];
         let offset = 0;
 

@@ -1,4 +1,4 @@
-import { GameObjects } from "phaser";
+import { GameObjects, Math as PhaserMath } from "phaser";
 import { ORB_HEIGHT } from "./Orb";
 
 export default class OrbSlot extends GameObjects.Zone {
@@ -30,8 +30,8 @@ export default class OrbSlot extends GameObjects.Zone {
                 onUpdate: (tween) => {
                     const value = tween.getValue();
                     this.g.clear();
-                    const startAngle = Phaser.Math.DegToRad(-90);
-                    const endAngle = Phaser.Math.DegToRad(value - 90);
+                    const startAngle = PhaserMath.DegToRad(-90);
+                    const endAngle = PhaserMath.DegToRad(value - 90);
                     this.g.slice(this.x, this.y, ORB_HEIGHT / 2 + 5, startAngle, endAngle, false);
                     this.g.fillPath();
                 },

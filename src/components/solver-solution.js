@@ -1,4 +1,4 @@
-import {phrases} from "./language-modal.js";
+import { phrases } from "./language-modal.js";
 import { ORB_TYPE_MAP } from "../UI/Orb.js";
 
 class SolverSolution extends HTMLElement {
@@ -24,7 +24,7 @@ class SolverSolution extends HTMLElement {
         }
         for (const [key, value] of freqMap) {
             comboHtml += ` <img src="assets/orbs/${key}.svg">x${value}`;
-          }
+        }
 
         let count = 0;
         for (let combo of solution.comboList) {

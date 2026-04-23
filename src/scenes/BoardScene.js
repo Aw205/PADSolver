@@ -1,17 +1,17 @@
 import Board from "../UI/Board.js";
 import getStartPositions from "../components/position-select-modal.js";
 import { ORB_HEIGHT } from "../UI/Orb.js";
-import TestShader from "../UI/TestShader.js";
 import PathManager from "../UI/PathManager.js";
 import EditToolbar from "../UI/EditToolbar.js";
+import { Scene, Math } from "phaser";
 
-export default class BoardScene extends Phaser.Scene {
+export default class BoardScene extends Scene {
 
     constructor() {
         super("BoardScene");
     }
 
-    preload(){
+    preload() {
 
         this.load.image('fire', 'assets/orbs/fire.webp');
         this.load.image('water', 'assets/orbs/water.webp');
@@ -19,7 +19,7 @@ export default class BoardScene extends Phaser.Scene {
         this.load.image('light', 'assets/orbs/light.webp');
         this.load.image('dark', 'assets/orbs/dark.webp');
         this.load.image('heart', 'assets/orbs/heart.webp');
-        this.load.image('plus','assets/modifiers/plus.webp');
+        this.load.image('plus', 'assets/modifiers/plus.webp');
         this.load.image('roulette', 'assets/modifiers/roulette.webp');
 
     }
@@ -28,8 +28,7 @@ export default class BoardScene extends Phaser.Scene {
 
         this.add.grid(0, 0, ORB_HEIGHT * 6, ORB_HEIGHT * 5, ORB_HEIGHT, ORB_HEIGHT, 0x1c130f)
             .setAltFillStyle(0x2e201a)
-            .setOrigin(0, 0)
-            .setOutlineStyle().setDepth(-999);
+            .setOrigin(0, 0).setDepth(-999);
 
         this.board = new Board(this, ORB_HEIGHT / 2, ORB_HEIGHT / 2);
         this.pathManager = new PathManager(this, null, this.board);
@@ -40,8 +39,6 @@ export default class BoardScene extends Phaser.Scene {
         new EditToolbar(this);
         this.createSideBarToggles();
         this.createDialogListeners();
-
-        this.renderer.pipelines.add('TestShader', new TestShader(this.game));
     }
 
     createDialogListeners() {
@@ -158,7 +155,7 @@ export default class BoardScene extends Phaser.Scene {
                     this.board.setBoard(model);
                     return;
                 }
-                const arr = Array.from({ length: 30 }, () => Phaser.Math.Between(0, 5));
+                const arr = Array.from({ length: 30 }, () => Math.Between(0, 5));
                 this.board.setBoard(arr);
                 this.board.setOrbInteractive(true);
 
@@ -210,7 +207,7 @@ export default class BoardScene extends Phaser.Scene {
 
                 let startPositions = getStartPositions();
                 let model = this.board.getNumericModel();
-                const myWorker = new Worker(new URL("../solver/worker.js",import.meta.url), { type: 'module' });
+                const myWorker = new Worker(new URL("../solver/worker.js", import.meta.url), { type: 'module' });
                 myWorker.postMessage({ model: model, configs: configs, startPositions: startPositions });
                 myWorker.onmessage = (event) => {
 

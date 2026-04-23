@@ -1,5 +1,5 @@
 import BoardModel from "../solver/BoardModel.js";
-import { GameObjects } from "phaser";
+import { GameObjects,Math as PhaserMath } from "phaser";
 import { Orb,ORB_HEIGHT } from "./Orb.js";
 import OrbSlot from "./OrbSlot.js";
 
@@ -72,7 +72,7 @@ export default class Board extends GameObjects.GameObject {
 
         for (let i = 0; i < 30; i++) {
 
-            let rand = Phaser.Math.Between(0, 5);
+            let rand = PhaserMath.Between(0, 5);
             if (res != null) {
                 rand = res[i];
             }
@@ -82,7 +82,7 @@ export default class Board extends GameObjects.GameObject {
             this.orbArray[i] = new Orb(this.scene, x, y, rand);
             this.orbArray[i].type = rand;
 
-            rand = Phaser.Math.Between(0, 5);
+            rand = PhaserMath.Between(0, 5);
             this.skyfallArray[i] = new Orb(this.scene, x, y - this.BOARD_HEIGHT * ORB_HEIGHT, rand).setVisible(false);
             this.skyfallArray[i].type = rand;
 
@@ -188,7 +188,7 @@ export default class Board extends GameObjects.GameObject {
                 let x = this.x + Math.floor(i % 6) * ORB_HEIGHT;
                 let y = this.y + Math.floor(i / 6) * ORB_HEIGHT;
 
-                let rand = Phaser.Math.Between(0, 5);
+                let rand = PhaserMath.Between(0, 5);
                 this.skyfallArray[i] = new Orb(this.scene, x, y - this.BOARD_HEIGHT * ORB_HEIGHT,rand).setVisible(false);
                 this.skyfallArray[i].type = rand;
             }
@@ -292,7 +292,7 @@ export default class Board extends GameObjects.GameObject {
                     targets: current,
                     y: current.y + (dropDist / 6) * ORB_HEIGHT,
                     duration: 500,
-                    ease: Phaser.Math.Easing.Linear,
+                    ease: PhaserMath.Easing.Linear,
                 });
 
                 this.orbArray[i] = null;
@@ -329,7 +329,7 @@ export default class Board extends GameObjects.GameObject {
                     targets: current,
                     y: current.y + (dropDist / 6) * ORB_HEIGHT,
                     duration: 500,
-                    ease: Phaser.Math.Easing.Linear,
+                    ease: PhaserMath.Easing.Linear,
                 });
 
                 this.orbArray[i] = null;
@@ -354,7 +354,7 @@ export default class Board extends GameObjects.GameObject {
                     targets: current,
                     y: current.y + (dropDist / 6) * ORB_HEIGHT,
                     duration: 500,
-                    ease: Phaser.Math.Easing.Linear
+                    ease: PhaserMath.Easing.Linear
                 });
 
                 this.orbSlotArray[newPos].orb = current;
