@@ -3,7 +3,7 @@ import getStartPositions from "../components/position-select-modal.js";
 import { ORB_HEIGHT } from "../UI/Orb.js";
 import PathManager from "../UI/PathManager.js";
 import EditToolbar from "../UI/EditToolbar.js";
-import { Scene, Math } from "phaser";
+import { Scene, Math as PhaserMath } from "phaser";
 
 export default class BoardScene extends Scene {
 
@@ -155,7 +155,7 @@ export default class BoardScene extends Scene {
                     this.board.setBoard(model);
                     return;
                 }
-                const arr = Array.from({ length: 30 }, () => Math.Between(0, 5));
+                const arr = Array.from({ length: 30 }, () => PhaserMath.Between(0, 5));
                 this.board.setBoard(arr);
                 this.board.setOrbInteractive(true);
 

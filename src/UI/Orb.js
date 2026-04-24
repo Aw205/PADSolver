@@ -56,10 +56,6 @@ export class Orb extends GameObjects.Container {
 
         this.add(this.orbImage);
         this.scene.add.existing(this);
-
-        // const shine = new ShineController(this.orbImage.filters.internal);
-        // gameObject.filters.internal.add(shine);
-
     }
 
     #createListeners() {
@@ -129,6 +125,18 @@ export class Orb extends GameObjects.Container {
 
     addFirstSwapListener() {
         this.once("dragleave", (pointer, target) => {
+
+            if (document.getElementById("timer-toggle").classList.contains("button-activate")) {
+                let val = document.getElementById("timer-input").value;
+                if (val != "" && val > 0) {
+                    document.querySelector(".timer-progress-bar").style.animationPlayState = "running";
+                    document.querySelector(".timer-progress-bar").style.animationDuration = val + "s";
+                    setTimeout(() => {
+                        this.onOrbRelease();
+                    }, val * 1000);
+                }
+            }
+
             if (this.isBlind) {
                 this.isBlind = false;
                 this.shadow.setTint(0xffffff);
@@ -158,6 +166,13 @@ export class Orb extends GameObjects.Container {
                 this.scene.events.emit("solveBoard");
                 document.getElementById("time-count").textContent = ((performance.now() - this.startTime) / 1000).toFixed(2);
             }
+
+            const element =  document.querySelector(".timer-progress-bar");
+            element.classList.remove('timer-animation');
+            void element.offsetWidth;
+            element.classList.add('timer-animation');
+            document.querySelector(".timer-progress-bar").style.animationPlayState = "paused";
+
         }
     }
 

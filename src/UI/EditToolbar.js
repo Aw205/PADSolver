@@ -1,4 +1,4 @@
-import { ORB_TYPE_MAP } from "./Orb";
+import { ORB_TYPE_MAP,Orb } from "./Orb";
 
 export default class EditToolbar {
 
@@ -9,6 +9,14 @@ export default class EditToolbar {
     }
 
     createListeners() {
+
+        let timerToggle = document.getElementById("timer-toggle");
+        let timerProgress = document.querySelector(".timer-progress-bar");
+        timerToggle.addEventListener("click", (e) => {
+            if (e.target.tagName != "INPUT") {
+                timerProgress.classList.toggle("progress-active");
+            }
+        });
 
         let paletteToggle = document.querySelector(".palette-toggle");
         let modifierToggle = document.querySelector(".modifier-toggle");
@@ -79,7 +87,7 @@ export default class EditToolbar {
     }
 
     paletteFunc(toggle, currentlyOver) {
-        currentlyOver[0].orb?.setType(ORB_TYPE_MAP.get(toggle.dataset.type),true);
+        currentlyOver[0].orb?.setType(ORB_TYPE_MAP.get(toggle.dataset.type), true);
         if (currentlyOver[0].orb == undefined) {
             let slot = currentlyOver[0];
             let newOrb = new Orb(this.scene, slot.x, slot.y, ORB_TYPE_MAP.get(toggle.dataset.type));
