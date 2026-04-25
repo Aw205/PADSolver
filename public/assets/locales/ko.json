@@ -62,5 +62,9 @@
     "wood": "나무",
     "light": "빛",
     "dark": "어둠",
-    "heart": "회복"
+    "heart": "회복",
+    "poison": "독",
+    "mortal-poison": "독+",
+    "jammer": "방해",
+    "bomb": "폭탄" 
 }

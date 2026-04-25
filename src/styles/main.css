@@ -143,7 +143,7 @@ dialog {
 
     position: absolute;
     display: none;
-    gap: 1rem;
+    gap: 0.5rem;
     justify-content: center;
     transition: display 0.3s allow-discrete;
 
@@ -190,7 +190,7 @@ dialog {
   &>div {
 
     display: flex;
-    gap: 1rem;
+    gap: 0.5rem;
     justify-content: center;
     transition: display 0.3s allow-discrete;
     align-items: center;
@@ -546,6 +546,29 @@ input[type="range"] {
 
 .light {
   accent-color: palegoldenrod;
+}
+
+.heart {
+  accent-color: pink;
+}
+
+.poison {
+
+  accent-color: purple;
+}
+
+.mortal_poison {
+
+  accent-color: indigo;
+}
+
+.jammer {
+
+  accent-color: slategray;
+}
+
+.bomb {
+  accent-color: darkslategray;
 }
 
 .any {
@@ -1330,6 +1353,10 @@ solver-solution {
     left: 0;
     padding-left: 1rem;
     margin-top: 0;
+  }
+
+  .auxiliary-container {
+    width: 120%;
   }
 
   .board-position-container {

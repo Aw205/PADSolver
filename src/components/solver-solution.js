@@ -23,7 +23,7 @@ class SolverSolution extends HTMLElement {
             freqMap.set(color, (freqMap.get(color) || 0) + 1);
         }
         for (const [key, value] of freqMap) {
-            comboHtml += ` <img src="assets/orbs/${key}.svg">x${value}`;
+            comboHtml += ` <img src="assets/orbs/${key}.webp">x${value}`;
         }
 
         let count = 0;

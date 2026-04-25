@@ -19,6 +19,10 @@ export default class BoardScene extends Scene {
         this.load.image('light', 'assets/orbs/light.webp');
         this.load.image('dark', 'assets/orbs/dark.webp');
         this.load.image('heart', 'assets/orbs/heart.webp');
+        this.load.image('poison', 'assets/orbs/poison.webp');
+        this.load.image('mortal_poison', 'assets/orbs/mortal_poison.webp');
+        this.load.image('jammer', 'assets/orbs/jammer.webp');
+        this.load.image('bomb', 'assets/orbs/bomb.webp');
         this.load.image('plus', 'assets/modifiers/plus.webp');
         this.load.image('roulette', 'assets/modifiers/roulette.webp');
 

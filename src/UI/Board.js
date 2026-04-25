@@ -100,7 +100,7 @@ export default class Board extends GameObjects.GameObject {
         const board = this.getNumericModel().join("");
         let num = 0n;
         for (let digit of board) {
-            num = num * 6n + BigInt(digit);
+            num = num * 10n + BigInt(digit);
         }
         let param = this.encodeBase62(num);
         let url = new URL(window.location.href);
@@ -120,21 +120,11 @@ export default class Board extends GameObjects.GameObject {
         let result = [];
         let temp = s;
         for (let i = 0; i < 30; i++) {
-            result.unshift(Number(temp % 6n));
-            temp = temp / 6n;
+            result.unshift(Number(temp % 10n));
+            temp = temp / 10n;
         }
         return result;
 
-    }
-
-    encode() {
-
-        let s = this.getNumericModel().join("");
-        let base = 0n;
-        for (let digit of s) {
-            base = base * 6n + BigInt(digit);
-        }
-        base = this.encodeBase62(base);
     }
 
     encodeBase62(num) {

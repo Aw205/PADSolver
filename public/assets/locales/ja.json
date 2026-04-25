@@ -62,5 +62,9 @@
     "wood": "木",
     "light": "光",
     "dark": "闇",
-    "heart": "回復" 
+    "heart": "回復",
+    "poison": "毒",
+    "mortal-poison": "毒+",
+    "jammer": "お邪魔",
+    "bomb": "爆弾" 
 }

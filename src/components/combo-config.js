@@ -1,4 +1,6 @@
 
+import { ORB_TYPE_MAP } from "../UI/Orb";
+
 class ComboConfig extends HTMLElement {
 
     constructor() {
@@ -28,15 +30,14 @@ class ComboConfig extends HTMLElement {
 
         attributeSelect.addEventListener("change", (event) => {
 
-            let names = ["fire", "water", "wood", "light", "dark", "heart", "any"];
-
             if (event.target.value == "any") {
                 attributeImg.src = `assets/orbs/any.svg`;
                 range.className = "any";
             }
             else {
-                attributeImg.src = `assets/orbs/${names[event.target.value]}.webp`;
-                range.className = names[event.target.value];
+                let name = ORB_TYPE_MAP.get(parseInt(event.target.value));
+                attributeImg.src = `assets/orbs/${name}.webp`;
+                range.className = name;
             }
         });
         range.addEventListener("input", function () {

@@ -20,8 +20,8 @@ export default class SaveBoardModal extends HTMLElement {
         </dialog>`;
 
 
-        for (let id of ["fire", "water", "wood", "light", "dark", "heart"]) {
-            this.preloadImage(`assets/orbs/${id}_pixel.webp`);
+        for (let id of ["fire", "water", "wood", "light", "dark", "heart","poison","mortal_poison","jammer","bomb"]) {
+            this.preloadImage(`assets/orbs/${id}.webp`);
         }
 
         let input = this.querySelector("input");

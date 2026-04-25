@@ -30,9 +30,9 @@ export default class BoardModel {
         this.orbs = board;
         this.hash = 0;
         //this.hash = this.getHash();
-        this.zobristOrbNums = new Array(6); //[Type][Index]
+        this.zobristOrbNums = new Array(10); //[Type][Index]
         this.zobristPointerNums = new Array(30);
-        for (let type = 0; type < 6; type++) {
+        for (let type = 0; type < 10; type++) {
             this.zobristOrbNums[type] = new Array(30);
             for (let i = 0; i < 30; i++) {
                 this.zobristOrbNums[type][i] = Math.floor(Math.random() * (Number.MAX_SAFE_INTEGER + 1));

@@ -7,7 +7,10 @@ ORB_TYPE_MAP.set(3, "light");
 ORB_TYPE_MAP.set(4, "dark");
 ORB_TYPE_MAP.set(5, "heart");
 ORB_TYPE_MAP.set(6, "poison");
-ORB_TYPE_MAP.set(7, "jammer");
+ORB_TYPE_MAP.set(7, "mortal_poison");
+ORB_TYPE_MAP.set(8, "jammer");
+ORB_TYPE_MAP.set(9, "bomb");
+
 ORB_TYPE_MAP.set("fire", 0);
 ORB_TYPE_MAP.set("water", 1);
 ORB_TYPE_MAP.set("wood", 2);
@@ -15,7 +18,9 @@ ORB_TYPE_MAP.set("light", 3);
 ORB_TYPE_MAP.set("dark", 4);
 ORB_TYPE_MAP.set("heart", 5);
 ORB_TYPE_MAP.set("poison", 6);
-ORB_TYPE_MAP.set("jammer", 7);
+ORB_TYPE_MAP.set("mortal_poison", 7);
+ORB_TYPE_MAP.set("jammer", 8);
+ORB_TYPE_MAP.set("bomb", 9);
 
 export const ORB_HEIGHT = 208;
 
